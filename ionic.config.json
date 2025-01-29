@@ -1,0 +1,7 @@
+{
+  "name": "BondSouls",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
