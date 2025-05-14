@@ -1,8 +1,9 @@
-import { createApp } from 'vue'
+import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router';
+import axios from 'axios'
 
-import { IonicVue } from '@ionic/vue';
+import {IonicVue} from '@ionic/vue';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -33,11 +34,34 @@ import '@ionic/vue/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/style.css';
+import {createPinia} from "pinia";
+
+const token = localStorage.getItem('access_token')
+
+if (token)
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+window.axios = axios
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+window.axios.defaults.withCredentials = true
+window.axios.defaults.baseURL = `http://bondsoulsadmin.test/mobile`
+//window.axios.defaults.baseURL = `https://operator.bondsouls.com/mobile`
+
+try {
+    const response = await axios.get(`/user`)
+    if (response.status === 200 && response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data))
+    }
+}catch(e){
+    localStorage.removeItem('user')
+}
 
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
+    .use(createPinia())
+    .use(IonicVue)
+    .use(router);
 
 router.isReady().then(() => {
-  app.mount('#app');
+    app.mount('#app');
 });
