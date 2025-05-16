@@ -4,13 +4,14 @@
     <div v-if="extra.multiple"></div>
     <div v-else>
       <h3>{{theModel[0]}}</h3>
-      <ion-range @ionChange="onIonChange" v-bind="extra.options"></ion-range>
+      <ion-range :pin="true" @ionChange="onIonChange" v-bind="extra.options"></ion-range>
     </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { IonRange } from "@ionic/vue";
 import {computed} from "vue";
 
 const props = defineProps({
@@ -38,6 +39,7 @@ const extra = computed(() => {
 if(extra.value.options?.min && !theModel.value[0]) theModel.value[0] = extra.value.options.min
 
 function onIonChange({ detail }) {
+  console.log(detail)
   theModel.value[0] = detail.value
 }
 

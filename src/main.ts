@@ -45,8 +45,8 @@ if (token)
 window.axios = axios
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 window.axios.defaults.withCredentials = true
-window.axios.defaults.baseURL = `http://bondsoulsadmin.test/mobile`
-//window.axios.defaults.baseURL = `https://operator.bondsouls.com/mobile`
+//window.axios.defaults.baseURL = `http://bondsoulsadmin.test/mobile`
+window.axios.defaults.baseURL = `https://operator.bondsouls.com/mobile`
 
 try {
     const response = await axios.get(`/user`)

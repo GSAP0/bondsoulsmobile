@@ -1,7 +1,9 @@
 import {createRouter, createWebHistory} from '@ionic/vue-router';
 //@ts-ignore
-import routes from '~pages'
+import { routes,handleHotUpdate } from 'vue-router/auto-routes'
 import {useGlobalStore} from "@/stores/globalStore";
+
+console.table(routes)
 
 const publicRoutes = ['/', '/otp', '/verification']
 
@@ -10,6 +12,9 @@ const router = createRouter({
     routes,
 })
 
+if (import.meta.hot) {
+    handleHotUpdate(router)
+}
 
 router.beforeEach(async (to, from, next) => {
 

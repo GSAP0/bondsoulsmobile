@@ -3,7 +3,8 @@
 import legacy from '@vitejs/plugin-legacy'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
-import Pages from 'vite-plugin-pages'
+import VueRouter from 'unplugin-vue-router/vite'
+
 import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
@@ -14,16 +15,9 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    VueRouter(),
     legacy(),
-    Pages({
-      pagesDir: [
-        {dir: './src/views', baseRoute: ''},
-      ],
-      extensions: ['vue'],
-      syncIndex: true,
-      replaceSquareBrackets: true,
-    }),
+    vue(),
   ],
   resolve: {
     alias: {

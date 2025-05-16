@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div style="flex-grow: 1;width: 100%;">
+    <div>
       <ion-radio-group v-model="theModelLocal"
                        allow-empty-selection
-                       style="display: flex;flex-wrap: wrap; justify-content: space-between">
+                       style="">
         <div :style="`width: calc(99%/${extra.grid? extra.grid + 1 : 1})`"
              v-for="option in extra.items"
              :key="option.value + option.title">
