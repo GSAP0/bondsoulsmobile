@@ -9,6 +9,7 @@ export const useGlobalStore = defineStore('global-store', () => {
     const loaded = ref(false)
     const questions = ref([])
     const answers = ref([])
+    const interests = ref([])
 
     const total_answered = computed(() => {
         let ret = {}
@@ -44,11 +45,21 @@ export const useGlobalStore = defineStore('global-store', () => {
         const res = await axios.get('answers')
         answers.value = res.data
     }
+    async function loadInterests(){
+        const res = await axios.get('interests')
+        interests.value = res.data
+    }
+
+    async function loadUser(){
+        const res = await axios.get('user')
+        user.value = res.data
+    }
 
     async function load(){
         await Promise.all([
             loadQuestions(),
-            loadAnswers()
+            loadAnswers(),
+            loadInterests()
         ])
         loaded.value = true
         if(questions_unanswered_required.value.length > 0) await router.replace(`/questions?required`)
@@ -65,6 +76,7 @@ export const useGlobalStore = defineStore('global-store', () => {
         total_answered,
         loaded,
         user,
+        interests,
         questions,
         questions_required,
         questions_unanswered,
@@ -72,6 +84,8 @@ export const useGlobalStore = defineStore('global-store', () => {
 
         loadAnswers,
         loadQuestions,
+        loadInterests,
+        loadUser,
         load,
     }
 })

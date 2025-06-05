@@ -3,8 +3,6 @@ import {createRouter, createWebHistory} from '@ionic/vue-router';
 import { routes,handleHotUpdate } from 'vue-router/auto-routes'
 import {useGlobalStore} from "@/stores/globalStore";
 
-console.table(routes)
-
 const publicRoutes = ['/', '/otp', '/verification']
 
 const router = createRouter({
@@ -28,7 +26,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
         const globalStore = useGlobalStore()
         if (usr) {
-            globalStore.user = usr
+            globalStore.user = JSON.parse(usr)
             next()
         } else next('/')
     }
