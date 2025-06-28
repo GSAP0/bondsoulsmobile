@@ -1,22 +1,25 @@
 <template>
   <div>
-    <div>
       <ion-radio-group v-model="theModelLocal"
-                       allow-empty-selection
-                       style="">
-        <div :style="`width: calc(99%/${extra.grid? extra.grid + 1 : 1})`"
-             v-for="option in extra.items"
-             :key="option.value + option.title">
-          <ion-item button
-                    lines="none"
-                    class="ion-margin-bottom"
-                    color="light" v-bind="extra.options">
-            <ion-radio :value="option.value">{{ option.title }}</ion-radio>
-          </ion-item>
+                       class="w-full"
+                       allow-empty-selection>
+          <div
+               v-for="option in extra.items"
+               :key="option.value + option.title">
+            <ion-item button
+                      lines="none"
+                      class="ion-margin-bottom rounded-lg"
+                      :color="selected.includes(option.value) ? 'primary' : 'light'"
+                      v-bind="extra.options">
+              <ion-radio :value="option.value">
+              <span class="my-label" :class="selected.includes(option.value) ? 'text-white!' : 'text-black'">
+              {{ option.title }}
+                </span>
+              </ion-radio>
+            </ion-item>
         </div>
       </ion-radio-group>
     </div>
-  </div>
 </template>
 <script setup lang="ts">
 import {IonItem, IonRadio, IonRadioGroup} from "@ionic/vue";
@@ -52,3 +55,11 @@ watch(theModelLocal, newModel => {
   selected.value = [newModel]
 })
 </script>
+
+<style>
+.my-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+</style>

@@ -9,11 +9,12 @@
       <div class="content-wrapper">
         <div class="content">
           <div>
-            <ion-item>
+            <ion-item class="w-[100%] h-[70px]">
               <ion-select v-model="countryCode" interface="popover" class="ion-margin-end">
                 <ion-select-option value="+30">+30</ion-select-option>
               </ion-select>
               <ion-input
+                  class="h-[70px]"
                   autofocus
                   v-model="phoneNumber"
                   type="tel"
@@ -22,7 +23,7 @@
             </ion-item>
           </div>
             <ion-button :disabled="phoneNumber.length !== 10" expand="block" @click="verifyPhone">
-              Συνέχεια
+              <span  class="text-white!">Συνέχεια</span>
             </ion-button>
         </div>
       </div>

@@ -1,5 +1,17 @@
 <template>
   <ion-page>
+    <div style="">
+      <ion-icon :icon="createOutline"
+                style="position: absolute;
+                      right: 10px;
+                      top: 10px;
+                      font-size: 1.3rem;
+                      color: #000000;
+                      background: rgba(0, 0, 0, 0.2);
+                      padding: 4px;"
+      >
+      </ion-icon>
+    </div>
     <!-- Background Image -->
     <div class="w-full h-[300px] bg-cover bg-center"
          style="background-image: url('/assets/images/logobond.png')">
@@ -19,7 +31,7 @@
             <ion-label>Στατιστικά</ion-label>
           </ion-item>
 
-          <ion-item button class="rounded-lg my-2" @click="router.push('questionnaire')">
+          <ion-item button class="rounded-lg my-2" @click="router.push('questions')">
             <ion-icon :icon="statsChart" size="small" class="mr-3"></ion-icon>
             <ion-label>Ολοκλήρωση ερωτηματολογίου</ion-label>
           </ion-item>
@@ -53,11 +65,17 @@
 
 <script setup>
 import {IonPage, IonList, IonItem, IonLabel, IonIcon, IonButton, useIonRouter} from '@ionic/vue';
-import {statsChart, shapes, documentOutline, informationOutline, chatbubblesOutline} from 'ionicons/icons';
+import {
+  statsChart,
+  shapes,
+  documentOutline,
+  informationOutline,
+  chatbubblesOutline,
+  createOutline
+} from 'ionicons/icons';
 import {useGlobalStore} from '@/stores/globalStore';
-import {computed} from 'vue';
+import {computed, onBeforeMount} from 'vue';
 import moment from 'moment';
-// import {useRouter} from "vue-router";
 
 const globalStore = useGlobalStore();
 const user = computed(() => globalStore.user);
@@ -73,6 +91,10 @@ const userAge = computed(() => {
 function openChat() {
   console.log('Open chat');
 }
+
+onBeforeMount(() => {
+  if (!localStorage.getItem('survey')) router.replace('/survey')
+})
 </script>
 
 <style scoped>

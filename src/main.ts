@@ -2,8 +2,9 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router';
 import axios from 'axios'
+import { register } from 'swiper/element/bundle';
 
-
+register()
 
 import {IonicVue} from '@ionic/vue';
 

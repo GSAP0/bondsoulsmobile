@@ -1,20 +1,22 @@
 <template>
   <div>
+    <p class="text-black text-2xl mb-4">{{ extra.options?.multiple_max ? `${extra.options?.multiple_max} Επιλογές` : ''}}</p>
     <div style="flex-grow: 1;width: 100%;">
       <div :style="`width: calc(99%/${extra.grid? extra.grid + 1 : 1})`" v-for="option in extra.items"
            :key="option.value + option.title"
       >
         <ion-item
             button
-            lines="none"
-            class="ion-margin-bottom"
-            color="light">
+            class="ion-margin-bottom rounded-lg"
+            :color="theModel.includes(option.value) ? 'primary' : 'light'">
           <ion-checkbox :checked="theModel.includes(option.value)"
                         :value="option.value"
                         @ionChange="handleChange(option.value)"
                         justify="space-between"
                         >
-            {{option.title}}
+            <div class="my-label" :class="theModel.includes(option.value) ? 'text-white!' : 'text-black'">
+              {{ option.title }}
+            </div>
           </ion-checkbox>
         </ion-item>
       </div>
@@ -61,3 +63,11 @@ function handleChange(v) {
   }
 }
 </script>
+
+<style>
+.my-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+</style>

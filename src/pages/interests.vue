@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button text="Πίσω" defaultHref="/dashboard"></ion-back-button>
+          <ion-back-button defaultHref="/dashboard"></ion-back-button>
         </ion-buttons>
         <ion-title>Ενδιαφέροντα</ion-title>
       </ion-toolbar>

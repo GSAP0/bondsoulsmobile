@@ -5,18 +5,15 @@
         <ion-buttons slot="start">
           <ion-back-button defaultHref="/dashboard"></ion-back-button>
         </ion-buttons>
-        <ion-title>Βιογραφικό</ion-title>
+        <ion-title>Οδηγίες Χρήσης</ion-title>
       </ion-toolbar>
     </ion-header>
-
     <ion-content class="ion-padding">
-      <BioTextField></BioTextField>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import {IonBackButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
-import BioTextField from "@/components/bio/BioTextField.vue";
+import {IonPage, IonToolbar, IonButtons, IonBackButton, IonContent, IonHeader, IonTitle, IonButton} from "@ionic/vue";
 
 </script>

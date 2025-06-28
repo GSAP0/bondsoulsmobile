@@ -16,7 +16,7 @@
                   :key="index"
                   v-model="otpDigits[index]"
                   maxlength="1"
-                  type="text"
+                  type="number"
                   class="otp-input"
                   @input="moveToNext(index, $event)"
                   @keydown="handleKeydown(index, $event)"
@@ -27,7 +27,7 @@
           </div>
 <!--          <router-link to="/questions/gender">-->
             <ion-button expand="block" @click="verifyOtp" :disabled="isEverythingFilled">
-              Συνέχεια
+               <span  class="text-white!">Συνέχεια</span>
             </ion-button>
 <!--          </router-link>-->
         </div>
@@ -47,7 +47,7 @@ const otpDigits = ref(["", "", "", "", "", ""]);
 const otpFields = ref([]);
 const tick = ref(59)
 
-const isEverythingFilled = computed(() => otpDigits.value.filter(Boolean).length !== 6)
+const isEverythingFilled = computed(() => otpDigits.value.filter(x => parseInt(x) >= 0).length !== 6)
 
 const moveToNext = (index, event) => {
   if (event.inputType === "insertText" && index < otpDigits.value.length - 1) {

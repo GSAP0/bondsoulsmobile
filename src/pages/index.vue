@@ -4,9 +4,10 @@
       <div class="overlay content-wrapper" style="height: 100vh">
         <div class="content">
           <div class="" style="display: flex; flex-direction: column; flex-grow: 1;justify-content: center">
-            <h1>Καλώς ήρθες στο <br>Bond Souls</h1>
+            <h1 class="text-white!">Καλώς ήρθες στο <br>Bond Souls</h1>
 
-            <p>
+            <br>
+            <p class="font-normal!">
               Η εφαρμογή που θα σε βοηθήσει να δημιουργήσεις σταθερές και ποιοτικές σχέσεις
             </p>
           </div>
@@ -14,8 +15,8 @@
             <p>ΣΥΝΕΧΕΙΑ ΜΕ:</p>
             <div>
               <router-link to="/verification">
-                <ion-button expand="block" color="primary" class="">
-                  ΕΙΣΑΓΩΓΗ ΤΗΛΕΦΩΝΟΥ
+                <ion-button expand="block" color="primary">
+                  <span  class="text-white!">Εισαγωγή τηλεφώνου</span>
                 </ion-button>
               </router-link>
             </div>
@@ -34,7 +35,7 @@ import {IonPage, IonContent, IonButton} from '@ionic/vue';
 <style scoped>
 .welcome-page {
   --background: none;
-  background: url('/assets/background.png') no-repeat center center;
+  background: url('/assets/images/signin_photo.png') no-repeat center center;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -46,6 +47,6 @@ import {IonPage, IonContent, IonButton} from '@ionic/vue';
 }
 
 .overlay {
-  background: rgba(82, 82, 82, 0.8);
+  background: rgba(0, 0, 0, 0.6);
 }
 </style>
