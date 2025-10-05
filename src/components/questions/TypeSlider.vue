@@ -4,17 +4,24 @@
       <div v-if="extra.multiple"></div>
       <div v-else class="px-10 py-4">
         <div class="text-black">
-          <div class="flex justify-between">
-            <div v-if="extra.options?.min_label && extra.options?.min_label">
-              {{extra.options.min_label}}
+          <div class="flex justify-between align-bottom">
+            <div>
+              <div v-if="extra.options?.min_label && extra.options?.min_label">
+                {{ extra.options.min_label }}
+              </div>
             </div>
-            <div class="text-4xl">{{theModel[0]}}</div>
-            <div v-if="extra.options?.max_label && extra.options?.max_label">
-              {{extra.options.max_label}}
+            <div>
+              <div v-if="!extra.options.hasOwnProperty('hide_label') || extra.options.hasOwnProperty('hide_label') && extra.options.hide_label == false" class="text-4xl">{{ theModel[0] }}</div>
+            </div>
+            <div>
+              <div v-if="extra.options?.max_label && extra.options?.max_label">
+                {{ extra.options.max_label }}
+              </div>
             </div>
           </div>
         </div>
-        <ion-range v-model="test" @ionInput="onIonChange" v-bind="extra.options"></ion-range>
+        <ion-range :value="theModel[0]" @ionInput="onIonChange" v-bind="extra.options">
+        </ion-range>
       </div>
     </div>
   </div>
@@ -22,7 +29,7 @@
 
 <script setup>
 import {IonRange} from "@ionic/vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 
 const props = defineProps({
   question: {

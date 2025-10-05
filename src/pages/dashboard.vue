@@ -19,8 +19,16 @@
     <div class="rounded-tr-3xl px-3 py-1 h-100" style="background-color: #E6E6E6; height:calc(100vh - 300px)">
       <!-- User Name and Age aligned left -->
       <div class="">
-        <h2 class="text-xl font-bold">{{ user?.name }}</h2>
+        <h2 class="text-xl font-bold">{{ user?.name }}
+          <UserBadges></UserBadges>
+        </h2>
         <p class="text-gray-500">{{ userAge }} χρόνων</p>
+      </div>
+
+
+      <div class="flex items-center">
+        <UserRating class="mr-3"></UserRating>
+        <UserElo></UserElo>
       </div>
 
       <!-- Grey Background Menu Container -->
@@ -64,18 +72,21 @@
 </template>
 
 <script setup>
-import {IonPage, IonList, IonItem, IonLabel, IonIcon, IonButton, useIonRouter} from '@ionic/vue';
+import {IonPage, IonList, IonItem, IonLabel, IonIcon, IonButton, useIonRouter, IonChip} from '@ionic/vue';
 import {
   statsChart,
   shapes,
   documentOutline,
   informationOutline,
   chatbubblesOutline,
-  createOutline
+  createOutline,
 } from 'ionicons/icons';
 import {useGlobalStore} from '@/stores/globalStore';
 import {computed, onBeforeMount} from 'vue';
 import moment from 'moment';
+import UserBadges from "@/components/dashboard/UserBadges.vue";
+import UserRating from "@/components/dashboard/UserRating.vue";
+import UserElo from "@/components/dashboard/UserElo.vue";
 
 const globalStore = useGlobalStore();
 const user = computed(() => globalStore.user);

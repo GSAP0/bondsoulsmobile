@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="text-black text-2xl mb-4">{{ extra.options?.multiple_max ? `${extra.options?.multiple_max} Επιλογές` : ''}}</p>
+    <p class="text-black text-2xl mb-4">{{ extra.options?.multiple_max ? `Μέχρι ${extra.options?.multiple_max} επιλογές` : ''}}</p>
     <div style="flex-grow: 1;width: 100%;">
       <div :style="`width: calc(99%/${extra.grid? extra.grid + 1 : 1})`" v-for="option in extra.items"
            :key="option.value + option.title"
