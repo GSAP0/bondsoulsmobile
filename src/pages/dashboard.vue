@@ -26,7 +26,7 @@
       </div>
 
 
-      <div class="flex items-center">
+      <div class="flex items-center mt-2 mb-2">
         <UserRating class="mr-3"></UserRating>
         <UserElo></UserElo>
       </div>

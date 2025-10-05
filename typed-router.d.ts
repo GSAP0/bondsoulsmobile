@@ -24,6 +24,7 @@ declare module 'vue-router/auto-routes' {
     '/instructions': RouteRecordInfo<'/instructions', '/instructions', Record<never, never>, Record<never, never>>,
     '/interests': RouteRecordInfo<'/interests', '/interests', Record<never, never>, Record<never, never>>,
     '/otp': RouteRecordInfo<'/otp', '/otp', Record<never, never>, Record<never, never>>,
+    '/picture': RouteRecordInfo<'/picture', '/picture', Record<never, never>, Record<never, never>>,
     '/questions': RouteRecordInfo<'/questions', '/questions', Record<never, never>, Record<never, never>>,
     '/statistics': RouteRecordInfo<'/statistics', '/statistics', Record<never, never>, Record<never, never>>,
     '/survey': RouteRecordInfo<'/survey', '/survey', Record<never, never>, Record<never, never>>,
@@ -63,6 +64,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/otp.vue': {
       routes: '/otp'
+      views: never
+    }
+    'src/pages/picture.vue': {
+      routes: '/picture'
       views: never
     }
     'src/pages/questions.vue': {
