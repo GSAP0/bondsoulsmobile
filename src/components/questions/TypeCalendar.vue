@@ -8,6 +8,7 @@
                       id="datetime"
                       locale="el-GR"
                       :max="maxDateString"
+                      v-model="theModel"
                       mode="ios">
         </ion-datetime>
       </ion-modal>

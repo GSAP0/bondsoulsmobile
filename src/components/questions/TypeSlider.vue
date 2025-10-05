@@ -5,16 +5,16 @@
       <div v-else class="px-10 py-4">
         <div class="text-black">
           <div class="flex justify-between">
-            <div>Καθόλου</div>
-            <div>Πολύ</div>
+            <div v-if="extra.options?.min_label && extra.options?.min_label">
+              {{extra.options.min_label}}
+            </div>
+            <div class="text-4xl">{{theModel[0]}}</div>
+            <div v-if="extra.options?.max_label && extra.options?.max_label">
+              {{extra.options.max_label}}
+            </div>
           </div>
-          <!--          <div v-if="extra.value.options?.minLabel && extra.value.options?.maxLabel">-->
-          <!--            <div v-if="extra.value.options?.minLabel">{{ extra.value.options.minLabel }}</div>-->
-          <!--            <div v-if="extra.value.options?.maxLabel">{{ extra.value.options.maxLabel }}</div>-->
-          <!--          </div>-->
-          <!--          <h3 v-else>{{ theModel[0] }}</h3>-->
         </div>
-        <ion-range @ionChange="onIonChange" v-bind="extra.options"></ion-range>
+        <ion-range v-model="test" @ionInput="onIonChange" v-bind="extra.options"></ion-range>
       </div>
     </div>
   </div>
@@ -31,9 +31,11 @@ const props = defineProps({
   }
 })
 
+const test = ref(null)
+
 const theModel = defineModel({
   required: true,
-  default: [],
+  default: [0],
 })
 
 const extra = computed(() => {
@@ -46,10 +48,9 @@ const extra = computed(() => {
   return extra.slider
 })
 
-if (extra.value.options?.min && !theModel.value[0]) theModel.value[0] = (extra.value.options.min + extra.value.options.max) / 2
+if (extra.value.options?.min && !theModel.value[0]) theModel.value[0] = (parseInt(extra.value.options.min) + parseInt(extra.value.options.max)) / 2
 
 function onIonChange({detail}) {
-  console.log(detail)
   theModel.value[0] = detail.value
 }
 
