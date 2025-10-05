@@ -19,10 +19,12 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
+    '/3': RouteRecordInfo<'/3', '/3', Record<never, never>, Record<never, never>>,
     '/bio': RouteRecordInfo<'/bio', '/bio', Record<never, never>, Record<never, never>>,
     '/dashboard': RouteRecordInfo<'/dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
     '/instructions': RouteRecordInfo<'/instructions', '/instructions', Record<never, never>, Record<never, never>>,
     '/interests': RouteRecordInfo<'/interests', '/interests', Record<never, never>, Record<never, never>>,
+    '/match_filters': RouteRecordInfo<'/match_filters', '/match_filters', Record<never, never>, Record<never, never>>,
     '/otp': RouteRecordInfo<'/otp', '/otp', Record<never, never>, Record<never, never>>,
     '/picture': RouteRecordInfo<'/picture', '/picture', Record<never, never>, Record<never, never>>,
     '/questions': RouteRecordInfo<'/questions', '/questions', Record<never, never>, Record<never, never>>,
@@ -46,6 +48,10 @@ declare module 'vue-router/auto-routes' {
       routes: '/'
       views: never
     }
+    'src/pages/3.vue': {
+      routes: '/3'
+      views: never
+    }
     'src/pages/bio.vue': {
       routes: '/bio'
       views: never
@@ -60,6 +66,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/interests.vue': {
       routes: '/interests'
+      views: never
+    }
+    'src/pages/match_filters.vue': {
+      routes: '/match_filters'
       views: never
     }
     'src/pages/otp.vue': {

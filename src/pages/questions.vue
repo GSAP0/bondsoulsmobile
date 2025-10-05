@@ -50,8 +50,8 @@
 <script setup lang="ts">
 import {computed, nextTick, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
-import {useRoute, useRouter} from "vue-router";
-import {IonButton, IonContent, IonIcon, IonPage, IonProgressBar, IonSpinner} from "@ionic/vue";
+import {useRoute} from "vue-router";
+import {IonButton, IonContent, IonIcon, IonPage, IonProgressBar, IonSpinner, useIonRouter} from "@ionic/vue";
 import {arrowBackCircle, arrowForwardCircle} from "ionicons/icons";
 import TypeChoice from "@/components/questions/TypeChoice.vue";
 import TypeSlider from "@/components/questions/TypeSlider.vue";
@@ -62,7 +62,7 @@ import TypeCalendar from "@/components/questions/TypeCalendar.vue";
 
 const globalStore = useGlobalStore()
 const route = useRoute()
-const router = useRouter()
+const router = useIonRouter();
 
 const required = route.query.hasOwnProperty('required')
 const show_survey = ref(!localStorage.getItem('questions_required'))

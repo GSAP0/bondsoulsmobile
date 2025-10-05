@@ -24,6 +24,9 @@ async function init() {
     if (globalStore.user) {
       await globalStore.load()
     }
+  }catch(e){
+    console.log('err')
+    console.error(e)
   } finally {
     loaded.value = true
   }

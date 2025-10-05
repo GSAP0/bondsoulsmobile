@@ -1,7 +1,8 @@
 <template>
   <ion-page>
+    <ion-content>
     <div style="">
-      <ion-icon :icon="createOutline"
+      <ion-icon @click="$router.push(`/picture`)" :icon="createOutline"
                 style="position: absolute;
                       right: 10px;
                       top: 10px;
@@ -14,7 +15,7 @@
     </div>
     <!-- Background Image -->
     <div class="w-full h-[300px] bg-cover bg-center"
-         style="background-image: url('/assets/images/logobond.png')">
+         :style="`background-image: url('${user?.image ?? '/assets/images/logobond.png'}')`">
     </div>
     <div class="rounded-tr-3xl px-3 py-1 h-100" style="background-color: #E6E6E6; height:calc(100vh - 300px)">
       <!-- User Name and Age aligned left -->
@@ -61,18 +62,25 @@
       </div>
 
       <!-- Bottom Chat Button -->
-      <div class="fixed bottom-4 left-4 right-4">
+      <div class="fixed bottom-4 left-4 right-4" v-if="!!user.match_id">
         <ion-button expand="block" color="dark" shape="round" size="large" @click="openChat">
           <ion-icon :icon="chatbubblesOutline" class="mr-2" slot="start"></ion-icon>
           Άνοιξε το Chat
         </ion-button>
       </div>
+      <div class="fixed bottom-4 left-4 right-4" v-else>
+        <ion-button expand="block" color="dark" shape="round" size="large" @click="$router.push(`/match_filters`)">
+          <ion-icon :icon="chatbubblesOutline" class="mr-2" slot="start"></ion-icon>
+          Βρες μου ταίρι
+        </ion-button>
+      </div>
     </div>
+    </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import {IonPage, IonList, IonItem, IonLabel, IonIcon, IonButton, useIonRouter, IonChip} from '@ionic/vue';
+import {IonPage, IonList, IonItem, IonLabel, IonIcon, IonButton, useIonRouter, IonContent} from '@ionic/vue';
 import {
   statsChart,
   shapes,
@@ -102,6 +110,7 @@ const userAge = computed(() => {
 function openChat() {
   console.log('Open chat');
 }
+
 
 onBeforeMount(() => {
   if (!localStorage.getItem('survey')) router.replace('/survey')
