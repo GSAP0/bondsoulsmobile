@@ -120,7 +120,7 @@ const userAge = computed(() => {
 });
 
 function openChat() {
-  console.log('Open chat');
+  router.push('/chat');
 }
 
 

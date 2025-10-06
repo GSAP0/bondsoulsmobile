@@ -21,6 +21,7 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/3': RouteRecordInfo<'/3', '/3', Record<never, never>, Record<never, never>>,
     '/bio': RouteRecordInfo<'/bio', '/bio', Record<never, never>, Record<never, never>>,
+    '/chat': RouteRecordInfo<'/chat', '/chat', Record<never, never>, Record<never, never>>,
     '/dashboard': RouteRecordInfo<'/dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
     '/instructions': RouteRecordInfo<'/instructions', '/instructions', Record<never, never>, Record<never, never>>,
     '/interests': RouteRecordInfo<'/interests', '/interests', Record<never, never>, Record<never, never>>,
@@ -54,6 +55,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/bio.vue': {
       routes: '/bio'
+      views: never
+    }
+    'src/pages/chat.vue': {
+      routes: '/chat'
       views: never
     }
     'src/pages/dashboard.vue': {
