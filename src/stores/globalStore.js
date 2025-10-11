@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
+import {useEcho, useEchoModel} from "@laravel/echo-vue";
 
 export const useGlobalStore = defineStore('global-store', () => {
     const router = useRouter()
@@ -62,6 +63,12 @@ export const useGlobalStore = defineStore('global-store', () => {
             loadAnswers(),
             loadInterests()
         ])
+
+        window.echo.private('App.Models.MobileUser').notification((notification) => {
+            user.value.notifications.push(notification)
+            console.log(notification)
+        })
+
         loaded.value = true
         if (questions_unanswered_required.value.length > 0) await router.replace(`/questions?required`)
     }

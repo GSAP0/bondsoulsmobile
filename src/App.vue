@@ -8,16 +8,12 @@
 
 <script setup lang="ts">
 import {IonApp, IonRouterOutlet} from '@ionic/vue';
-import axios from "axios";
 import {ref} from "vue";
 import {useGlobalStore} from "./stores/globalStore.js"
-import {useRouter} from "vue-router";
 
 const globalStore = useGlobalStore()
-const router = useRouter()
 
 const loaded = ref(false)
-
 
 async function init() {
   try {
@@ -33,5 +29,4 @@ async function init() {
 }
 
 init()
-
 </script>

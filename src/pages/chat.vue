@@ -170,11 +170,7 @@ import {
 import { image, videocam, mic, send } from 'ionicons/icons';
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { useGlobalStore } from '@/stores/globalStore';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
 import moment from 'moment';
-
-window.Pusher = Pusher;
 
 const globalStore = useGlobalStore();
 const user = computed(() => globalStore.user);
@@ -191,7 +187,7 @@ const showUserDetails = ref(false);
 const otherUser = ref(null);
 const isOnline = ref(false);
 
-let echo = null;
+const echo = window.echo
 let typingTimer = null;
 let mediaRecorder = null;
 let audioChunks = [];
@@ -362,30 +358,8 @@ const openMedia = (url) => {
   window.open(url, '_blank');
 };
 
-const initializeWebSocket = () => {
-  const wsHost = import.meta.env.VITE_REVERB_HOST || 'localhost';
-  const wsPort = import.meta.env.VITE_REVERB_PORT || 8080;
-  const scheme = import.meta.env.VITE_REVERB_SCHEME || 'http';
-
-  echo = new Echo({
-    broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
-    wsHost: wsHost,
-    wsPort: wsPort,
-    wssPort: wsPort,
-    forceTLS: scheme === 'https',
-    enabledTransports: ['ws', 'wss'],
-    disableStats: true,
-    authEndpoint: `${import.meta.env.VITE_API_BASE_URL}/broadcasting/auth`,
-    auth: {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-      },
-    },
-  });
-
-  console.log('WebSocket connecting to:', `${scheme}://${wsHost}:${wsPort}`);
-
+const initializeWebSocket = () =>
+{
   echo.private(`chat.${user.value.match_id}`)
     .listen('MessageSent', (e) => {
       if (e.message.sender_id !== user.value.id) {

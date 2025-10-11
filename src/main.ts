@@ -39,6 +39,10 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/style.css';
 import {createPinia} from "pinia";
+import Echo from "laravel-echo";
+import Pusher from 'pusher-js';
+
+window.Pusher = Pusher;
 
 const token = localStorage.getItem('access_token')
 
@@ -50,6 +54,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 window.axios.defaults.withCredentials = true
 window.axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
+
 try {
     const response = await axios.get(`/user`)
     if (response.status === 200 && response.data) {
@@ -58,6 +63,29 @@ try {
 }catch(e){
     localStorage.removeItem('user')
 }
+
+const wsHost = import.meta.env.VITE_REVERB_HOST || 'localhost';
+const wsPort = import.meta.env.VITE_REVERB_PORT || 8080;
+const scheme = import.meta.env.VITE_REVERB_SCHEME || 'http';
+
+console.log('WebSocket connecting to:', `${scheme}://${wsHost}:${wsPort}`);
+
+window.echo = new Echo({
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    wsHost: wsHost,
+    wsPort: wsPort,
+    wssPort: wsPort,
+    forceTLS: scheme === 'https',
+    enabledTransports: ['ws', 'wss'],
+    disableStats: true,
+    authEndpoint: `${import.meta.env.VITE_API_BASE_URL}/broadcasting/auth`,
+    auth: {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    },
+})
 
 const app = createApp(App)
     .use(createPinia())
