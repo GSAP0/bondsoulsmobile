@@ -19,15 +19,17 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
-    '/3': RouteRecordInfo<'/3', '/3', Record<never, never>, Record<never, never>>,
     '/bio': RouteRecordInfo<'/bio', '/bio', Record<never, never>, Record<never, never>>,
     '/dashboard': RouteRecordInfo<'/dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
+    '/dashboard_old': RouteRecordInfo<'/dashboard_old', '/dashboard_old', Record<never, never>, Record<never, never>>,
     '/instructions': RouteRecordInfo<'/instructions', '/instructions', Record<never, never>, Record<never, never>>,
     '/interests': RouteRecordInfo<'/interests', '/interests', Record<never, never>, Record<never, never>>,
     '/match_filters': RouteRecordInfo<'/match_filters', '/match_filters', Record<never, never>, Record<never, never>>,
     '/otp': RouteRecordInfo<'/otp', '/otp', Record<never, never>, Record<never, never>>,
     '/picture': RouteRecordInfo<'/picture', '/picture', Record<never, never>, Record<never, never>>,
+    '/profile_visit': RouteRecordInfo<'/profile_visit', '/profile_visit', Record<never, never>, Record<never, never>>,
     '/questions': RouteRecordInfo<'/questions', '/questions', Record<never, never>, Record<never, never>>,
+    '/settings': RouteRecordInfo<'/settings', '/settings', Record<never, never>, Record<never, never>>,
     '/statistics': RouteRecordInfo<'/statistics', '/statistics', Record<never, never>, Record<never, never>>,
     '/survey': RouteRecordInfo<'/survey', '/survey', Record<never, never>, Record<never, never>>,
     '/verification': RouteRecordInfo<'/verification', '/verification', Record<never, never>, Record<never, never>>,
@@ -48,16 +50,16 @@ declare module 'vue-router/auto-routes' {
       routes: '/'
       views: never
     }
-    'src/pages/3.vue': {
-      routes: '/3'
-      views: never
-    }
     'src/pages/bio.vue': {
       routes: '/bio'
       views: never
     }
     'src/pages/dashboard.vue': {
       routes: '/dashboard'
+      views: never
+    }
+    'src/pages/dashboard_old.vue': {
+      routes: '/dashboard_old'
       views: never
     }
     'src/pages/instructions.vue': {
@@ -80,8 +82,16 @@ declare module 'vue-router/auto-routes' {
       routes: '/picture'
       views: never
     }
+    'src/pages/profile_visit.vue': {
+      routes: '/profile_visit'
+      views: never
+    }
     'src/pages/questions.vue': {
       routes: '/questions'
+      views: never
+    }
+    'src/pages/settings.vue': {
+      routes: '/settings'
       views: never
     }
     'src/pages/statistics.vue': {

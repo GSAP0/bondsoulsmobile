@@ -3,7 +3,7 @@ import {createRouter, createWebHistory} from '@ionic/vue-router';
 import { routes,handleHotUpdate } from 'vue-router/auto-routes'
 import {useGlobalStore} from "@/stores/globalStore";
 
-const publicRoutes = ['/', '/otp', '/verification']
+const publicRoutes = ['/', '/otp', '/verification', 'dashboard_new']
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

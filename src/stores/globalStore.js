@@ -36,39 +36,50 @@ export const useGlobalStore = defineStore('global-store', () => {
             .filter(item => item.required)
     })
 
-    async function loadQuestions(){
+    async function loadQuestions() {
         const res = await axios.get('questions')
         questions.value = res.data
     }
 
-    async function loadAnswers(){
+    async function loadAnswers() {
         const res = await axios.get('answers')
         answers.value = res.data
     }
-    async function loadInterests(){
+
+    async function loadInterests() {
         const res = await axios.get('interests')
         interests.value = res.data
     }
 
-    async function loadUser(){
+    async function loadUser() {
         const res = await axios.get('user')
         user.value = res.data
     }
 
-    async function load(){
+    async function load() {
         await Promise.all([
             loadQuestions(),
             loadAnswers(),
             loadInterests()
         ])
         loaded.value = true
-        if(questions_unanswered_required.value.length > 0) await router.replace(`/questions?required`)
+        if (questions_unanswered_required.value.length > 0) await router.replace(`/questions?required`)
     }
 
-    function logout(){
+    function logout() {
         localStorage.removeItem('user')
         user.value = null
         window.location = ``
+    }
+
+    async function submitReferralCode(referralCodeInput) {
+        if (!referralCodeInput) return
+
+        const response = await axios.post('/referral/verify', {
+            referral_code: referralCodeInput
+        })
+
+        return response.data
     }
 
     return {
@@ -82,6 +93,8 @@ export const useGlobalStore = defineStore('global-store', () => {
         questions_unanswered,
         questions_unanswered_required,
 
+        submitReferralCode,
+        logout,
         loadAnswers,
         loadQuestions,
         loadInterests,
