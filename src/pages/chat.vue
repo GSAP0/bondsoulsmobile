@@ -360,6 +360,11 @@ const openMedia = (url) => {
 
 const initializeWebSocket = () =>
 {
+  if (!echo) {
+    console.warn('Echo is not initialized. WebSocket features will be disabled.');
+    return;
+  }
+
   echo.private(`chat.${user.value.match_id}`)
     .listen('MessageSent', (e) => {
       if (e.message.sender_id !== user.value.id) {

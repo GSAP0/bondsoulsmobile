@@ -5,7 +5,7 @@
       <div class="profile-header">
         <div class="header-image" :style="{ backgroundImage: `url(${userPhoto})` }">
           <ion-button class="camera-btn" fill="solid" size="small" @click="$router.push('/picture')">
-            <ion-icon :icon="cameraOutline" />
+            <ion-icon :icon="cameraOutline"/>
           </ion-button>
         </div>
 
@@ -16,21 +16,27 @@
         <div class="user-info">
           <div class="name-badges">
             <div class="flex justify-between">
-            <h1 class="user-name">{{ user?.name || 'Χρήστης' }}</h1>
-            <div class="rating-badge">{{ userRating }}</div>
+              <div>
+                <div class="rating-badge">{{ userRating }}</div>
+                <h1 class="user-name">{{ user?.name || 'Χρήστης' }}</h1>
+              </div>
+              <div>
+                <UserNotifications></UserNotifications>
+              </div>
+
             </div>
             <!-- Badges -->
             <div class="badges-row">
               <ion-chip v-for="(badge, i) in displayBadges" :key="i"
                         :color="badge.active ? 'primary' : 'medium'"
                         :outline="!badge.active">
-                <ion-icon :icon="getBadgeIcon(badge.name)" />
+                <ion-icon :icon="getBadgeIcon(badge.name)"/>
                 <ion-label>{{ badge.name }}</ion-label>
               </ion-chip>
             </div>
           </div>
           <p class="user-location">
-            <ion-icon :icon="locationOutline" />
+            <ion-icon :icon="locationOutline"/>
             {{ user?.city || 'Αθήνα' }} • {{ userAge }} χρονών
           </p>
         </div>
@@ -41,7 +47,7 @@
             <span class="tes-label">TES (Δείκτης Ψυχολογικής Συμβατότητας)</span>
             <span class="tes-value">{{ tesPercentage }}%</span>
           </div>
-          <ion-progress-bar :value="tesPercentage / 100" color="primary" />
+          <ion-progress-bar :value="tesPercentage / 100" color="primary"/>
         </div>
 
         <!-- About Text -->
@@ -54,12 +60,12 @@
         <ion-card>
           <ion-list lines="full">
             <ion-item button @click="$router.push('/statistics')">
-              <ion-icon :icon="barChartOutline" slot="start" />
+              <ion-icon :icon="barChartOutline" slot="start"/>
               <ion-label>
                 <h2>Προφίλ & μετρικές</h2>
                 <p>Δες το ψυχολογικό σου προφίλ</p>
               </ion-label>
-              <ion-icon :icon="chevronForwardOutline" slot="end" />
+              <ion-icon :icon="chevronForwardOutline" slot="end"/>
             </ion-item>
           </ion-list>
         </ion-card>
@@ -71,12 +77,12 @@
         <ion-card>
           <ion-list lines="full">
             <ion-item button @click="$router.push('/questions')">
-              <ion-icon :icon="listOutline" slot="start" />
+              <ion-icon :icon="listOutline" slot="start"/>
               <ion-label>
                 <h2>Επόμενες ερωτήσεις</h2>
                 <p>{{ unansweredCount }} απομένουν</p>
               </ion-label>
-              <ion-icon :icon="chevronForwardOutline" slot="end" />
+              <ion-icon :icon="chevronForwardOutline" slot="end"/>
             </ion-item>
           </ion-list>
         </ion-card>
@@ -88,38 +94,38 @@
         <ion-card>
           <ion-list lines="full">
             <ion-item button @click="$router.push('/settings')">
-              <ion-icon :icon="settingsOutline" slot="start" />
+              <ion-icon :icon="settingsOutline" slot="start"/>
               <ion-label>
                 <h2>Ρυθμίσεις</h2>
               </ion-label>
-              <ion-icon :icon="chevronForwardOutline" slot="end" />
+              <ion-icon :icon="chevronForwardOutline" slot="end"/>
             </ion-item>
             <ion-item button @click="$router.push('/instructions')">
-              <ion-icon :icon="informationCircleOutline" slot="start" />
+              <ion-icon :icon="informationCircleOutline" slot="start"/>
               <ion-label>
                 <h2>Οδηγίες Χρήσης</h2>
               </ion-label>
-              <ion-icon :icon="chevronForwardOutline" slot="end" />
+              <ion-icon :icon="chevronForwardOutline" slot="end"/>
             </ion-item>
           </ion-list>
         </ion-card>
       </div>
       <!-- Bottom spacing for FAB -->
-      <div style="height: 100px;" />
+      <div style="height: 100px;"/>
     </ion-content>
 
     <!-- Floating Action Button -->
     <ion-fab vertical="bottom" horizontal="center" slot="fixed">
       <ion-fab-button color="secondary" @click="findMatch">
-        <ion-icon :icon="searchOutline" />
+        <ion-icon :icon="searchOutline"/>
       </ion-fab-button>
     </ion-fab>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useIonRouter } from '@ionic/vue'
+import {computed} from 'vue'
+import {useIonRouter} from '@ionic/vue'
 import {
   IonPage,
   IonContent,
@@ -149,8 +155,9 @@ import {
   trophyOutline,
   chatbubbleEllipsesOutline
 } from 'ionicons/icons'
-import { useGlobalStore } from '@/stores/globalStore'
+import {useGlobalStore} from '@/stores/globalStore'
 import moment from 'moment'
+import UserNotifications from "@/components/dashboard/UserNotifications.vue";
 
 const router = useIonRouter()
 const globalStore = useGlobalStore()
@@ -188,9 +195,9 @@ const tesPercentage = computed(() => {
 // Badges (mock - adjust based on your data structure)
 const displayBadges = computed(() => {
   const badges = [
-    { name: 'Active', active: globalStore.total_answered > 0 },
-    { name: 'Verified', active: user.value?.verified || false },
-    { name: 'Respected', active: globalStore.total_answered > 20 }
+    {name: 'Active', active: globalStore.total_answered > 0},
+    {name: 'Verified', active: user.value?.verified || false},
+    {name: 'Respected', active: globalStore.total_answered > 20}
   ]
   return badges.filter(b => b.active || badges.filter(x => x.active).length < 2)
 })

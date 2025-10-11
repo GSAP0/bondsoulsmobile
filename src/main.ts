@@ -76,7 +76,7 @@ window.echo = new Echo({
     wsHost: wsHost,
     wsPort: wsPort,
     wssPort: wsPort,
-    forceTLS: scheme === 'https',
+    forceTLS: false,
     enabledTransports: ['ws', 'wss'],
     disableStats: true,
     authEndpoint: `${import.meta.env.VITE_API_BASE_URL}/broadcasting/auth`,
