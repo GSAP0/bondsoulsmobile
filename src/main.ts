@@ -48,8 +48,7 @@ if (token)
 window.axios = axios
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 window.axios.defaults.withCredentials = true
-window.axios.defaults.baseURL = `http://bondsoulsadmin.lndo.site/mobile`
-// window.axios.defaults.baseURL = `https://operator.bondsouls.com/mobile`
+window.axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 
 try {
     const response = await axios.get(`/user`)
