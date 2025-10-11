@@ -28,6 +28,9 @@
               <div v-if="notif.type === 'match_found'">
                 Βρέθηκε ματσάρισμα !
               </div>
+              <div v-if="notif.type === 'user_rating'">
+                Έχεις μια νέα αξιολόγηση !
+              </div>
               <p><small>{{ notif.created_at }}</small></p>
             </div>
           </ion-label>
