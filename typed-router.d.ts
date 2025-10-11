@@ -22,7 +22,6 @@ declare module 'vue-router/auto-routes' {
     '/bio': RouteRecordInfo<'/bio', '/bio', Record<never, never>, Record<never, never>>,
     '/chat': RouteRecordInfo<'/chat', '/chat', Record<never, never>, Record<never, never>>,
     '/dashboard': RouteRecordInfo<'/dashboard', '/dashboard', Record<never, never>, Record<never, never>>,
-    '/dashboard_old': RouteRecordInfo<'/dashboard_old', '/dashboard_old', Record<never, never>, Record<never, never>>,
     '/instructions': RouteRecordInfo<'/instructions', '/instructions', Record<never, never>, Record<never, never>>,
     '/interests': RouteRecordInfo<'/interests', '/interests', Record<never, never>, Record<never, never>>,
     '/match_filters': RouteRecordInfo<'/match_filters', '/match_filters', Record<never, never>, Record<never, never>>,
@@ -31,6 +30,7 @@ declare module 'vue-router/auto-routes' {
     '/profile_visit': RouteRecordInfo<'/profile_visit', '/profile_visit', Record<never, never>, Record<never, never>>,
     '/questions': RouteRecordInfo<'/questions', '/questions', Record<never, never>, Record<never, never>>,
     '/settings': RouteRecordInfo<'/settings', '/settings', Record<never, never>, Record<never, never>>,
+    '/settings_new': RouteRecordInfo<'/settings_new', '/settings_new', Record<never, never>, Record<never, never>>,
     '/statistics': RouteRecordInfo<'/statistics', '/statistics', Record<never, never>, Record<never, never>>,
     '/survey': RouteRecordInfo<'/survey', '/survey', Record<never, never>, Record<never, never>>,
     '/verification': RouteRecordInfo<'/verification', '/verification', Record<never, never>, Record<never, never>>,
@@ -63,10 +63,6 @@ declare module 'vue-router/auto-routes' {
       routes: '/dashboard'
       views: never
     }
-    'src/pages/dashboard_old.vue': {
-      routes: '/dashboard_old'
-      views: never
-    }
     'src/pages/instructions.vue': {
       routes: '/instructions'
       views: never
@@ -97,6 +93,10 @@ declare module 'vue-router/auto-routes' {
     }
     'src/pages/settings.vue': {
       routes: '/settings'
+      views: never
+    }
+    'src/pages/settings_new.vue': {
+      routes: '/settings_new'
       views: never
     }
     'src/pages/statistics.vue': {
