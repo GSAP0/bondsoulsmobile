@@ -30,7 +30,7 @@
                 </div>
                 <div class="badges-row">
                   <ion-chip
-                      class="badge-chip"
+                      class="p-[10px] badge-chip"
                       v-for="(badge, i) in displayBadges"
                       :key="i"
                       :color="badge.active ? 'primary' : 'medium'"
@@ -111,22 +111,17 @@ import {storeToRefs} from 'pinia'
 import moment from 'moment'
 import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 
-
 const router = useIonRouter()
-
 const globalStore = useGlobalStore()
-
 const {themeClass} = storeToRefs(globalStore)
-
 
 const user = computed(() => {
   if (globalStore.user.uuid === globalStore.user.match.user1.uuid) return globalStore.user.match.user2
   return globalStore.user.match.user1
 })
 
-const userPhoto = computed(() => user.value?.image || 'https://i.pravatar.cc/300?img=64')
-const userRating = computed(() => user.value?.rating || 5)
-
+const userPhoto = computed(() => user.value.image || (currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png'))
+const userRating = computed(() => user.value.rating || 5)
 
 const userAge = computed(() => {
   if (!user.value?.birthdate) return '-'
@@ -242,7 +237,11 @@ const barStyle = (score: number) => {
   background-size: cover;
   background-position: center;
   position: relative;
-  border-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .camera-btn {

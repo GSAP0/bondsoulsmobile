@@ -149,11 +149,11 @@ import UserNotifications from '@/components/dashboard/UserNotifications.vue'
 
 const router = useIonRouter()
 const globalStore = useGlobalStore()
-const {themeClass} = storeToRefs(globalStore)
+const {themeClass, currentTheme} = storeToRefs(globalStore)
 
 const user = computed(() => globalStore.user)
-const userPhoto = computed(() => user.value?.image || '/assets/images/logobond.png')
-const userRating = computed(() => user.value?.rating || 5)
+const userPhoto = computed(() => user.value.image || (currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png'))
+const userRating = computed(() => user.value.rating || 5)
 
 const userAge = computed(() => {
   if (!user.value?.birthdate) return '-'
@@ -254,11 +254,13 @@ const barStyle = (score) => {
 .header-image {
   width: 100%;
   height: 100%;
-  background-size: cover;
   background-position: center;
   position: relative;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .camera-btn {
