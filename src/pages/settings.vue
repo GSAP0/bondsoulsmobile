@@ -1,179 +1,265 @@
+<!-- SettingsScreen.vue -->
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button defaultHref="/dashboard"></ion-back-button>
-        </ion-buttons>
-        <ion-title>Ρυθμίσεις</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content :fullscreen="true" class="ion-padding app">
+      <div class="frame" :class="store.themeClass">
+        <div class="scroll">
+          <div class="center-wrap">
+            <div class="stack">
+              <!-- Header (χωρίς theme toggle) -->
+              <div class="header">
+                <button class="back" @click="$router.back()">‹</button>
+                <div class="title">{{ title }}</div>
+                <div></div>
+              </div>
 
-      <!-- Interests & Bio Section -->
-      <div class="section-container">
-        <div class="section-header">ΕΝΔΙΑΦΕΡΟΝΤΑ & ΒΙΟΓΡΑΦΙΚΟ</div>
-        <ion-item-divider></ion-item-divider>
-        <ion-list lines="full">
-          <ion-item button @click="$router.push('/interests')">
-            <ion-icon :icon="sparklesOutline" slot="start"/>
-            <ion-label class="ml-2">
-              <h2>Ενδιαφέροντα</h2>
-              <p>{{ interestsCount }} ενδιαφέροντα</p>
-            </ion-label>
-          </ion-item>
-          <ion-item button @click="$router.push('/bio')">
-            <ion-icon :icon="documentOutline" slot="start"/>
-            <ion-label class="ml-2">
-              <h2>Βιογραφικό</h2>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </div>
+              <!-- Settings List (με theme ως γραμμή) -->
+              <div class="list">
+                <!-- Plans highlight -->
+                <button
+                    v-for="item in listWithTheme"
+                    :key="item.key"
+                    type="button"
+                    @click="onRowClick(item)"
+                    class="row"
+                    :class="{
+                    plans: item.key === 'plans',
+                    locked: item.requiresPaid && !userIsPaid,
+                    control: item.key === 'theme'
+                  }"
+                    :aria-disabled="item.key === 'theme' ? 'true' : undefined"
+                >
+                  <div class="row-title">{{ item.title }}</div>
 
-      <!-- Referal -->
-      <div class="section-container mt-5">
-        <div class="section-header">Πρόσκληση φίλου</div>
-        <ion-item-divider></ion-item-divider>
-        <ion-list lines="full">
-          <ion-item button @click="openReferralModal" v-if="!globalStore.user.referral_user_id">
-            <ion-icon :icon="enterOutline" slot="start"/>
-            <ion-label class="ml-2">
-              <h2>Εισαγωγή κωδικού</h2>
-            </ion-label>
-          </ion-item>
-          <ion-item v-else disabled>
-            <ion-icon :icon="enterOutline" slot="start"/>
-            <ion-label class="ml-2">
-              <h2>Έχετε ήδη καταχωρήσει κωδικό πρόσκλησης</h2>
-            </ion-label>
-          </ion-item>
-          <UseClipboard v-slot="{ copy, copied }" :source="globalStore.user?.referral_code">
-            <ion-item button @click="copy(globalStore.user?.referral_code ?? '-')">
-              <ion-icon :icon="copyOutline" slot="start"/>
-              <ion-label class="ml-2">
-                  <h2>{{ globalStore.user?.referral_code ?? '-' }}</h2>
-                <p>Κωδικός πρόσκλησης</p>
-              </ion-label>
-            </ion-item>
-          </UseClipboard>
-          <ion-button @click="logout" expand="block" class="mt-5 text-white">Αποσύνδεση</ion-button>
-        </ion-list>
+                  <!-- Right side: είτε arrow είτε toggle είτε lock -->
+                  <div class="row-right">
+                    <template v-if="item.key === 'theme'">
+                      <ion-toggle
+                          :checked="store.currentTheme === 'dark'"
+                          @ionChange="toggleTheme"
+                          class="toggle"
+                      />
+                    </template>
+
+                    <template v-else>
+                      <span v-if="item.requiresPaid && !userIsPaid" class="lock" aria-hidden="true">🔒</span>
+                      <span v-else class="row-arrow">›</span>
+                    </template>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paywall -->
+        <div v-if="showPaywall" class="overlay">
+          <div class="sheet" :class="store.currentTheme">
+            <div class="sheet-body">
+              <div class="sheet-title">Απαραίτητη συνδρομή</div>
+              <div class="sheet-text">
+                Η λειτουργία «{{ payItem }}» είναι διαθέσιμη με συνδρομητικό πακέτο.
+                Αναβάθμισε για να τη ξεκλειδώσεις και να συνεχίσεις.
+              </div>
+            </div>
+            <div class="sheet-actions" :class="store.currentTheme">
+              <button class="btn-outline" @click="showPaywall = false">Άκυρο</button>
+              <button class="btn-accent" @click="goPlans">Δες πακέτα</button>
+            </div>
+          </div>
+        </div>
       </div>
     </ion-content>
-
-    <!-- Referral Code Modal -->
-    <ion-modal :is-open="isReferralModalOpen" @did-dismiss="closeReferralModal">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Κωδικός Πρόσκλησης</ion-title>
-          <ion-buttons slot="end">
-            <ion-button @click="closeReferralModal">Κλείσιμο</ion-button>
-          </ion-buttons>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content class="ion-padding">
-        <div class="mt-4">
-          <ion-item>
-            <ion-input
-              v-model="referralCodeInput"
-              placeholder="Εισάγετε τον κωδικό"
-              :clearInput="true"
-            ></ion-input>
-          </ion-item>
-
-          <ion-button
-            expand="block"
-            class="mt-6 text-white"
-            @click="handleSubmitReferral"
-            :disabled="!referralCodeInput || isSubmitting"
-          >
-            {{ isSubmitting ? 'Επεξεργασία...' : 'Υποβολή' }}
-          </ion-button>
-
-          <ion-text v-if="referralError" color="danger" class="ion-padding">
-            <p class="text-sm">{{ referralError }}</p>
-          </ion-text>
-          <ion-text v-if="referralSuccess" color="success" class="ion-padding">
-            <p class="text-sm">{{ referralSuccess }}</p>
-          </ion-text>
-        </div>
-      </ion-content>
-    </ion-modal>
   </ion-page>
 </template>
 
 <script setup>
-import {
-  IonPage,
-  IonContent,
-  IonBackButton,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonList,
-  IonItemDivider,
-  IonItem,
-  IonIcon,
-  IonLabel,
-  IonModal,
-  IonInput,
-  IonText
-} from "@ionic/vue";
-import {enterOutline, copyOutline, documentOutline, sparklesOutline, personCircle} from "ionicons/icons";
+import { ref, computed } from 'vue';
+import { IonPage, IonContent, IonToggle } from '@ionic/vue';
 import {useGlobalStore} from "@/stores/globalStore.js";
-import { UseClipboard } from "@vueuse/components";
-import {computed, ref} from "vue";
 
-const globalStore = useGlobalStore()
+const title = 'Ρυθμίσεις';
+const userIsPaid = false;
 
-// Interests Count
-const interestsCount = computed(() => {
-  return globalStore.interests.length
-})
+const store = useGlobalStore()
 
-// Referral Code Modal
-const isReferralModalOpen = ref(false)
-const referralCodeInput = ref('')
-const isSubmitting = ref(false)
-const referralError = ref('')
-const referralSuccess = ref('')
+const toggleTheme = (ev) => {
+  store.currentTheme = !!ev.detail.checked ? 'dark' : 'light';
+};
 
-function logout(){
-  globalStore.logout()
-}
+const showPaywall = ref(false);
+const payItem = ref(null);
 
-const openReferralModal = () => {
-  isReferralModalOpen.value = true
-  referralCodeInput.value = ''
-  referralError.value = ''
-  referralSuccess.value = ''
-}
+const settingsItems = [
+  { key: 'plans', title: 'Πακέτα subscription' },
+  { key: 'invite', title: 'Προσκάλεσε φίλους' },
+  { key: 'interests', title: 'Ενδιαφέροντα', requiresPaid: true },
+  { key: 'bio', title: 'Σχετικά με εμένα', requiresPaid: true },
+  { key: 'location', title: 'Τοποθεσία', requiresPaid: true },
+  { key: 'username', title: 'Επεξεργασία Username', requiresPaid: true },
+];
 
-const closeReferralModal = () => {
-  isReferralModalOpen.value = false
-  referralCodeInput.value = ''
-  referralError.value = ''
-  referralSuccess.value = ''
-}
+// Προσθήκη theme ως κανονική γραμμή στη λίστα (μετά τα plans)
+const listWithTheme = computed(() => {
+  const arr = [...settingsItems];
+  const themeRow = { key: 'theme', title: 'Dark mode' };
+  // βάλε στη 2η θέση αν υπάρχει plans πρώτο
+  const plansIdx = arr.findIndex(i => i.key === 'invite');
+  if (plansIdx >= 0) arr.splice(plansIdx + 1, 0, themeRow);
+  else arr.unshift(themeRow);
+  return arr;
+});
 
-async function handleSubmitReferral(){
-  isSubmitting.value = true
-  referralError.value = ''
-  referralSuccess.value = ''
-  try{
-    referralSuccess.value = await globalStore.submitReferralCode(referralCodeInput.value)
-    setTimeout(() => window.location.reload(), 500)
-  } catch (error) {
-    if (error.response?.data?.message) {
-      referralError.value = error.response.data.message
-    } else {
-      referralError.value = 'Σφάλμα κατά την επαλήθευση του κωδικού. Παρακαλώ δοκιμάστε ξανά.'
-    }
-  } finally {
-    isSubmitting.value = false
-  }
-}
+const onStub = (name) => alert(name);
+const triggerPaywall = (title) => { payItem.value = title; showPaywall.value = true; };
+
+const onRowClick = (item) => {
+  if (item.key === 'theme') return; // δεν είναι clickable
+  if (item.requiresPaid && !userIsPaid) { triggerPaywall(item.title); return; }
+  if (item.key === 'plans') { onStub('Πακέτα subscription'); return; }
+  onStub(item.title);
+};
+
+const goPlans = () => { showPaywall.value = false; onStub('Πακέτα subscription'); };
 </script>
+
+<style scoped>
+/* Layout */
+.app { display: grid; place-items: center; }
+
+.frame {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+}
+.scroll { height: 100%; overflow-y: auto; }
+.center-wrap {
+  min-height: 100%;
+  display: grid;
+  place-items: normal; /* Κεντράρει ΚΑΘΕΤΑ/ΟΡΙΖΟΝΤΙΑ */
+  padding: 24px 0;
+}
+.stack { width: 100%; }
+
+/* Header */
+.header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 12px;
+}
+
+.back {
+  background: transparent; border: 0; font-size: 22px; cursor: pointer; color: var(--text);
+}
+.title { font-weight: 800; font-size: 18px; color: var(--text); }
+
+/* List */
+.list { margin: 0 12px; }
+.row {
+  width: 100%;
+  border-radius: 24px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  cursor: pointer;
+  text-align: left;
+  background: var(--rowBg);
+  border: 1px solid var(--rowBorder);
+  transition: border-color .2s ease, transform .05s ease, opacity .2s ease;
+}
+.row.control { cursor: default; } /* theme line */
+.row:active { transform: translateY(1px); }
+.row-title { font-size: 15px; font-weight: 700; color: var(--rowText); }
+.row-right { display: flex; align-items: center; gap: 8px; }
+.row-arrow { font-size: 18px; opacity: .65; color: var(--rowIcon); }
+.toggle-label { font-size: 12px; color: var(--muted); }
+.toggle { --handle-background: var(--text); }
+
+/* Locked state */
+.row.locked {
+  opacity: 0.5;
+  filter: grayscale(15%);
+  position: relative;
+}
+.row.locked .row-title { pointer-events: none; }
+.lock { font-size: 16px; opacity: 0.9; }
+
+/* Plans highlight */
+.row.plans {
+  background: linear-gradient(90deg, #FF2D55 0%, #ff6685 100%);
+  border: 1px solid #FF2D55;
+  box-shadow: 0 0 15px rgba(255,45,85,0.30);
+}
+.row.plans .row-title,
+.row.plans .row-arrow { color: #fff; opacity: 1; }
+
+/* Paywall */
+.overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.sheet {
+  width: 320px; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+  border: 1px solid var(--sheetBorder);
+  background: var(--sheetBg);
+}
+.sheet.dark { --sheetBg:#0E111A; --sheetBorder:rgba(255,255,255,0.12); }
+.sheet.light { --sheetBg:#FFFFFF; --sheetBorder:rgba(0,0,0,0.10); }
+.sheet-body { padding: 18px; }
+.sheet-title { font-weight: 800; font-size: 16px; margin-bottom: 6px; color: var(--text); }
+.sheet-text { font-size: 14px; opacity: .85; line-height: 1.4; color: var(--textSoft); }
+.sheet-actions { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--sheetBorderTop); }
+.sheet-actions.dark { --sheetBorderTop: rgba(255,255,255,0.08); }
+.sheet-actions.light { --sheetBorderTop: rgba(0,0,0,0.08); }
+.btn-outline {
+  flex: 1; height: 40px; border-radius: 12px;
+  border: 1px solid var(--sheetBorderTop); background: transparent;
+  color: var(--text); font-weight: 700; cursor: pointer;
+}
+.btn-accent {
+  flex: 1; height: 40px; border-radius: 12px; border: 0;
+  background: #FF2D55; color: #fff; font-weight: 800; cursor: pointer;
+}
+
+/* Themes */
+.theme-dark {
+  --bg: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);
+  --text: #F5F7FA;
+  --textSoft: #E8ECF2;
+  --muted: rgba(245,247,250,0.7);
+
+  --rowBg: #0E111A;
+  --rowBorder: rgba(255,255,255,0.10);
+  --rowText: #F5F7FA;
+  --rowIcon: #F5F7FA;
+
+  background: var(--bg);
+  color: var(--text);
+}
+.theme-light {
+  --bg: linear-gradient(180deg, #FFFFFF 0%, #F2F6FF 100%);
+  --text: #11181C;
+  --textSoft: #2B3540;
+  --muted: rgba(0,0,0,0.55);
+
+  --rowBg: #FFFFFF;
+  --rowBorder: rgba(0,0,0,0.10);
+  --rowText: #11181C;
+  --rowIcon: #11181C;
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Apply theme background */
+.theme-dark, .theme-light { background: var(--bg); }
+</style>
