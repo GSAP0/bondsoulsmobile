@@ -3,15 +3,10 @@
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-back-button default-href="/dashboard"></ion-back-button>
+          <ion-back-button  default-href="/dashboard"></ion-back-button>
         </ion-buttons>
         <ion-title @click="showUserDetails = true" class="cursor-pointer">
           <div class="flex items-center gap-2">
-            <img
-              v-if="otherUser?.image"
-              :src="otherUser.image"
-              class="w-8 h-8 rounded-full object-cover"
-            />
             <div class="flex-1">
               <div class="font-semibold">{{ otherUser?.name || 'Chat' }}</div>
               <div class="text-xs opacity-70">{{ isOnline ? 'Συνδεδεμένος' : 'Αποσυνδεδεμένος' }}</div>
@@ -19,29 +14,30 @@
           </div>
         </ion-title>
       </ion-toolbar>
-      <div v-if="isTyping" class="typing-indicator px-4 py-2 text-sm text-gray-600">
-        Γράφει...
-      </div>
     </ion-header>
 
-    <ion-content ref="contentRef" class="ion-padding">
+    <ion-content ref="contentRef" class="ion-padding demo-wrap content-chat" :fullscreen="true" :data-theme="currentTheme">
+
       <div v-if="loading" class="flex justify-center items-center h-full">
         <ion-spinner></ion-spinner>
       </div>
 
       <div v-else class="messages-container">
         <div
-          v-for="message in messages"
-          :key="message.id"
-          :class="['message-wrapper', message.user_id === user?.id ? 'sent' : 'received']"
+            v-for="message in messages"
+            :key="message.id"
+            :class="['message-wrapper', message.sender_id === user?.uuid ? 'sent' : 'received']"
+            :style="bubbleStyle(message)"
         >
+
           <div class="message-bubble">
             <div v-if="message.type === 'text'" class="message-text">
               {{ message.content }}
             </div>
 
             <div v-else-if="message.type === 'image'" class="message-media">
-              <img :src="message.content" @click="openMedia(message.content)" class="rounded-lg max-w-xs cursor-pointer" />
+              <img :src="message.content" @click="openMedia(message.content)"
+                   class="rounded-lg max-w-xs cursor-pointer"/>
             </div>
 
             <div v-else-if="message.type === 'video'" class="message-media">
@@ -58,372 +54,354 @@
           </div>
         </div>
       </div>
+      <div v-if="isTyping" class="typing-indicator px-4 py-2 text-sm text-end">Πληκτρολογεί...</div>
     </ion-content>
 
     <ion-footer>
       <div class="message-input-container">
-        <ion-button
-          fill="clear"
-          @click="selectMedia('image')"
-          class="media-button"
-        >
-          <ion-icon :icon="image" slot="icon-only"></ion-icon>
-        </ion-button>
-
-        <ion-button
-          fill="clear"
-          @click="selectMedia('video')"
-          class="media-button"
-        >
-          <ion-icon :icon="videocam" slot="icon-only"></ion-icon>
-        </ion-button>
-
-        <ion-button
-          fill="clear"
-          @click="toggleVoiceRecording"
-          :class="['media-button', { 'recording': isRecording }]"
-        >
+        <ion-button fill="clear" @click="toggleVoiceRecording" :class="['media-button', { 'recording': isRecording }]">
           <ion-icon :icon="mic" slot="icon-only"></ion-icon>
         </ion-button>
-
         <ion-textarea
-          v-model="messageText"
-          placeholder="Γράψε ένα μήνυμα..."
-          :auto-grow="true"
-          :rows="1"
-          @ionInput="handleTyping"
-          class="message-input"
+            v-model="messageText"
+            placeholder="Γράψε ένα μήνυμα..."
+            :auto-grow="true"
+            :rows="1"
+            @ionInput="handleTyping"
+            class="message-input"
         ></ion-textarea>
-
-        <ion-button
-          @click="sendMessage()"
-          :disabled="!canSend"
-          fill="solid"
-          shape="round"
-          class="send-button"
-        >
-          <ion-icon :icon="send" slot="icon-only"></ion-icon>
+        <ion-button :loading="sendLoading" @click="sendMessage()" fill="clear" :disabled="!canSend" class="send-button">
+          <ion-icon style="color: blue" :icon="send" slot="icon-only"></ion-icon>
         </ion-button>
       </div>
-
-      <input
-        ref="fileInput"
-        type="file"
-        :accept="mediaAccept"
-        @change="handleFileSelect"
-        style="display: none"
-      />
     </ion-footer>
-
     <ion-modal :is-open="showUserDetails" @did-dismiss="showUserDetails = false">
+
       <ion-header>
+
         <ion-toolbar>
+
           <ion-title>Προφίλ</ion-title>
+
           <ion-buttons slot="end">
+
             <ion-button @click="showUserDetails = false">Κλείσιμο</ion-button>
+
           </ion-buttons>
+
         </ion-toolbar>
+
       </ion-header>
+
       <ion-content class="ion-padding">
+
         <div v-if="otherUser" class="flex flex-col items-center">
-          <img
-            v-if="otherUser.image"
-            :src="otherUser.image"
-            class="w-32 h-32 rounded-full object-cover mb-4"
-          />
+
+          <img v-if="otherUser.image" :src="otherUser.image" class="w-32 h-32 rounded-full object-cover mb-4"/>
+
           <h2 class="text-2xl font-bold mb-2">{{ otherUser.name }}</h2>
-          <p v-if="otherUserAge" class="text-gray-600 mb-2">{{ otherUserAge }} χρόνων</p>
+
+          <p v-if="otherUserAge" class="muted mb-2">{{ otherUserAge }} χρόνων</p>
+
           <div class="flex items-center gap-2 mb-4">
-            <div :class="['w-3 h-3 rounded-full', isOnline ? 'bg-green-500' : 'bg-gray-400']"></div>
-            <span class="text-sm">{{ isOnline ? 'Συνδεδεμένος' : 'Αποσυνδεδεμένος' }}</span>
+
+            <span v-if="isOnline" class="text-sm text-green-500">Συνδεδεμένος</span>
+
+            <span v-else class="text-sm text-red-500">Αποσυνδεδεμένος</span>
+
           </div>
+
           <div v-if="otherUser.bio" class="w-full mt-4">
+
             <h3 class="font-semibold mb-2">Βιογραφικό</h3>
-            <p class="text-gray-700">{{ otherUser.bio }}</p>
+
+            <p class="muted">{{ otherUser.bio }}</p>
+
           </div>
+
           <div v-if="otherUser.ratings_avg" class="w-full mt-4">
+
             <h3 class="font-semibold mb-2">Αξιολόγηση</h3>
-            <p class="text-gray-700">{{ otherUser.ratings_avg }} / 5</p>
+
+            <p class="muted">{{ otherUser.ratings_avg }} / 5</p>
+
           </div>
+
         </div>
+
       </ion-content>
+
     </ion-modal>
   </ion-page>
 </template>
 
+
 <script setup>
+
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonContent,
-  IonFooter,
-  IonButton,
-  IonIcon,
-  IonTextarea,
-  IonSpinner,
-  IonButtons,
-  IonBackButton,
-  IonModal,
-} from '@ionic/vue';
-import { image, videocam, mic, send } from 'ionicons/icons';
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
-import { useGlobalStore } from '@/stores/globalStore';
-import moment from 'moment';
+  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter,
+  IonButton, IonIcon, IonTextarea, IonSpinner, IonButtons, IonBackButton, IonModal
+} from '@ionic/vue'
 
-const globalStore = useGlobalStore();
-const user = computed(() => globalStore.user);
+import {mic, send} from 'ionicons/icons'
 
-const messages = ref([]);
-const messageText = ref('');
-const loading = ref(true);
-const isTyping = ref(false);
-const isRecording = ref(false);
-const mediaAccept = ref('');
-const fileInput = ref(null);
-const contentRef = ref(null);
-const showUserDetails = ref(false);
-const otherUser = ref(null);
-const isOnline = ref(false);
+import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
+
+import {useGlobalStore} from '@/stores/globalStore'
+import {storeToRefs} from "pinia";
+
+const globalStore = useGlobalStore()
+const {currentTheme} = storeToRefs(globalStore)
+
+const user = computed(() => globalStore.user)
+const otherUser = computed(() => {
+  if(globalStore.user.uuid === globalStore.user.match.user1.uuid) return globalStore.user.match.user2
+  return globalStore.user.match.user1
+})
+
+const messages = ref([])
+const messageText = ref('')
+const loading = ref(true)
+const isTyping = ref(false)
+const isRecording = ref(false)
+const contentRef = ref(null)
+const showUserDetails = ref(false)
+const sendLoading = ref(false)
+const isOnline = ref(false)
 
 const echo = window.echo
-let typingTimer = null;
-let mediaRecorder = null;
-let audioChunks = [];
 
-const canSend = computed(() => messageText.value.trim().length > 0);
+let typingTimer = null
+let mediaRecorder = null
+let audioChunks = []
+
+const canSend = computed(() => messageText.value.trim().length > 0)
+
+function genderColor(g) {
+  if (!g) return '#8E9BAA'
+  if (g === 'male' || g === 'Άντρας') return '#0A84FF'
+  if (g === 'female' || g === 'Γυναίκα') return '#FF2D55'
+
+  return '#8E9BAA'
+}
+
+function colorForMessage(msg) {
+  const isMe = msg.sender_id === user?.value.uuid
+  const myColor = genderColor(user.value.gender)
+  const otherColor = genderColor(otherUser.value.gender)
+
+  return isMe ? myColor : otherColor
+}
+
+function bubbleStyle(message) {
+  return {'--bubble-bg': colorForMessage(message)}
+}
 
 const otherUserAge = computed(() => {
-  if (!otherUser.value?.birthdate) return null;
-  const birthDate = moment(otherUser.value.birthdate);
-  const now = moment();
-  return now.diff(birthDate, 'years');
-});
+  if (!otherUser.value?.birthdate) return null
+  const birthDate = window.moment ? window.moment(otherUser.value.birthdate) : null
+  if (!birthDate) return null
+  const now = window.moment()
+
+  return now.diff(birthDate, 'years')
+})
 
 const formatTime = (timestamp) => {
-  return moment(timestamp).format('HH:mm');
-};
+  return window.moment ? window.moment(timestamp).format('HH:mm') : ''
+}
 
 const scrollToBottom = async () => {
-  await nextTick();
+  await nextTick()
   if (contentRef.value) {
-    contentRef.value.$el.scrollToBottom(300);
+    contentRef.value.$el.scrollToBottom(0)
   }
-};
+}
 
 const loadMessages = async () => {
   try {
-    const response = await axios.get('conversation', {
-      params: { match_id: user.value.match_id }
-    });
-    messages.value = response.data;
+    const response = await axios.get('conversation', {params: {match_id: user.value.match_id}})
+    messages.value = response.data
+    scrollToBottom()
 
-    if (user.value.match) {
-      const isUser1 = user.value.match.user1_id === user.value.id;
-      otherUser.value = isUser1 ? user.value.match.user2 : user.value.match.user1;
-    }
-
-    scrollToBottom();
   } catch (error) {
-    console.error('Error loading messages:', error);
+    console.error('Error loading messages:', error)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-};
+}
 
 const sendMessage = async (type = 'text', content = null) => {
-  if (!canSend.value && !content) return;
-
-  const payload = {
-    match_id: user.value.match_id,
-    type: type,
-    content: content || messageText.value.trim(),
-  };
-
+  if (!canSend.value && !content) return
+  sendLoading.value = true
+  const payload = {match_id: user.value.match_id, type, content: content || messageText.value.trim()}
+  messageText.value = ''
   try {
-    const response = await axios.post('conversation/messages', payload);
-    messageText.value = '';
-    scrollToBottom();
+    await axios.post('conversation/messages', payload)
+    scrollToBottom()
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('Error sending message:', error)
+  } finally {
+    sendLoading.value = false
   }
-};
+}
 
 const handleTyping = () => {
-  if (!echo) return;
-
-  echo.private(`chat.${user.value.match_id}`)
-    .whisper('typing', {
-      user_id: user.value.id,
-      typing: true
-    });
-
-  clearTimeout(typingTimer);
+  if (!echo) return
+  echo.private(`chat.${user.value.match_id}`).whisper('typing', {user_id: user.value.uuid, typing: true})
+  clearTimeout(typingTimer)
   typingTimer = setTimeout(() => {
-    echo.private(`chat.${user.value.match_id}`)
-      .whisper('typing', {
-        user_id: user.value.id,
-        typing: false
-      });
-  }, 1000);
-};
-
-const selectMedia = (type) => {
-  if (type === 'image') {
-    mediaAccept.value = 'image/*';
-  } else if (type === 'video') {
-    mediaAccept.value = 'video/*';
-  }
-  fileInput.value.click();
-};
-
-const handleFileSelect = async (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('match_id', user.value.match_id);
-  formData.append('type', file.type.startsWith('image') ? 'image' : 'video');
-
-  try {
-    const response = await axios.post('conversation/messages', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    scrollToBottom();
-  } catch (error) {
-    console.error('Error uploading media:', error);
-  }
-
-  event.target.value = '';
-};
+    echo.private(`chat.${user.value.match_id}`).whisper('typing', {user_id: user.value.uuid, typing: false})
+  }, 5000)
+}
 
 const toggleVoiceRecording = async () => {
-  if (isRecording.value) {
-    stopRecording();
-  } else {
-    startRecording();
-  }
-};
+  isRecording.value ? stopRecording() : startRecording()
+}
 
 const startRecording = async () => {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true})
+    mediaRecorder = new MediaRecorder(stream)
+    audioChunks = []
     mediaRecorder.ondataavailable = (event) => {
-      audioChunks.push(event.data);
-    };
+      audioChunks.push(event.data)
+    }
 
     mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'voice-message.webm');
-      formData.append('match_id', user.value.match_id);
-      formData.append('type', 'voice');
-
+      const audioBlob = new Blob(audioChunks, {type: 'audio/webm'})
+      const formData = new FormData()
+      formData.append('file', audioBlob, 'voice-message.webm')
+      formData.append('match_id', user.value.match_id)
+      formData.append('type', 'voice')
       try {
-        await axios.post('conversation/messages', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        scrollToBottom();
+        await axios.post('conversation/messages', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        scrollToBottom()
       } catch (error) {
-        console.error('Error uploading voice message:', error);
+        console.error('Error uploading voice message:', error)
       }
+      stream.getTracks().forEach(track => track.stop())
+    }
 
-      stream.getTracks().forEach(track => track.stop());
-    };
-
-    mediaRecorder.start();
-    isRecording.value = true;
+    mediaRecorder.start()
+    isRecording.value = true
   } catch (error) {
-    console.error('Error accessing microphone:', error);
+    console.error('Error accessing microphone:', error)
   }
-};
+
+}
+
 
 const stopRecording = () => {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    isRecording.value = false;
+    mediaRecorder.stop()
+    isRecording.value = false
   }
-};
+}
 
-const openMedia = (url) => {
-  window.open(url, '_blank');
-};
-
-const initializeWebSocket = () =>
-{
+const initializeWebSocket = () => {
   if (!echo) {
-    console.warn('Echo is not initialized. WebSocket features will be disabled.');
-    return;
+    console.warn('Echo not initialized.');
+    return
   }
 
   echo.private(`chat.${user.value.match_id}`)
-    .listen('MessageSent', (e) => {
-      if (e.message.sender_id !== user.value.id) {
-        messages.value.push(e.message);
-        scrollToBottom();
-      }
-    })
-    .listenForWhisper('typing', (e) => {
-      if (e.user_id !== user.value.id) {
-        isTyping.value = e.typing;
-      }
-    });
+      .listen('MessageSent', (e) => {
+        if (e.message.sender_id !== user.value.id) {
+          messages.value.push(e.message)
+          scrollToBottom()
+        }
+      })
+      .listenForWhisper('typing', (e) => {
+        if (e.user_id !== user.value.id) {
+          isTyping.value = e.typing
+        }
+      })
 
   echo.join(`chat.${user.value.match_id}`)
-    .here((users) => {
-      isOnline.value = users.some(u => u.id !== user.value.id);
-    })
-    .joining((joiningUser) => {
-      if (joiningUser.id !== user.value.id) {
-        isOnline.value = true;
-      }
-    })
-    .leaving((leavingUser) => {
-      if (leavingUser.id !== user.value.id) {
-        isOnline.value = false;
-      }
-    });
-};
+      .here((users) => {
+        isOnline.value = users.some(u => u.uuid !== user.value.uuid)
+      })
+      .joining((joiningUser) => {
+        if (joiningUser.uuid !== user.value.uuid) {
+          isOnline.value = true
+        }
+      })
+      .leaving((leavingUser) => {
+        if (leavingUser.uuid !== user.value.uuid) {
+          isOnline.value = false
+        }
+      })
+}
 
 onMounted(async () => {
   await loadMessages();
-  initializeWebSocket();
-});
+  initializeWebSocket()
+})
 
 onUnmounted(() => {
   if (echo) {
     echo.leave(`chat.${user.value.match_id}`);
-    echo.disconnect();
+    echo.disconnect()
   }
+
   if (typingTimer) {
-    clearTimeout(typingTimer);
+    clearTimeout(typingTimer)
   }
+
   if (isRecording.value) {
-    stopRecording();
+    stopRecording()
   }
-});
+})
+
 </script>
 
+
 <style scoped>
-.typing-indicator {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  font-style: italic;
+
+
+:root {
+  --bg: #F2F2F7;
+  --card: #FFFFFF;
+  --muted: #6B7280;
+  --text: #11181C;
+  --primary: #0A84FF;
+  --accent: #FF2D55;
+  --border: rgba(0, 0, 0, 0.08);
 }
+
+[data-theme="dark"] {
+  --bg: #0A0E1A;
+  --card: #0F1424;
+  --muted: #9AA3AF;
+  --text: #F5F7FA;
+  --primary: #0A84FF;
+  --accent: #FF2D55;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+.demo-wrap {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.typing-indicator {
+  position: fixed;
+  right: 10px;
+  bottom: 71px;
+  font-style: italic;
+  text-shadow: 0px 0px 3px #d9d8d8;
+  color: #a5a2a2;
+}
+
+.muted {
+  color: var(--muted);
+}
+
 
 .messages-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   padding-bottom: 20px;
 }
 
@@ -433,30 +411,32 @@ onUnmounted(() => {
 }
 
 .message-wrapper.sent {
-  justify-content: flex-end;
-}
-
-.message-wrapper.received {
   justify-content: flex-start;
 }
 
+.message-wrapper.received {
+  justify-content: flex-end;
+}
+
 .message-bubble {
-  max-width: 75%;
+
+  max-width: 80%;
   padding: 10px 14px;
   border-radius: 18px;
   position: relative;
+
+  background: var(--bubble-bg);
+  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
 }
 
 .message-wrapper.sent .message-bubble {
-  background-color: #007aff;
-  color: white;
-  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 6px;
 }
 
 .message-wrapper.received .message-bubble {
-  background-color: #e5e5ea;
-  color: black;
-  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 6px;
 }
 
 .message-text {
@@ -467,23 +447,25 @@ onUnmounted(() => {
 .message-time {
   font-size: 11px;
   margin-top: 4px;
-  opacity: 0.7;
+  opacity: 0.8;
   text-align: right;
 }
 
-.message-media img,
-.message-media video {
+
+.message-media img, .message-media video {
   max-width: 100%;
   height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
 }
 
 .message-input-container {
   display: flex;
   align-items: flex-end;
-  padding: 8px;
-  background-color: white;
-  border-top: 1px solid #ddd;
   gap: 8px;
+  padding: 10px;
+  background: var(--card);
+  border-top: 1px solid var(--border);
 }
 
 .media-button {
@@ -492,31 +474,42 @@ onUnmounted(() => {
 }
 
 .media-button.recording {
-  color: red;
+  color: #ff4d4f;
   animation: pulse 1.5s infinite;
 }
 
 @keyframes pulse {
   0%, 100% {
-    opacity: 1;
+    opacity: 1
   }
   50% {
-    opacity: 0.5;
+    opacity: .5
   }
 }
+
 
 .message-input {
   flex: 1;
   font-size: 16px;
   min-height: 36px;
-  --color: #000;
-  --placeholder-color: #999;
+  --color: var(--text);
+  --placeholder-color: var(--muted);
 }
 
 .send-button {
   flex-shrink: 0;
   margin: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
 }
+
+.content-chat{
+  overflow: hidden;
+  --background: none;
+  background-color: #ccc;
+  background: url('/assets/images/bgSurvey.png') no-repeat center center;
+  background-size: cover;
+}
+
 </style>
