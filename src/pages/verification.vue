@@ -21,6 +21,13 @@
                   placeholder="6900000000"
               ></ion-input>
             </ion-item>
+            <ion-item class="w-[100%] mt-3">
+              <ion-input
+                  class="h-[70px]"
+                  v-model="referralCode"
+                  placeholder="Κωδικός πρόσκλησης (αν υπάρχει)"
+              ></ion-input>
+            </ion-item>
           </div>
             <ion-button :disabled="phoneNumber.length !== 10" expand="block" @click="verifyPhone">
               <span  class="text-white!">Συνέχεια</span>
@@ -40,10 +47,12 @@ import { CapacitorHttp } from '@capacitor/core';
 const router = useRouter();
 const countryCode = ref('+30');
 const phoneNumber = ref('');
+const referralCode = ref('');
 
 const verifyPhone = async () => {
   const data = {
-    mobile: countryCode.value + phoneNumber.value
+    mobile: countryCode.value + phoneNumber.value,
+    referralCode: referralCode.value
   }
 
   try {
