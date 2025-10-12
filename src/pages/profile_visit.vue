@@ -113,7 +113,7 @@ import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 
 const router = useIonRouter()
 const globalStore = useGlobalStore()
-const {themeClass} = storeToRefs(globalStore)
+const {themeClass, currentTheme} = storeToRefs(globalStore)
 
 const user = computed(() => {
   if (globalStore.user.uuid === globalStore.user.match.user1.uuid) return globalStore.user.match.user2

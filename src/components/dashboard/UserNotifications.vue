@@ -2,7 +2,7 @@
   <div class="demo-wrap" :data-theme="currentTheme">
     <div class="notif-wrap" role="button" aria-label="Άνοιγμα ειδοποιήσεων" @click="open = true">
       <div class="bell">🔔</div>
-      <div v-if="unreadCount > 0" class="notifications-badge">{{ unreadCount }}</div>
+      <div v-if="globalStore.user.unread_notifications.length > 0" class="notifications-badge">{{ globalStore.user.unread_notifications }}</div>
     </div>
 
     <div v-if="open" class="modal-overlay" @click="open = false">

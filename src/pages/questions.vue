@@ -1,48 +1,78 @@
 <template>
-  <ion-page :style="show_survey ? '' : 'background-color:rgba(0,0,0,0.1)'">
+  <ion-page>
     <div v-if="show_survey">
       <QuestionsSurvey @close="show_survey=false"></QuestionsSurvey>
     </div>
-    <ion-content :fullscreen="true" v-else-if="currentQuestion"  class="content-questions">
-      <div class="top-section">
-        <h1>{{ currentQuestion.name }}</h1>
-      </div>
-      <div class="">
-        <div class="content m-auto" style="margin-top: 40%;">
-          <component v-if="!loading" :question="currentQuestion" :is="handleComponent()" v-model="answer"></component>
-        </div>
-      </div>
-      <div  v-if="!loading" style="position: absolute;
-                  bottom: 0;
-                  left: 50%;
-                  transform: translateX(-50%);
-                  width: 90%;">
-        <div style="padding-top: 5px;padding-left: 5px; padding-right: 5px;">
-          <div style="display: flex; align-items: center">
-            <ion-button class="text-black" fill="clear" :disabled="!prevQuestion" @click="handlePrev" >
-              <ion-icon style="font-size: 3rem" :icon="arrowBackCircle"></ion-icon>
-            </ion-button>
-            <div style="flex-grow: 1; text-align: center">
-              <ion-progress-bar class="h-[40px] border" :value="percentage"></ion-progress-bar>
+    <ion-content :fullscreen="true" v-else-if="currentQuestion" class="ion-padding app">
+      <div class="frame" :class="globalStore.themeClass">
+        <div class="scroll">
+          <!-- Header -->
+          <div class="header">
+            <button class="back" @click="$router.back()">‹</button>
+            <div class="title">Ερωτηματολόγιο</div>
+            <div></div>
+          </div>
+
+          <!-- Question Card -->
+          <div class="card">
+            <div class="question-title">{{ currentQuestion.name }}</div>
+
+            <!-- Question Component -->
+            <div class="question-body">
+              <component
+                v-if="!loading"
+                :question="currentQuestion"
+                :is="handleComponent()"
+                v-model="answer"
+              ></component>
+              <div v-else class="loading">
+                <ion-spinner></ion-spinner>
+              </div>
             </div>
-            <ion-button class="text-black" fill="clear" @click="handleNext" :disabled="answer.length === 0">
-              <ion-icon style="font-size: 3rem" :icon="arrowForwardCircle"></ion-icon>
-            </ion-button>
+
+            <!-- Progress Bar -->
+            <div class="progress-section">
+              <div class="progress-label">Πρόοδος</div>
+              <div class="rail">
+                <div class="bar" :style="{ width: `${percentage * 100}%` }"></div>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="nav-buttons">
+              <ion-button
+                fill="clear"
+                :disabled="!prevQuestion"
+                @click="handlePrev"
+                class="nav-btn"
+              >
+                <ion-icon :icon="arrowBackCircle"></ion-icon>
+              </ion-button>
+
+              <ion-button
+                @click="handleNext"
+                :disabled="answer.length === 0"
+                class="next-btn"
+                expand="block"
+              >
+                Επόμενο
+                <ion-icon :icon="arrowForwardCircle" slot="end"></ion-icon>
+              </ion-button>
+            </div>
+
+            <!-- Skip/Return Buttons -->
+            <div v-if="globalStore.questions_unanswered_required.length === 0" class="action-buttons">
+              <ion-button
+                @click="$router.replace('/dashboard')"
+                fill="outline"
+                expand="block"
+                class="action-btn"
+              >
+                Επιστροφή
+              </ion-button>
+            </div>
           </div>
         </div>
-        <ion-button @click="$router.replace('/dashboard')"
-                    class="text-white! w-full p-1"
-                    v-if="globalStore.questions_unanswered_required.length === 0">
-          Παράληψη
-        </ion-button>
-        <ion-button @click="$router.replace('/dashboard')"
-                    class="text-white! w-full p-1"
-                    v-if="globalStore.questions_unanswered_required.length === 0">
-          Επιστροφή
-        </ion-button>
-      </div>
-      <div v-else style="display: flex; align-items: center; justify-content: center">
-        <ion-spinner></ion-spinner>
       </div>
     </ion-content>
   </ion-page>
@@ -172,18 +202,180 @@ function handleComponent() {
 }
 </script>
 
-<style>
-.content-questions{
-  --background: none;
-  background-color: #ccc;
-  background: url('/assets/images/bgSurvey.png') no-repeat center center;
-  background-size: cover;
+<style scoped>
+/* Layout */
+.app {
+  display: grid;
+  place-items: start;
 }
 
+.frame {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
 
-.label-text-wrapper{
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+/* Header */
+.header {
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 6px;
+}
+
+.back {
+  background: transparent;
+  border: 0;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.title {
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--text);
+  text-align: center;
+}
+
+/* Card */
+.card {
+  margin: 0 12px;
+  border-radius: 24px;
+  background: var(--rowBg);
+  border: 1px solid var(--rowBorder);
+  padding: 16px;
+}
+
+.question-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 8px 8px 16px;
+  color: var(--rowText);
+  line-height: 1.4;
+}
+
+.question-body {
+  padding: 16px 8px 24px;
+  min-height: 200px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+/* Progress Section */
+.progress-section {
+  margin: 16px 0 24px;
+}
+
+.progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.rail {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--rail);
+  overflow: hidden;
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0A84FF, #FF2D55);
+  transition: width 0.3s ease;
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nav-btn {
+  --color: var(--rowText);
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.next-btn {
+  flex: 1;
+  --border-radius: 16px;
+  --background: linear-gradient(90deg, #0A84FF, #FF2D55);
+  font-weight: 700;
+  height: 48px;
+}
+
+.next-btn[disabled] {
+  opacity: 0.5;
+}
+
+/* Action Buttons */
+.action-buttons {
+  margin-top: 12px;
+}
+
+.action-btn {
+  --border-radius: 16px;
+  --border-color: var(--rowBorder);
+  --color: var(--rowText);
+  font-weight: 700;
+  height: 48px;
+}
+
+/* Label text wrapper (for question components) */
+.label-text-wrapper {
   text-overflow: unset !important;
   white-space: unset !important;
   overflow: unset !important;
+}
+
+/* Themes */
+.theme-dark {
+  --bg: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);
+  --text: #F5F7FA;
+  --rowText: #F5F7FA;
+  --muted: rgba(245, 247, 250, 0.7);
+  --rowBg: #0E111A;
+  --rowBorder: rgba(255, 255, 255, 0.10);
+  --rail: rgba(255, 255, 255, 0.08);
+  background: var(--bg);
+  color: var(--text);
+}
+
+.theme-light {
+  --bg: linear-gradient(180deg, #FFFFFF 0%, #F2F6FF 100%);
+  --text: #11181C;
+  --rowText: #11181C;
+  --muted: rgba(0, 0, 0, 0.55);
+  --rowBg: #FFFFFF;
+  --rowBorder: rgba(0, 0, 0, 0.10);
+  --rail: rgba(0, 0, 0, 0.08);
+  background: var(--bg);
+  color: var(--text);
 }
 </style>
