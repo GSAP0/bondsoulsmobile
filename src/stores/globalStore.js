@@ -74,7 +74,7 @@ export const useGlobalStore = defineStore('global-store', () => {
             loadFaq()
         ])
 
-        window.echo.private('App.Models.MobileUser').notification((notification) => {
+        window.echo.private(`App.Models.MobileUser.${user.value.uuid}`).notification((notification) => {
             user.value.notifications.push(notification)
             console.log(notification)
         })

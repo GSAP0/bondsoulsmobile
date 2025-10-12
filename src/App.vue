@@ -3,6 +3,9 @@
     <div v-if="loaded">
       <ion-router-outlet/>
     </div>
+    <div v-else>
+      Loading...
+    </div>
   </ion-app>
 </template>
 
