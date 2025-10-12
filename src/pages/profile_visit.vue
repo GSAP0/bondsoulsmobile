@@ -1,5 +1,15 @@
 <template>
   <ion-page>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-back-button default-href="/chat"></ion-back-button>
+        </ion-buttons>
+        <ion-title>
+          {{user.name}} προφίλ
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
     <ion-content :fullscreen="true" class="ion-padding app">
       <div class="frame" :class="themeClass">
         <div class="scroll">
@@ -50,11 +60,20 @@
           <!-- Μεχρι 150 χαρακτηρες -->
           <div class="px-3">
             <div>{{ user.bio }}</div>
-            <h5>Ενδιαφέροντα</h5>
-            <div style="background: #929bb787;padding: 12px;border-radius: 15px;">
-              <div v-for="interest of user.interests">{{ interest.interest }}</div>
-            </div>
           </div>
+          <InterestsSection :interests="user.interests"></InterestsSection>
+
+          <!-- InterestsSection.vue -->
+          <template>
+            <div v-if="user.interests.length" class="section">
+              <div class="section-title">ΕΝΔΙΑΦΕΡΟΝΤΑ</div>
+              <div class="card">
+                <div class="pills">
+                  <span v-for="(t, i) in user.interests" :key="i" class="pill">{{ t.interest }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
 
         </div>
       </div>
@@ -67,7 +86,17 @@
 
 <script setup lang="ts">
 import {computed} from 'vue'
-import {useIonRouter, IonPage, IonContent, IonIcon, IonChip} from '@ionic/vue'
+import {
+  useIonRouter,
+  IonPage,
+  IonContent,
+  IonIcon,
+  IonChip,
+  IonButtons,
+  IonTitle,
+  IonBackButton,
+  IonHeader, IonToolbar
+} from '@ionic/vue'
 
 import {
   locationOutline,
@@ -80,6 +109,7 @@ import {useGlobalStore} from '@/stores/globalStore'
 import {storeToRefs} from 'pinia'
 
 import moment from 'moment'
+import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 
 
 const router = useIonRouter()
@@ -140,28 +170,13 @@ const unansweredCount = computed(() => globalStore.questions_unanswered.length)
 
 
 function getBadgeIcon(name: string) {
-
   if (name === 'Active') return sparklesOutline
-
   if (name === 'Verified') return shieldCheckmarkOutline
-
   if (name === 'Respected') return trophyOutline
 
   return chatbubbleEllipsesOutline
 
 }
-
-
-function findMatch() {
-
-  if (user.value?.match_id) router.push('/chat')
-
-  else router.push('/match_filters')
-
-}
-
-
-// Design tokens (match previous screens)
 
 const brand = {
   primary: '#0A84FF',
@@ -173,7 +188,6 @@ const brand = {
 }
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v))
-
 
 const barStyle = (score: number) => {
 
@@ -190,16 +204,11 @@ const barStyle = (score: number) => {
     borderRadius: '999px',
     background: grad
   }
-
 }
 
 </script>
 
-
 <style scoped>
-
-/* Layout */
-
 .app {
   display: grid;
   place-items: start;
