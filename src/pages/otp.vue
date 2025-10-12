@@ -1,120 +1,168 @@
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="app">
-      <!-- Top Section with Rounded Background -->
-      <div class="top-section">
-        <h1>Επιβεβαίωση κωδικού OTP</h1>
-      </div>
+    <ion-content :fullscreen="true" class="ion-padding app">
+      <div class="frame">
+        <div class="scroll">
+          <div class="body">
+            <div class="title">Επιβεβαίωση κωδικού OTP</div>
+            <div class="subtitle">Πληκτρολόγησε ή κάνε επικόλληση τον 6ψήφιο κωδικό που λάβαμε με SMS.</div>
 
-      <div class="content-wrapper">
-        <div class="content">
-          <!-- OTP Input Fields -->
-          <div>
-            <div class="otp-container ion-margin-bottom">
-              <input
-                  v-for="(digit, index) in otpDigits"
-                  :key="index"
-                  v-model="otpDigits[index]"
-                  maxlength="1"
-                  type="number"
-                  class="otp-input"
-                  @input="moveToNext(index, $event)"
-                  @keydown="handleKeydown(index, $event)"
-                  ref="otpFields"
-              />
+            <!-- Card -->
+            <div class="card">
+              <!-- Single OTP Input -->
+              <ion-input
+                  v-model="otpCode"
+                  maxlength="6"
+                  type="tel"
+                  inputmode="numeric"
+                  class="otp-single"
+                  placeholder="Συμπλήρωσε τον κωδικό"
+              ></ion-input>
+
+              <div class="meta">
+                <span class="timer">{{ displayTick }}</span>
+                <span class="hint">Δεν έλαβες κωδικό;</span>
+              </div>
+
+              <ion-button
+                  v-if="showResend"
+                  expand="block"
+                  fill="outline"
+                  class="resend"
+                  @click="resendOtp"
+              >
+                Ξαναποστολή κωδικού
+              </ion-button>
             </div>
-            00:{{ tick }}
           </div>
-<!--          <router-link to="/questions/gender">-->
-            <ion-button expand="block" @click="verifyOtp" :disabled="isEverythingFilled">
-               <span  class="text-white!">Συνέχεια</span>
-            </ion-button>
-<!--          </router-link>-->
         </div>
+
+        <!-- CTA -->
+        <ion-button expand="block" class="cta" @click="verifyOtp" :disabled="otpCode.length !== 6">
+          <span class="text-white!">Συνέχεια</span>
+        </ion-button>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import {computed, nextTick, ref, watch} from 'vue';
-import {IonPage, IonContent, IonItem, IonInput, IonSelect, IonSelectOption, IonButton} from '@ionic/vue';
-import {useRouter} from 'vue-router';
+import { computed, ref, watch } from 'vue';
+import { IonPage, IonContent, IonInput, IonButton } from '@ionic/vue';
+import { useRoute } from 'vue-router';
 import axios from "axios";
 
-const router = useRouter();
-const otpDigits = ref(["", "", "", "", "", ""]);
-const otpFields = ref([]);
-const tick = ref(59)
+const route = useRoute();
+const otpCode = ref('');
+const tick = ref(59);
 
-const isEverythingFilled = computed(() => otpDigits.value.filter(x => parseInt(x) >= 0).length !== 6)
-
-const moveToNext = (index, event) => {
-  if (event.inputType === "insertText" && index < otpDigits.value.length - 1) {
-    nextTick(() => {
-      otpFields.value[index + 1]?.focus();
-    });
-  }
-};
-
-const handleKeydown = (index, event) => {
-  if (event.key === "Backspace" && !otpDigits.value[index] && index > 0) {
-    nextTick(() => {
-      otpFields.value[index - 1]?.focus();
-    });
-  }
-};
+const displayTick = computed(() => `00:${String(tick.value).padStart(2, '0')}`);
+const showResend = computed(() => tick.value === 0);
 
 async function verifyOtp(){
-  const otpstring = otpDigits.value.join("")
-  try{
-    let res
-    res = await axios.post(`check_otp`, {otp: otpstring})
-    localStorage.setItem('access_token', res.data)
+  try {
+    const res = await axios.post(`check_otp`, { otp: otpCode.value });
+    localStorage.setItem('access_token', res.data);
+    handleNext();
+  } catch (e) {
+    console.error(e);
+  }
+}
 
-    handleNext()
-  }catch(e){}
+function resendOtp() {
+  const data = {
+    mobile: route.query.m
+  }
+
+  axios.post('generate_otp', data);
+  tick.value = 59;
 }
 
 function handleNext(){
-  window.location = `/dashboard`
+  window.location = `/dashboard`;
 }
 
-watch(tick, function (value) {
-  if (value === 0) return
-
+watch(tick, (value) => {
+  if (value === 0) return;
   setTimeout(() => {
     tick.value--;
   }, 1000);
-}, {
-  immediate: true
-})
-
+}, { immediate: true });
 </script>
 
-<style>
-/* OTP Input */
-.otp-container {
-  flex-direction: row !important;
-  display: flex;
-  justify-content: center;
-  margin-top: 5vh;
+<style scoped>
+.app {
+  --ion-background-color: #0A0E1A;
+  display: grid;
+  place-items: center;
+}
+.frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  background: #0a0e1a;
+}
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 120px;
+}
+.body { padding: 24px 20px; color: #F5F7FA; }
+.title { font-size: 20px; font-weight: 700; }
+.subtitle { font-size: 13.5px; opacity: .75; margin-top: 4px; }
+
+.card {
+  margin-top: 16px;
+  background: #0E111A;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 20px;
 }
 
-.otp-input {
-  width: 45px;
-  height: 50px;
-  margin: 0 5px;
-  font-size: 24px;
+/* Single OTP Input */
+.otp-single {
+  --background: rgba(255,255,255,0.03);
+  --color: #F5F7FA;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
   text-align: center;
-  border: 2px solid white;
-  border-radius: 8px;
-  background: transparent;
-  color: white;
-  outline: none;
+  font-size: 24px;
+  height: 56px;
+  margin-bottom: 12px;
 }
 
-.otp-input:focus {
-  border-color: #ff3db5;
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.timer { font-weight: 700; letter-spacing: .5px; }
+.hint { font-size: 12px; opacity: .7; }
+
+.resend {
+  margin-top: 14px;
+  --border-color: rgba(255,255,255,0.25);
+  --color: #F5F7FA;
+}
+
+/* CTA */
+.cta {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20px;
+  width: 340px;
+  border-radius: 9999px;
+  --background: linear-gradient(90deg, #0A84FF, #FF2D55);
+  --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);
+  --box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  font-weight: 700;
 }
 </style>

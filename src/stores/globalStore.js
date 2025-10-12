@@ -1,16 +1,20 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
-import {useEcho, useEchoModel} from "@laravel/echo-vue";
+import {useLocalStorage} from "@vueuse/core";
 
 export const useGlobalStore = defineStore('global-store', () => {
     const router = useRouter()
+
 
     const user = ref(null)
     const loaded = ref(false)
     const questions = ref([])
     const answers = ref([])
     const interests = ref([])
+    const faq = ref([])
+    const currentTheme = useLocalStorage('theme', 'light')
+    const themeClass = computed(() => (currentTheme.value === 'light' ? 'theme-light' : 'theme-dark'));
 
     const total_answered = computed(() => {
         let ret = {}
@@ -57,11 +61,17 @@ export const useGlobalStore = defineStore('global-store', () => {
         user.value = res.data
     }
 
+    async function loadFaq(){
+        const res = await axios.get('faq')
+        faq.value = res.data
+    }
+
     async function load() {
         await Promise.all([
             loadQuestions(),
             loadAnswers(),
-            loadInterests()
+            loadInterests(),
+            loadFaq()
         ])
 
         window.echo.private('App.Models.MobileUser').notification((notification) => {
@@ -94,11 +104,14 @@ export const useGlobalStore = defineStore('global-store', () => {
         total_answered,
         loaded,
         user,
+        faq,
         interests,
         questions,
         questions_required,
         questions_unanswered,
         questions_unanswered_required,
+        currentTheme,
+        themeClass,
 
         submitReferralCode,
         logout,
