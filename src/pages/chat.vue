@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button  default-href="/dashboard"></ion-back-button>
         </ion-buttons>
-        <ion-title @click="showUserDetails = true" class="cursor-pointer">
+        <ion-title @click="$router.push(`/profile_visit`)" class="cursor-pointer">
           <div class="flex items-center gap-2">
             <div class="flex-1">
               <div class="font-semibold">{{ otherUser?.name || 'Chat' }}</div>
@@ -17,11 +17,9 @@
     </ion-header>
 
     <ion-content ref="contentRef" class="ion-padding demo-wrap content-chat" :fullscreen="true" :data-theme="currentTheme">
-
       <div v-if="loading" class="flex justify-center items-center h-full">
         <ion-spinner></ion-spinner>
       </div>
-
       <div v-else class="messages-container">
         <div
             v-for="message in messages"
@@ -75,63 +73,6 @@
         </ion-button>
       </div>
     </ion-footer>
-    <ion-modal :is-open="showUserDetails" @did-dismiss="showUserDetails = false">
-
-      <ion-header>
-
-        <ion-toolbar>
-
-          <ion-title>Προφίλ</ion-title>
-
-          <ion-buttons slot="end">
-
-            <ion-button @click="showUserDetails = false">Κλείσιμο</ion-button>
-
-          </ion-buttons>
-
-        </ion-toolbar>
-
-      </ion-header>
-
-      <ion-content class="ion-padding">
-
-        <div v-if="otherUser" class="flex flex-col items-center">
-
-          <img v-if="otherUser.image" :src="otherUser.image" class="w-32 h-32 rounded-full object-cover mb-4"/>
-
-          <h2 class="text-2xl font-bold mb-2">{{ otherUser.name }}</h2>
-
-          <p v-if="otherUserAge" class="muted mb-2">{{ otherUserAge }} χρόνων</p>
-
-          <div class="flex items-center gap-2 mb-4">
-
-            <span v-if="isOnline" class="text-sm text-green-500">Συνδεδεμένος</span>
-
-            <span v-else class="text-sm text-red-500">Αποσυνδεδεμένος</span>
-
-          </div>
-
-          <div v-if="otherUser.bio" class="w-full mt-4">
-
-            <h3 class="font-semibold mb-2">Βιογραφικό</h3>
-
-            <p class="muted">{{ otherUser.bio }}</p>
-
-          </div>
-
-          <div v-if="otherUser.ratings_avg" class="w-full mt-4">
-
-            <h3 class="font-semibold mb-2">Αξιολόγηση</h3>
-
-            <p class="muted">{{ otherUser.ratings_avg }} / 5</p>
-
-          </div>
-
-        </div>
-
-      </ion-content>
-
-    </ion-modal>
   </ion-page>
 </template>
 

@@ -89,8 +89,9 @@
               <ion-label><h2>Tips</h2></ion-label>
               <ion-icon :icon="chevronForwardOutline" slot="end"/>
             </ion-item>
+            <div style="height: 60px;"></div>
           </div>
-          <div style="position:absolute; bottom: 10px; left: 5px; width:calc(100% - 10px);">
+          <div style="position:absolute; bottom: 10px; left: 5px; width:calc(100% - 10px); z-index: 10">
             <ion-button style="border-radius: 20px;" size="large" expand="block" color="secondary" @click="findMatch"
                         class=""
                         v-if="!globalStore.user.match_id">
@@ -151,7 +152,7 @@ const globalStore = useGlobalStore()
 const {themeClass} = storeToRefs(globalStore)
 
 const user = computed(() => globalStore.user)
-const userPhoto = computed(() => user.value?.image || 'https://i.pravatar.cc/300?img=64')
+const userPhoto = computed(() => user.value?.image || '/assets/images/logobond.png')
 const userRating = computed(() => user.value?.rating || 5)
 
 const userAge = computed(() => {
@@ -256,7 +257,8 @@ const barStyle = (score) => {
   background-size: cover;
   background-position: center;
   position: relative;
-  border-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
 }
 
 .camera-btn {
