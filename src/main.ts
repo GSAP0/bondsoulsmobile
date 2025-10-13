@@ -44,6 +44,24 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
+// Environment-specific configuration
+const isProduction = import.meta.env.PROD;
+const apiBaseUrl = isProduction
+    ? import.meta.env.VITE_API_BASE_URL_PROD
+    : import.meta.env.VITE_API_BASE_URL;
+const reverbAppKey = isProduction
+    ? import.meta.env.VITE_REVERB_APP_KEY_PROD
+    : import.meta.env.VITE_REVERB_APP_KEY;
+const reverbHost = isProduction
+    ? import.meta.env.VITE_REVERB_HOST_PROD
+    : import.meta.env.VITE_REVERB_HOST;
+const reverbPort = isProduction
+    ? import.meta.env.VITE_REVERB_PORT_PROD
+    : import.meta.env.VITE_REVERB_PORT;
+const reverbScheme = isProduction
+    ? import.meta.env.VITE_REVERB_SCHEME_PROD
+    : import.meta.env.VITE_REVERB_SCHEME;
+
 const token = localStorage.getItem('access_token')
 
 if (token)
@@ -52,8 +70,7 @@ if (token)
 window.axios = axios
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 window.axios.defaults.withCredentials = true
-window.axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
-
+window.axios.defaults.baseURL = apiBaseUrl
 
 try {
     const response = await axios.get(`/user`)
@@ -64,22 +81,24 @@ try {
     localStorage.removeItem('user')
 }
 
-const wsHost = import.meta.env.VITE_REVERB_HOST || 'localhost';
-const wsPort = import.meta.env.VITE_REVERB_PORT || 8080;
-const scheme = import.meta.env.VITE_REVERB_SCHEME || 'http';
+const wsHost = reverbHost || 'localhost';
+const wsPort = reverbPort || 8080;
+const scheme = reverbScheme || 'http';
 
+console.log('Environment:', isProduction ? 'Production' : 'Development');
+console.log('API Base URL:', apiBaseUrl);
 console.log('WebSocket connecting to:', `${scheme}://${wsHost}:${wsPort}`);
 
 window.echo = new Echo({
     broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
+    key: reverbAppKey,
     wsHost: wsHost,
     wsPort: wsPort,
     wssPort: wsPort,
-    forceTLS: false,
+    forceTLS: isProduction,
     enabledTransports: ['ws', 'wss'],
     disableStats: true,
-    authEndpoint: `${import.meta.env.VITE_API_BASE_URL}/broadcasting/auth`,
+    authEndpoint: `${apiBaseUrl}/broadcasting/auth`,
     auth: {
         headers: {
             Authorization: `Bearer ${token}`,
