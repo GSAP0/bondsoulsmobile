@@ -1,17 +1,12 @@
 <!-- SettingsScreen.vue -->
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="ion-padding app">
-      <div class="frame" :class="store.themeClass">
-        <div class="scroll">
-          <div class="center-wrap">
-            <div class="stack">
-              <!-- Header (χωρίς theme toggle) -->
-              <div class="header">
-                <button class="back" @click="$router.back()">‹</button>
-                <div class="title">{{ title }}</div>
-                <div></div>
-              </div>
+    <ion-content :fullscreen="true" class="ion-padding ">
+      <div class="" :class="store.themeClass">
+        <div class="">
+          <div class="">
+            <div class="">
+              <PageHeader :title="title" default-href="/dashboard" />
 
               <!-- Settings List (με theme ως γραμμή) -->
               <div class="list">
@@ -77,6 +72,7 @@
 import { ref, computed } from 'vue';
 import { IonPage, IonContent, IonToggle } from '@ionic/vue';
 import {useGlobalStore} from "@/stores/globalStore.js";
+import PageHeader from '@/components/PageHeader.vue';
 
 const title = 'Ρυθμίσεις';
 const userIsPaid = false;
@@ -124,41 +120,7 @@ const goPlans = () => { showPaywall.value = false; onStub('Πακέτα subscrip
 </script>
 
 <style scoped>
-/* Layout */
-.app { display: grid; place-items: center; }
 
-.frame {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 25px 60px rgba(0,0,0,.4);
-}
-.scroll { height: 100%; overflow-y: auto; }
-.center-wrap {
-  min-height: 100%;
-  display: grid;
-  place-items: normal; /* Κεντράρει ΚΑΘΕΤΑ/ΟΡΙΖΟΝΤΙΑ */
-  padding: 24px 0;
-}
-.stack { width: 100%; }
-
-/* Header */
-.header {
-  display: grid;
-  grid-template-columns: 40px 1fr 40px;
-  align-items: center;
-  gap: 10px;
-  padding: 0 16px 12px;
-}
-
-.back {
-  background: transparent; border: 0; font-size: 22px; cursor: pointer; color: var(--text);
-}
-.title { font-weight: 800; font-size: 18px; color: var(--text); }
-
-/* List */
-.list { margin: 0 12px; }
 .row {
   width: 100%;
   border-radius: 24px;

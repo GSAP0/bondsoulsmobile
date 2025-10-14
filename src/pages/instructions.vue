@@ -5,18 +5,8 @@
       <div class="frame" :class="store.themeClass">
         <div class="scroll">
           <div class="body">
-            <!-- Header + Back -->
-            <div class="flex">
-              <div class="back-wrapper">
-                <ion-button fill="clear" class="back-btn" @click="goBack">
-                  <ion-icon :icon="chevronBack" class="back-icon" />
-                </ion-button>
-              </div>
-              <div>
-                <div class="title">{{ headerTitle }}</div>
-                <div class="subtitle">{{ headerSubtitle }}</div>
-              </div>
-            </div>
+            <PageHeader :title="headerTitle" default-href="/dashboard" />
+            <div class="subtitle">{{ headerSubtitle }}</div>
 
             <!-- Accordions (περιεχόμενο από backend) -->
             <ion-accordion-group class="group">
@@ -42,11 +32,10 @@
 
 <script setup>
 import {
-  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem, IonButton, IonIcon
+  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem
 } from '@ionic/vue';
-import { chevronBack } from 'ionicons/icons';
-import { useRouter } from 'vue-router';
 import { useGlobalStore } from '@/stores/globalStore.js';
+import PageHeader from '@/components/PageHeader.vue';
 
 defineProps({
   headerTitle: { type: String, default: 'Γενικές Πληροφορίες' },
@@ -54,9 +43,6 @@ defineProps({
 });
 
 const store = useGlobalStore();
-
-const router = useRouter();
-const goBack = () => router.back();
 </script>
 
 <style scoped>
@@ -74,29 +60,7 @@ const goBack = () => router.back();
 
 .body { padding: 0 20px; color: var(--text); }
 
-.title {
-  font-size: 20px; font-weight: 700;
-  background: linear-gradient(90deg, #0A84FF, #FF2D55);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-
-.subtitle { font-size: 13.5px; color: var(--muted); margin-top: 4px; margin-bottom: 12px; }
-
-/* Back button */
-.back-wrapper { padding: 0 8px; margin-bottom: 4px; }
-
-.back-btn {
-  --ripple-color: transparent;
-  --padding-start: 0; --padding-end: 0;
-  min-width: 36px; min-height: 36px;
-  border: 1px solid var(--btnBorder);
-  border-radius: 50%;
-  backdrop-filter: blur(4px);
-  background: var(--btnBg);
-  color: var(--text);
-}
-
-.back-icon { color: var(--text); font-size: 22px; line-height: 1; }
+.subtitle { font-size: 13.5px; color: var(--muted); margin-top: 4px; margin-bottom: 12px; padding: 0 16px; }
 
 /* Accordions */
 .group { display: grid; gap: 12px; margin-top: 12px; }
@@ -134,9 +98,6 @@ ion-accordion[aria-expanded="true"] .card-content {
 
 /* Neutralize default ion-item borders */
 ion-item::part(native){ border:none !important; --inner-border-width:0; --border-width:0; }
-
-/* Utility */
-.flex { display: flex; align-items: flex-start; gap: 6px; }
 
 /* === THEME TOKENS === */
 /* DARK */
