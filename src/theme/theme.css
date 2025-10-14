@@ -1,0 +1,697 @@
+@import "tailwindcss";
+
+/* ==================== Global Overrides ==================== */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+ion-app {
+  background: transparent !important;
+}
+
+ion-content {
+  --background: transparent !important;
+}
+
+/* ==================== Theme Variables ==================== */
+
+.theme-dark {
+  --bg: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);
+  --text: #F5F7FA;
+  --textSoft: #E8ECF2;
+  --rowText: #F5F7FA;
+  --rowIcon: #F5F7FA;
+  --muted: rgba(245, 247, 250, 0.7);
+  --tabText: #c7c7cc;
+
+  --rowBg: #0E111A;
+  --rowBorder: rgba(255, 255, 255, 0.10);
+  --pillBg: #0A0E1A;
+  --rail: rgba(255, 255, 255, 0.08);
+  --tabsBg: #0B0E16;
+  --midline: rgba(255, 255, 255, 0.5);
+
+  --primary: #0A84FF;
+  --accent: #FF2D55;
+
+  --card: rgba(14, 17, 26, 0.85);
+  --cardInner: rgba(14, 17, 26, 0.40);
+  --border: rgba(255, 255, 255, 0.12);
+  --innerBorder: rgba(255, 255, 255, 0.08);
+  --borderHover: rgba(10, 132, 255, 0.40);
+
+  --cardOpen: rgba(35, 45, 70, 0.95);
+  --cardInnerOpen: rgba(35, 45, 70, 0.90);
+  --borderOpen: rgba(10, 132, 255, 0.50);
+  --innerBorderOpen: rgba(10, 132, 255, 0.35);
+
+  --btnBg: rgba(255, 255, 255, 0.04);
+  --btnBorder: rgba(255, 255, 255, 0.25);
+
+  --sheetBg: #0E111A;
+  --sheetBorder: rgba(255, 255, 255, 0.12);
+  --sheetBorderTop: rgba(255, 255, 255, 0.08);
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+.theme-light {
+  --bg: linear-gradient(180deg, #FFFFFF 0%, #F2F6FF 100%);
+  --text: #11181C;
+  --textSoft: #2B3540;
+  --rowText: #11181C;
+  --rowIcon: #11181C;
+  --muted: rgba(0, 0, 0, 0.55);
+  --tabText: #424245;
+
+  --rowBg: #FFFFFF;
+  --rowBorder: rgba(0, 0, 0, 0.10);
+  --pillBg: #FFFFFF;
+  --rail: rgba(0, 0, 0, 0.08);
+  --tabsBg: #F5F6FA;
+  --midline: rgba(0, 0, 0, 0.5);
+
+  --primary: #0A84FF;
+  --accent: #FF2D55;
+
+  --card: rgba(255, 255, 255, 0.90);
+  --cardInner: rgba(255, 255, 255, 0.65);
+  --border: rgba(0, 0, 0, 0.10);
+  --innerBorder: rgba(0, 0, 0, 0.06);
+  --borderHover: rgba(10, 132, 255, 0.45);
+
+  --cardOpen: rgba(245, 249, 255, 0.95);
+  --cardInnerOpen: rgba(240, 246, 255, 0.92);
+  --borderOpen: rgba(10, 132, 255, 0.55);
+  --innerBorderOpen: rgba(10, 132, 255, 0.35);
+
+  --btnBg: rgba(10, 14, 26, 0.03);
+  --btnBorder: rgba(0, 0, 0, 0.18);
+
+  --sheetBg: #FFFFFF;
+  --sheetBorder: rgba(0, 0, 0, 0.10);
+  --sheetBorderTop: rgba(0, 0, 0, 0.08);
+
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ==================== Layout Components ==================== */
+
+.app {
+  @apply grid place-items-start;
+}
+
+.scroll {
+  @apply h-full overflow-y-auto pb-6;
+}
+
+.body {
+  @apply px-5;
+  color: var(--text);
+}
+
+.subtitle {
+  @apply text-sm mt-1 mb-3 px-4;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.center-wrap {
+  @apply grid;
+  min-height: 100%;
+  place-items: normal;
+  padding: 24px 0;
+}
+
+.stack {
+  @apply w-full;
+}
+
+/* ==================== Common Components ==================== */
+
+.muted {
+  color: var(--muted);
+}
+
+.card {
+  @apply mb-2 p-2 overflow-hidden;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.card:hover {
+  border-color: var(--borderHover);
+}
+
+.rounded-item {
+  --background: var(--rowBg);
+  --border-radius: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--rowBorder);
+  @apply my-1.5 overflow-hidden;
+}
+
+.section-container {
+  @apply px-4 py-2;
+}
+
+.section-header {
+  @apply text-xs font-semibold tracking-wide uppercase mb-2 px-1;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* ==================== Profile Components ==================== */
+
+.profile-header {
+  @apply relative w-full;
+  height: 280px;
+}
+
+.header-image {
+  @apply w-full h-full relative bg-center bg-contain bg-no-repeat;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.camera-btn {
+  font-size: 1rem !important;
+  @apply absolute;
+  top: 12px;
+  right: 12px;
+  color: #000000;
+  background: #c7c7c750;
+  border-radius: 27%;
+  padding: 7px;
+}
+
+.user-info-container {
+  @apply px-4 py-2;
+}
+
+.user-info {
+  @apply mb-4;
+}
+
+.name-badges {
+  @apply flex flex-col gap-2 mb-2;
+}
+
+.top-row {
+  @apply flex items-center justify-between gap-3;
+}
+
+.left {
+  @apply flex items-center gap-3;
+}
+
+.right {
+  @apply flex items-center;
+}
+
+.user-name {
+  @apply text-2xl font-bold m-0 flex items-center gap-2;
+  color: var(--ion-text-color);
+}
+
+.rating-pill {
+  @apply inline-flex items-center gap-1 px-2.5 py-1;
+  border-radius: 999px;
+  border: 1.5px solid #FF2D55;
+  color: #FF2D55;
+  background: var(--pillBg, #0A0E1A);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.rating-pill .star {
+  @apply mr-0.5;
+}
+
+.badges-row {
+  @apply flex flex-wrap gap-1.5;
+}
+
+.badge-chip {
+  height: 28px;
+  font-size: 0.75rem;
+  --background: rgba(255, 255, 255, 0.06);
+  --color: var(--ion-text-color);
+  --border-radius: 999px;
+  border: 1px solid var(--rowBorder);
+}
+
+.user-location {
+  @apply flex items-center gap-1 m-0;
+  font-size: 0.95rem;
+  color: var(--ion-color-medium);
+}
+
+.user-location ion-icon {
+  @apply text-base;
+}
+
+/* ==================== TES Section ==================== */
+
+.tes-section {
+  @apply my-2 p-4;
+  background: var(--rowBg);
+  border: 1px solid var(--rowBorder);
+  border-radius: 16px;
+}
+
+.tes-header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.tes-label {
+  @apply text-xs font-semibold uppercase;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+
+.tes-value {
+  @apply text-sm font-bold;
+  color: var(--rowText);
+}
+
+.tes-section ion-progress-bar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.rail {
+  @apply relative overflow-hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--rail);
+}
+
+/* ==================== Ion Item Overrides ==================== */
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-end: 8px;
+  --min-height: 60px;
+  --inner-border-width: 0px;
+}
+
+ion-item h2 {
+  @apply text-base font-semibold m-0 mb-1;
+  color: var(--rowText);
+}
+
+ion-item p {
+  @apply text-sm m-0;
+  color: var(--muted);
+}
+
+ion-item ion-icon[slot="start"] {
+  @apply text-xl mr-4;
+  color: var(--muted);
+}
+
+ion-item ion-icon[slot="end"] {
+  font-size: 1.1rem;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+ion-item::part(native) {
+  border: none !important;
+  --inner-border-width: 0;
+  --border-width: 0;
+}
+
+/* ==================== Buttons ==================== */
+
+ion-button {
+  --border-radius: 20px;
+}
+
+.back-btn {
+  --ripple-color: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--btnBorder);
+  border-radius: 50%;
+  backdrop-filter: blur(4px);
+  background: var(--btnBg);
+  color: var(--text);
+}
+
+.back-icon {
+  color: var(--text);
+  @apply text-2xl leading-none;
+}
+
+/* ==================== Settings/List Components ==================== */
+
+.list {
+  @apply p-2;
+}
+
+.row {
+  @apply w-full px-3.5 py-3.5 flex items-center justify-between mb-3 cursor-pointer text-left;
+  border-radius: 24px;
+  background: var(--rowBg);
+  border: 1px solid var(--rowBorder);
+  transition: border-color 0.2s ease, transform 0.05s ease, opacity 0.2s ease;
+}
+
+.row.control {
+  @apply cursor-default;
+}
+
+.row:active {
+  transform: translateY(1px);
+}
+
+.row-title {
+  @apply text-base font-bold;
+  color: var(--rowText);
+}
+
+.row-right {
+  @apply flex items-center gap-2;
+}
+
+.row-arrow {
+  @apply text-lg opacity-65;
+  color: var(--rowIcon);
+}
+
+.toggle-label {
+  @apply text-xs;
+  color: var(--muted);
+}
+
+.toggle {
+  --handle-background: var(--text);
+}
+
+.row.locked {
+  @apply opacity-50 relative;
+  filter: grayscale(15%);
+}
+
+.row.locked .row-title {
+  pointer-events: none;
+}
+
+.lock {
+  @apply text-base opacity-90;
+}
+
+.row.plans {
+  background: linear-gradient(90deg, #FF2D55 0%, #ff6685 100%);
+  border: 1px solid #FF2D55;
+  box-shadow: 0 0 15px rgba(255, 45, 85, 0.30);
+}
+
+.row.plans .row-title,
+.row.plans .row-arrow {
+  @apply text-white opacity-100;
+}
+
+/* ==================== Accordions ==================== */
+
+.group {
+  @apply grid gap-3 mt-3;
+}
+
+.card-header {
+  --background: transparent;
+  --color: var(--text);
+  @apply px-4 py-3.5;
+}
+
+.card-title {
+  @apply text-base font-semibold;
+  color: var(--text);
+}
+
+.card-content {
+  @apply px-4 py-3.5 text-sm;
+  line-height: 1.55;
+  color: var(--textSoft);
+  background: var(--cardInner);
+  border-top: 1px solid var(--innerBorder);
+}
+
+ion-accordion[aria-expanded="true"] .card {
+  background: var(--cardOpen);
+  border-color: var(--borderOpen);
+}
+
+ion-accordion[aria-expanded="true"] .card-content {
+  background: var(--cardInnerOpen);
+  border-top: 1px solid var(--innerBorderOpen);
+}
+
+/* ==================== Paywall/Sheet ==================== */
+
+.overlay {
+  @apply absolute inset-0 flex items-center justify-center p-4;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.sheet {
+  @apply w-80 overflow-hidden;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--sheetBorder);
+  background: var(--sheetBg);
+}
+
+.sheet-body {
+  @apply p-4.5;
+}
+
+.sheet-title {
+  @apply font-extrabold text-base mb-1.5;
+  color: var(--text);
+}
+
+.sheet-text {
+  @apply text-sm opacity-85;
+  line-height: 1.4;
+  color: var(--textSoft);
+}
+
+.sheet-actions {
+  @apply flex gap-2 p-3;
+  border-top: 1px solid var(--sheetBorderTop);
+}
+
+.btn-outline {
+  @apply flex-1 h-10 border cursor-pointer font-bold;
+  border-radius: 12px;
+  border: 1px solid var(--sheetBorderTop);
+  background: transparent;
+  color: var(--text);
+}
+
+.btn-accent {
+  @apply flex-1 h-10 border-0 cursor-pointer font-extrabold text-white;
+  border-radius: 12px;
+  background: #FF2D55;
+}
+
+/* ==================== Statistics/Tabs ==================== */
+
+.tabs {
+  @apply grid gap-2 p-2;
+  grid-template-columns: 1fr 1fr;
+}
+
+.tab-bar {
+  @apply grid gap-2 mb-3;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tab {
+  @apply h-10 cursor-pointer font-bold;
+  border-radius: 12px;
+  border: 0;
+  background: transparent;
+  color: var(--tabText);
+}
+
+.tab.active {
+  background: #FF2D55;
+  @apply text-white;
+}
+
+.stat-row {
+  @apply grid items-center py-2.5;
+  grid-template-columns: 1fr 10px 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-row.no-right {
+  grid-template-columns: 1fr 10px 2fr;
+}
+
+.label-left {
+  color: var(--rowText);
+  @apply text-sm text-right;
+}
+
+.label-right {
+  color: var(--rowText);
+  @apply text-sm text-left;
+  min-height: 1em;
+}
+
+.mid {
+  @apply relative;
+  width: 10px;
+  height: 24px;
+}
+
+.rail-middle {
+  @apply absolute top-0 z-10;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+  background: var(--midline);
+}
+
+/* ==================== Chat Components ==================== */
+
+.demo-wrap {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.typing-indicator {
+  @apply fixed right-2.5 text-sm italic;
+  bottom: 71px;
+  text-shadow: 0px 0px 3px #d9d8d8;
+  color: #a5a2a2;
+}
+
+.messages-container {
+  @apply flex flex-col gap-2.5 pb-5;
+}
+
+.message-wrapper {
+  @apply flex w-full;
+}
+
+.message-wrapper.sent {
+  @apply justify-start;
+}
+
+.message-wrapper.received {
+  @apply justify-end;
+}
+
+.message-bubble {
+  max-width: 80%;
+  @apply px-3.5 py-2.5 relative;
+  border-radius: 18px;
+  background: var(--bubble-bg);
+  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.message-wrapper.sent .message-bubble {
+  border-bottom-left-radius: 6px;
+}
+
+.message-wrapper.received .message-bubble {
+  border-bottom-right-radius: 6px;
+}
+
+.message-text {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.message-time {
+  @apply text-xs mt-1 text-right opacity-80;
+}
+
+.message-media img,
+.message-media video {
+  @apply max-w-full h-auto border;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.message-input-container {
+  @apply flex items-end gap-2 p-2.5;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+
+.media-button {
+  @apply flex-shrink-0 m-0;
+}
+
+.media-button.recording {
+  color: #ff4d4f;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.message-input {
+  @apply flex-1 text-base;
+  min-height: 36px;
+  --color: var(--text);
+  --placeholder-color: var(--muted);
+}
+
+.send-button {
+  @apply flex-shrink-0 m-0;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+}
+
+.content-chat {
+  @apply overflow-hidden;
+  --background: none;
+  background-color: #ccc;
+  background: url('/assets/images/bgSurvey.png') no-repeat center center;
+  background-size: cover;
+}
+
+/* ==================== FAB Button ==================== */
+
+ion-fab-button {
+  --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  width: 64px;
+  height: 64px;
+}
+
+ion-fab-button ion-icon {
+  @apply text-3xl;
+}
+
+/* ==================== CTA ==================== */
+
+.cta {
+  @apply sticky z-10;
+  bottom: 10px;
+  left: 5px;
+  right: 5px;
+  padding: 0 5px;
+}

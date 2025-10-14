@@ -2,44 +2,41 @@
   <ion-page>
     <ion-content :fullscreen="true" class="ion-padding" :class="themeClass">
       <PageHeader :title="title" default-href="/dashboard" />
-      <div class="" >
-        <div class="">
-          <!-- Card -->
-          <div class="">
-            <div class="">Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
 
-            <!-- Tabs -->
-            <div class="tabs">
-              <button :class="['tab', tab==='axes' ? 'active' : '']" @click="switchTab('axes')">Άξονες</button>
-              <button :class="['tab', tab==='values' ? 'active' : '']" @click="switchTab('values')">Αξίες</button>
+      <!-- Card -->
+      <div class="card">
+        <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+          <button :class="['tab', tab==='axes' ? 'active' : '']" @click="switchTab('axes')">Άξονες</button>
+          <button :class="['tab', tab==='values' ? 'active' : '']" @click="switchTab('values')">Αξίες</button>
+        </div>
+
+        <!-- Data -->
+        <div class="body">
+          <div v-if="normalizedRows.length===0" class="loading">Φόρτωση…</div>
+
+          <div
+              v-for="(r,i) in normalizedRows"
+              :key="`${r.label}-${i}`"
+              class="stat-row"
+              :class="{'no-right': !splitLabel(r.label).right}"
+          >
+            <div class="label-left">{{ splitLabel(r.label).left }}</div>
+            <div class="mid">
             </div>
-
-            <!-- Data -->
-            <div class="body">
-              <div v-if="normalizedRows.length===0" class="loading">Φόρτωση…</div>
-
-              <div
-                  v-for="(r,i) in normalizedRows"
-                  :key="`${r.label}-${i}`"
-                  class="stat-row"
-                  :class="{'no-right': !splitLabel(r.label).right}"
-              >
-                <div class="label-left">{{ splitLabel(r.label).left }}</div>
-                <div class="mid">
-                </div>
-                <div class="rail">
-                  <div class="rail-middle"></div>
-                  <div class="bar" :style="barStyle(r.score)"></div>
-                </div>
-                <div class="label-right" v-if="splitLabel(r.label).right">
-                  {{ splitLabel(r.label).right }}
-                </div>
-              </div>
+            <div class="rail">
+              <div class="rail-middle"></div>
+              <div class="bar" :style="barStyle(r.score)"></div>
+            </div>
+            <div class="label-right" v-if="splitLabel(r.label).right">
+              {{ splitLabel(r.label).right }}
             </div>
           </div>
-          <!-- /card -->
         </div>
       </div>
+      <!-- /card -->
     </ion-content>
   </ion-page>
 </template>
@@ -125,63 +122,3 @@ const splitLabel = (text) => {
   };
 };
 </script>
-
-<style scoped>
-.tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; }
-.tab {
-  height: 40px; border-radius: 12px; border: 0; cursor: pointer;
-  font-weight: 700; background: transparent; color: var(--tabText);
-}
-.tab.active { background: #FF2D55; color: #fff; }
-
-/* default: [left] [mid] [rail] [right] */
-.stat-row {
-  display: grid;
-  grid-template-columns: 1fr 10px 1fr 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-}
-
-/* όταν δεν υπάρχει δεξί label → δώσε το πλάτος του δεξιού κελιού στη μπάρα */
-.stat-row.no-right {
-  grid-template-columns: 1fr 10px 2fr; /* rail παίρνει όλο τον χώρο δεξιά */
-}
-
-.label-left  { color: var(--rowText); font-size: 14px; text-align: right; }
-.label-right { color: var(--rowText); font-size: 14px; text-align: left; min-height: 1em; }
-
-.mid { position: relative; width: 10px; height: 24px; }
-
-.rail { position: relative; height: 8px; border-radius: 999px; background: var(--rail); overflow: hidden; }
-.rail-middle { position: absolute; left: 50%; top: 0; width: 1px; height: 100%; background: var(--midline); z-index: 1; }
-
-/* Themes */
-.theme-dark {
-  --bg: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);
-  --text: #F5F7FA;
-  --rowText: #F5F7FA;
-  --muted: rgba(245,247,250,0.7);
-  --rowBg: #0E111A;
-  --rowBorder: rgba(255,255,255,0.10);
-  --tabsBg: #0B0E16;
-  --tabText: #c7c7cc;
-  --rail: rgba(255,255,255,0.08);
-  --midline: rgba(255,255,255,0.5);
-  background: var(--bg); color: var(--text);
-}
-.theme-light {
-  --bg: linear-gradient(180deg, #FFFFFF 0%, #F2F6FF 100%);
-  --text: #11181C;
-  --rowText: #11181C;
-  --muted: rgba(0,0,0,0.55);
-  --rowBg: #FFFFFF;
-  --rowBorder: rgba(0,0,0,0.10);
-  --tabsBg: #F5F6FA;
-  --tabText: #424245;
-  --rail: rgba(0,0,0,0.08);
-  --midline: rgba(0,0,0,0.5);
-  background: var(--bg); color: var(--text);
-  height: 100%;
-}
-</style>
