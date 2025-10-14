@@ -1,10 +1,10 @@
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="ion-padding" :class="themeClass">
+    <ion-header>
       <PageHeader :title="title" default-href="/dashboard" />
+    </ion-header>
 
-      <!-- Card -->
-      <div class="card">
+    <ion-content :fullscreen="true" class="ion-padding" :class="themeClass">
         <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
 
         <!-- Tabs -->
@@ -35,7 +35,6 @@
             </div>
           </div>
         </div>
-      </div>
       <!-- /card -->
     </ion-content>
   </ion-page>
@@ -43,7 +42,7 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import {IonPage, IonContent, IonToolbar, IonBackButton, IonTitle, IonButtons} from '@ionic/vue';
+import {IonPage, IonContent, IonHeader} from '@ionic/vue';
 import { useGlobalStore } from '@/stores/globalStore.js';
 import { storeToRefs } from 'pinia';
 import PageHeader from '@/components/PageHeader.vue';

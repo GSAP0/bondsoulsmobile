@@ -1,22 +1,14 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button  default-href="/dashboard"></ion-back-button>
-        </ion-buttons>
-        <ion-title @click="$router.push(`/profile_visit`)" class="cursor-pointer">
-          <div class="flex items-center gap-2">
-            <div class="flex-1">
-              <div class="font-semibold">{{ otherUser?.name || 'Chat' }}</div>
-              <div class="text-xs opacity-70">{{ isOnline ? 'Συνδεδεμένος' : 'Αποσυνδεδεμένος' }}</div>
-            </div>
-          </div>
-        </ion-title>
-      </ion-toolbar>
+        <PageHeader>
+          <div class="font-semibold">{{ otherUser?.name || 'Chat' }}</div>
+          <div class="text-xs opacity-70">{{ isOnline ? 'Συνδεδεμένος' : 'Αποσυνδεδεμένος' }}</div>
+        </PageHeader>
     </ion-header>
 
     <ion-content ref="contentRef" class="ion-padding demo-wrap content-chat" :fullscreen="true" :data-theme="currentTheme">
+
       <div v-if="loading" class="flex justify-center items-center h-full">
         <ion-spinner></ion-spinner>
       </div>
@@ -90,6 +82,7 @@ import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
 
 import {useGlobalStore} from '@/stores/globalStore'
 import {storeToRefs} from "pinia";
+import PageHeader from "@/components/PageHeader.vue";
 
 const globalStore = useGlobalStore()
 const {currentTheme} = storeToRefs(globalStore)
@@ -177,7 +170,8 @@ const sendMessage = async (type = 'text', content = null) => {
   const payload = {match_id: user.value.match_id, type, content: content || messageText.value.trim()}
   messageText.value = ''
   try {
-    await axios.post('conversation/messages', payload)
+    const res = await axios.post('conversation/messages', payload)
+    messages.value.push(res.data)
     scrollToBottom()
   } catch (error) {
     console.error('Error sending message:', error)
@@ -215,7 +209,8 @@ const startRecording = async () => {
       formData.append('match_id', user.value.match_id)
       formData.append('type', 'voice')
       try {
-        await axios.post('conversation/messages', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        const res = await axios.post('conversation/messages', formData, {headers: {'Content-Type': 'multipart/form-data'}})
+        messages.value.push(res.data)
         scrollToBottom()
       } catch (error) {
         console.error('Error uploading voice message:', error)
@@ -247,7 +242,7 @@ const initializeWebSocket = () => {
 
   echo.private(`chat.${user.value.match_id}`)
       .listen('MessageSent', (e) => {
-        if (e.message.sender_id !== user.value.id) {
+        if (e.message.sender_id !== user.value.uuid) {
           messages.value.push(e.message)
           scrollToBottom()
         }

@@ -1,8 +1,10 @@
 <!-- SettingsScreen.vue -->
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="ion-padding" :class="store.themeClass">
+    <ion-header>
       <PageHeader :title="title" default-href="/dashboard" />
+    </ion-header>
+    <ion-content :fullscreen="true" class="ion-padding" :class="store.themeClass">
 
       <!-- Settings List (με theme ως γραμμή) -->
       <div class="list">
@@ -39,7 +41,6 @@
                   </div>
                 </button>
       </div>
-
       <!-- Paywall -->
       <div v-if="showPaywall" class="overlay">
         <div class="sheet" :class="store.currentTheme">
@@ -62,7 +63,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { IonPage, IonContent, IonToggle } from '@ionic/vue';
+import { IonPage, IonContent, IonToggle , IonHeader} from '@ionic/vue';
 import {useGlobalStore} from "@/stores/globalStore.js";
 import PageHeader from '@/components/PageHeader.vue';
 

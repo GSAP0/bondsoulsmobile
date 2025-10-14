@@ -1,12 +1,16 @@
 <!-- InfoScreen.vue -->
 <template>
   <ion-page>
+    <ion-header>
+      <PageHeader default-href="/dashboard">
+        {{headerTitle}}
+        <div class="subtitle">{{ headerSubtitle }}</div>
+      </PageHeader>
+
+    </ion-header>
     <ion-content :fullscreen="true" class="app" :class="store.themeClass">
       <div class="scroll">
         <div class="body">
-            <PageHeader :title="headerTitle" default-href="/dashboard" />
-            <div class="subtitle">{{ headerSubtitle }}</div>
-
             <!-- Accordions (περιεχόμενο από backend) -->
             <ion-accordion-group class="group">
               <ion-accordion
@@ -30,7 +34,7 @@
 
 <script setup>
 import {
-  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem
+  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem, IonHeader
 } from '@ionic/vue';
 import { useGlobalStore } from '@/stores/globalStore.js';
 import PageHeader from '@/components/PageHeader.vue';

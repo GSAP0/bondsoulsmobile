@@ -2,10 +2,11 @@ import {defineStore} from "pinia";
 import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useLocalStorage} from "@vueuse/core";
+import moment from "moment";
+import {chatbubbleEllipsesOutline, shieldCheckmarkOutline, sparklesOutline, trophyOutline} from "ionicons/icons";
 
 export const useGlobalStore = defineStore('global-store', () => {
     const router = useRouter()
-
 
     const user = ref(null)
     const loaded = ref(false)
@@ -15,6 +16,7 @@ export const useGlobalStore = defineStore('global-store', () => {
     const faq = ref([])
     const currentTheme = useLocalStorage('theme', 'light')
     const themeClass = computed(() => (currentTheme.value === 'light' ? 'theme-light' : 'theme-dark'));
+    const logo = computed(() => currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png')
 
     const total_answered = computed(() => {
         let ret = {}
@@ -40,6 +42,35 @@ export const useGlobalStore = defineStore('global-store', () => {
         return questions_unanswered.value
             .filter(item => item.required)
     })
+
+    const userPhoto = computed(() => user.value.image || logo)
+    const userRating = computed(() => user.value.rating || 5)
+
+    const userAge = computed(() => {
+        if (!user.value?.birthdate) return '-'
+        const birthDate = moment(user.value.birthdate)
+        return moment().diff(birthDate, 'years')
+    })
+
+    const tesPercentage = computed(() => {
+        const total = questions.value.length
+        const answered = total_answered.value
+        if (total === 0) return 0
+
+        return Math.round((answered / total) * 100)
+    })
+
+
+    const displayBadges = computed(() => {
+        const badges = [
+            {name: 'Active', active: total_answered.value > 0},
+            {name: 'Verified', active: user.value?.verified || false},
+            {name: 'Respected', active: total_answered.value > 20},
+        ]
+        const activeCount = badges.filter(b => b.active).length
+        return badges.filter(b => b.active || activeCount < 2)
+    })
+
 
     async function loadQuestions() {
         const res = await axios.get('questions')
@@ -99,6 +130,13 @@ export const useGlobalStore = defineStore('global-store', () => {
         return response.data
     }
 
+    function getBadgeIcon(name) {
+        if (name === 'Active') return sparklesOutline
+        if (name === 'Verified') return shieldCheckmarkOutline
+        if (name === 'Respected') return trophyOutline
+        return chatbubbleEllipsesOutline
+    }
+
     return {
         answers,
         total_answered,
@@ -112,7 +150,14 @@ export const useGlobalStore = defineStore('global-store', () => {
         questions_unanswered_required,
         currentTheme,
         themeClass,
+        userPhoto,
+        userRating,
+        userAge,
+        displayBadges,
+        tesPercentage,
+        logo,
 
+        getBadgeIcon,
         submitReferralCode,
         logout,
         loadAnswers,

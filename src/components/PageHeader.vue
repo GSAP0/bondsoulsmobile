@@ -1,7 +1,7 @@
 <template>
   <div class="header">
     <button class="back" @click="handleBack">‹</button>
-    <div class="title">{{ title }}</div>
+    <div class="title"><slot>{{ title }}</slot></div>
     <div></div>
   </div>
 </template>
@@ -12,7 +12,7 @@ import { useRouter } from 'vue-router';
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    required: false
   },
   defaultHref: {
     type: String,
@@ -37,7 +37,7 @@ const handleBack = () => {
   grid-template-columns: 40px 1fr 40px;
   align-items: center;
   gap: 10px;
-  padding: 14px 16px 6px;
+  padding: 10px 6px;
 }
 
 .back {
