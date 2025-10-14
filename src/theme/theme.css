@@ -571,11 +571,6 @@ ion-accordion[aria-expanded="true"] .card-content {
 
 /* ==================== Chat Components ==================== */
 
-.demo-wrap {
-  background: var(--bg);
-  color: var(--text);
-}
-
 .typing-indicator {
   @apply fixed right-2.5 text-sm italic;
   bottom: 71px;

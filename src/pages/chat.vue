@@ -7,7 +7,7 @@
         </PageHeader>
     </ion-header>
 
-    <ion-content ref="contentRef" class="ion-padding demo-wrap content-chat" :fullscreen="true" :data-theme="currentTheme">
+    <ion-content ref="contentRef" class="ion-padding content-chat" :fullscreen="true">
 
       <div v-if="loading" class="flex justify-center items-center h-full">
         <ion-spinner></ion-spinner>
@@ -47,7 +47,7 @@
       <div v-if="isTyping" class="typing-indicator px-4 py-2 text-sm text-end">Πληκτρολογεί...</div>
     </ion-content>
 
-    <ion-footer>
+    <ion-footer class="ion-no-border">
       <div class="message-input-container">
         <ion-button fill="clear" @click="toggleVoiceRecording" :class="['media-button', { 'recording': isRecording }]">
           <ion-icon :icon="mic" slot="icon-only"></ion-icon>

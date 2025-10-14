@@ -1,14 +1,19 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import type {CapacitorConfig} from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'BondSouls',
-  webDir: 'dist',
-  plugins: {
-    CapacitorHttp: {
-      enabled: true,
+    appId: 'io.ionic.starter',
+    appName: 'BondSouls',
+    webDir: 'dist',
+    plugins: {
+        CapacitorHttp: {
+            enabled: true,
+        },
+        Keyboard: {
+            resize: 'body',  // ή 'ionic' ή 'native'
+            style: 'dark',
+            resizeOnFullScreen: true
+        }
     },
-  },
 };
 
 export default config;

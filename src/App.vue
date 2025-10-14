@@ -14,9 +14,10 @@
 
 <script setup lang="ts">
 import {IonApp, IonRouterOutlet, IonSpinner, IonImg} from '@ionic/vue';
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useGlobalStore} from "./stores/globalStore.js"
 import {storeToRefs} from "pinia";
+import {StatusBar} from "@capacitor/status-bar";
 
 const globalStore = useGlobalStore()
 const { themeClass } = storeToRefs(globalStore)
@@ -35,6 +36,15 @@ async function init() {
     loaded.value = true
   }
 }
+
+onMounted(async () => {
+  try {
+    await StatusBar.hide();
+  } catch (e) {
+    // Δεν υπάρχει σε web, no worries
+    console.log('StatusBar not available');
+  }
+});
 
 init()
 </script>
