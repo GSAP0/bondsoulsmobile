@@ -128,39 +128,26 @@ const userAge = computed(() => {
 })
 
 const tesPercentage = computed(() => {
-
   const total = globalStore.questions.length
-
   const answered = globalStore.total_answered
 
   if (total === 0) return 0
 
   return Math.round((answered / total) * 100)
-
 })
-
 
 const displayBadges = computed(() => {
 
   const badges = [
-
     {name: 'Active', active: globalStore.total_answered > 0},
-
     {name: 'Verified', active: user.value?.verified || false},
-
     {name: 'Respected', active: globalStore.total_answered > 20},
-
   ]
 
   const activeCount = badges.filter(b => b.active).length
 
   return badges.filter(b => b.active || activeCount < 2)
-
 })
-
-
-const unansweredCount = computed(() => globalStore.questions_unanswered.length)
-
 
 function getBadgeIcon(name: string) {
   if (name === 'Active') return sparklesOutline

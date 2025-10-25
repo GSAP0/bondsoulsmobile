@@ -1,6 +1,7 @@
 <template>
   <div class="header">
-    <button class="back" @click="handleBack">‹</button>
+    <button class="back" v-if="hasBack" @click="handleBack">‹</button>
+    <div v-else></div>
     <div class="title"><slot>{{ title }}</slot></div>
     <div></div>
   </div>
@@ -17,6 +18,10 @@ const props = defineProps({
   defaultHref: {
     type: String,
     default: '/'
+  },
+  hasBack: {
+    type: Boolean,
+    default: true
   }
 });
 

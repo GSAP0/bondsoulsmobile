@@ -1,28 +1,34 @@
 <template>
   <div>
-      <ion-radio-group v-model="theModelLocal"
-                       class="w-full"
-                       allow-empty-selection>
-          <div
-               v-for="option in extra.items"
-               :key="option.value + option.title">
-            <ion-item button
-                      lines="none"
-                      class="ion-margin-bottom rounded-lg"
-                      :color="selected.includes(option.value) ? 'primary' : 'light'"
-                      v-bind="extra.options">
-              <ion-radio :value="option.value">
+    <ion-radio-group v-model="theModelLocal"
+                     class="w-full"
+                     allow-empty-selection>
+      <div
+          v-if="!hasImage"
+          v-for="option in extra.items"
+          :key="option.value + option.title">
+        <ion-item button
+                  lines="none"
+                  class="ion-margin-bottom rounded-lg"
+                  :color="selected.includes(option.value) ? 'primary' : 'light'"
+                  v-bind="extra.options">
+          <ion-radio :value="option.value">
               <span class="my-label" :class="selected.includes(option.value) ? 'text-white!' : 'text-black'">
               {{ option.title }}
                 </span>
-              </ion-radio>
-            </ion-item>
+          </ion-radio>
+        </ion-item>
+      </div>
+      <div v-else class="flex flex-wrap">
+        <div @click="selected = [option.value]" style="width: calc(50% - 10px); margin-left: 10px;" class="mb-2 drop-shadow-xl" :class="selected.includes(option.value) ? 'selected' : ''" v-for="option in extra.items" :key="option.value + option.title">
+          <ion-img class="" v-if="option.image" :src="option.image"></ion-img>
         </div>
-      </ion-radio-group>
-    </div>
+      </div>
+    </ion-radio-group>
+  </div>
 </template>
 <script setup lang="ts">
-import {IonItem, IonRadio, IonRadioGroup} from "@ionic/vue";
+import {IonItem, IonRadio, IonRadioGroup, IonImg} from "@ionic/vue";
 import {computed, ref, watch} from "vue";
 
 const props = defineProps({
@@ -30,6 +36,11 @@ const props = defineProps({
     type: Object,
     required: true
   }
+})
+
+const selected = defineModel({
+  default: [],
+  required: true
 })
 
 const extra = computed(() => {
@@ -44,22 +55,27 @@ const extra = computed(() => {
   return extra.choice
 })
 
-const selected = defineModel({
-  default: [],
-  required: true
-})
+const hasImage = computed(() => extra.value.items.some(it => !!it.image))
 
 const theModelLocal = ref(selected.value[0] ?? null)
 
 watch(theModelLocal, newModel => {
-  selected.value = [newModel]
+  if (newModel)
+    selected.value = [newModel]
+  else
+    selected.value = []
 })
 </script>
 
-<style>
+<style scoped>
 .my-label {
   white-space: normal;
   overflow: visible;
   text-overflow: unset;
+}
+
+.selected{
+  background: linear-gradient(to right, #1780f7, #f1325f);
+  padding: 2px;
 }
 </style>

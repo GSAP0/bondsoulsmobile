@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="text-black text-2xl mb-4">{{ extra.options?.multiple_max ? `Μέχρι ${extra.options?.multiple_max} επιλογές` : ''}}</p>
-    <div style="flex-grow: 1;width: 100%;">
+    <div style="flex-grow: 1;width: 100%;" v-if="!hasImage">
       <div :style="`width: calc(99%/${extra.grid? extra.grid + 1 : 1})`" v-for="option in extra.items"
            :key="option.value + option.title"
       >
@@ -21,10 +21,15 @@
         </ion-item>
       </div>
     </div>
+    <div v-else class="flex flex-wrap">
+      <div @click="handleChange(option.value)" style="width: calc(50% - 10px); margin-left: 10px;" class="mb-2 drop-shadow-xl" :class="theModel.includes(option.value) ? 'selected' : ''" v-for="option in extra.items" :key="option.value + option.title">
+        <ion-img class="" v-if="option.image" :src="option.image"></ion-img>
+      </div>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import {IonItem, IonCheckbox} from "@ionic/vue";
+import {IonItem, IonCheckbox, IonImg} from "@ionic/vue";
 import {computed} from "vue";
 
 const props = defineProps({
@@ -32,6 +37,11 @@ const props = defineProps({
     type: Object,
     required: true
   }
+})
+
+const theModel = defineModel({
+  required: true,
+  default: []
 })
 
 const extra = computed(() => {
@@ -46,10 +56,7 @@ const extra = computed(() => {
   return extra.multi_choice
 })
 
-const theModel = defineModel({
-  required: true,
-  default: []
-})
+const hasImage = computed(() => extra.value.items.some(it => !!it.image))
 
 function handleChange(v) {
   if (theModel.value.includes(v)) theModel.value = theModel.value.filter(item => item !== v)
@@ -64,10 +71,15 @@ function handleChange(v) {
 }
 </script>
 
-<style>
+<style scoped>
 .my-label {
   white-space: normal;
   overflow: visible;
   text-overflow: unset;
+}
+
+.selected{
+  background: linear-gradient(to right, #1780f7, #f1325f);
+  padding: 2px;
 }
 </style>

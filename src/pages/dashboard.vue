@@ -65,7 +65,7 @@
 
           <div class="section-container">
             <div class="section-header">ΕΡΩΤΗΜΑΤΟΛΟΓΙΟ</div>
-            <ion-item button @click="$router.push('/questions')" class="rounded-item">
+            <ion-item button @click="() => unansweredCount > 0 ? $router.push('/questions') : null" class="rounded-item">
               <ion-icon :icon="listOutline" slot="start"/>
               <ion-label>
                 <h2>Επόμενες ερωτήσεις</h2>
@@ -138,7 +138,6 @@ const globalStore = useGlobalStore()
 
 const user = computed(() => globalStore.user)
 const unansweredCount = computed(() => globalStore.questions_unanswered.length)
-
 
 function findMatch() {
   if (user.value?.match_id) {

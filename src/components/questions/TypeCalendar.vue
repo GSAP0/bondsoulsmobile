@@ -1,7 +1,7 @@
 <template>
   <div style="flex-grow: 1;width: 100%;">
-    <div style="background: white; color: black; width: 90%; padding: 5px 10px">
-      <ion-datetime-button mode="ios" datetime="datetime"></ion-datetime-button>
+    <div style="background: white; color: black; width: 100%; padding: 5px 10px">
+      <ion-datetime-button datetime="datetime"></ion-datetime-button>
 
       <ion-modal :keep-contents-mounted="true">
         <ion-datetime presentation="date"
@@ -9,7 +9,7 @@
                       locale="el-GR"
                       :max="maxDateString"
                       v-model="theModel"
-                      mode="ios">
+                      >
         </ion-datetime>
       </ion-modal>
 

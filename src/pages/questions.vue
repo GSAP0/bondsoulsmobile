@@ -3,96 +3,98 @@
     <div v-if="show_survey">
       <QuestionsSurvey @close="show_survey=false"></QuestionsSurvey>
     </div>
-    <ion-content :fullscreen="true" v-else-if="currentQuestion" class="ion-padding app">
-      <div class="frame" :class="globalStore.themeClass">
-        <div class="scroll">
-          <!-- Header -->
-          <div class="header">
-            <button class="back" @click="$router.back()">‹</button>
-            <div class="title">Ερωτηματολόγιο</div>
-            <div></div>
-          </div>
+    <template v-else>
+      <ion-content :fullscreen="true" class="ion-padding app">
+        <div class="">
+          <div class="">
+            <!-- Header -->
+            <PageHeader :has-back="false">
+              Ερωτηματολόγιο
+            </PageHeader>
 
-          <!-- Question Card -->
-          <div class="card">
-            <div class="question-title">{{ currentQuestion.name }}</div>
+            <hr style="background: rgba(0,0,0,0.1)" />
 
-            <!-- Question Component -->
-            <div class="question-body">
-              <component
-                v-if="!loading"
-                :question="currentQuestion"
-                :is="handleComponent()"
-                v-model="answer"
-              ></component>
-              <div v-else class="loading">
-                <ion-spinner></ion-spinner>
+            <!-- Question Card -->
+            <div v-if="loading" class="loading">
+              <ion-spinner></ion-spinner>
+            </div>
+            <div v-else-if="currentQuestion" class="">
+              <div class="question-title">{{ currentQuestion.name }}</div>
+
+              <!-- Question Component -->
+              <div class="question-body">
+                <component
+                    :question="currentQuestion"
+                    :is="handleComponent()"
+                    v-model="answer"
+                ></component>
               </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="progress-section">
-              <div class="progress-label">Πρόοδος</div>
-              <div class="rail">
-                <div class="bar" :style="{ width: `${percentage * 100}%` }"></div>
-              </div>
-            </div>
-
-            <!-- Navigation Buttons -->
-            <div class="nav-buttons">
-              <ion-button
-                fill="clear"
-                :disabled="!prevQuestion"
-                @click="handlePrev"
-                class="nav-btn"
-              >
-                <ion-icon :icon="arrowBackCircle"></ion-icon>
-              </ion-button>
-
-              <ion-button
-                @click="handleNext"
-                :disabled="answer.length === 0"
-                class="next-btn"
-                expand="block"
-              >
-                Επόμενο
-                <ion-icon :icon="arrowForwardCircle" slot="end"></ion-icon>
-              </ion-button>
-            </div>
-
-            <!-- Skip/Return Buttons -->
-            <div v-if="globalStore.questions_unanswered_required.length === 0" class="action-buttons">
-              <ion-button
-                @click="$router.replace('/dashboard')"
-                fill="outline"
-                expand="block"
-                class="action-btn"
-              >
-                Επιστροφή
-              </ion-button>
             </div>
           </div>
         </div>
-      </div>
-    </ion-content>
+      </ion-content>
+      <ion-footer class="px-3 pb-3 bg-white">
+        <!-- Progress Bar -->
+        <div class="my-4 px-3">
+          <div class="progress-label">Πρόοδος</div>
+          <div class="rail">
+            <div class="bar" :style="{ width: `${percentage * 100}%` }"></div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+          <!--              <ion-button-->
+          <!--                fill="clear"-->
+          <!--                :disabled="!prevQuestion"-->
+          <!--                @click="handlePrev"-->
+          <!--                class="nav-btn"-->
+          <!--              >-->
+          <!--                <ion-icon :icon="arrowBackCircle"></ion-icon>-->
+          <!--              </ion-button>-->
+
+          <ion-button
+              @click="handleNext"
+              :disabled="answer.length === 0 || loading"
+              class="next-btn"
+              expand="block"
+          >
+            Επόμενο
+            <ion-icon :icon="arrowForwardCircle" slot="end"></ion-icon>
+          </ion-button>
+        </div>
+
+        <!-- Skip/Return Buttons -->
+        <div v-if="globalStore.questions_unanswered_required.length === 0" class="action-buttons">
+          <ion-button
+              @click="$router.replace('/dashboard')"
+              fill="outline"
+              expand="block"
+              class="action-btn"
+          >
+            Επιστροφή
+          </ion-button>
+        </div>
+      </ion-footer>
+    </template>
   </ion-page>
 </template>
 <script setup lang="ts">
-import {computed, nextTick, ref} from "vue";
+import {computed, ref} from "vue";
 import {useGlobalStore} from "@/stores/globalStore";
 import {useRoute} from "vue-router";
-import {IonButton, IonContent, IonIcon, IonPage, IonProgressBar, IonSpinner, useIonRouter} from "@ionic/vue";
-import {arrowBackCircle, arrowForwardCircle} from "ionicons/icons";
+import {IonButton, IonContent, IonFooter, IonIcon, IonPage, IonItemDivider, IonSpinner} from "@ionic/vue";
+import {arrowForwardCircle} from "ionicons/icons";
 import TypeChoice from "@/components/questions/TypeChoice.vue";
 import TypeSlider from "@/components/questions/TypeSlider.vue";
 import TypeText from "@/components/questions/TypeText.vue";
 import TypeChoiceMultiple from "@/components/questions/TypeChoiceMultiple.vue";
 import QuestionsSurvey from "@/components/questions/QuestionsSurvey.vue";
 import TypeCalendar from "@/components/questions/TypeCalendar.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const globalStore = useGlobalStore()
 const route = useRoute()
-const router = useIonRouter();
 
 const required = route.query.hasOwnProperty('required')
 const show_survey = ref(!localStorage.getItem('questions_required'))
@@ -102,57 +104,14 @@ const loading = ref(false)
 const currentQuestion = ref(null)
 
 const percentage = computed(() => {
-  if (required) {
-    const idx = globalStore.questions_required.findIndex(q => q.uuid === currentQuestion.value.uuid) + 1
-    return idx / globalStore.questions_required
-  } else {
-    const idx = globalStore.questions.findIndex(q => q.uuid === currentQuestion.value.uuid) + 1
-    return idx / globalStore.questions.length
-  }
+  return globalStore.total_answered / globalStore.questions.length
 })
 
-const prevQuestion = computed(() => {
-  if (!currentQuestion.value) return null
-
-  if (required) {
-    const idx = globalStore.questions_required.findIndex(q => q.uuid === currentQuestion.value.uuid)
-    if (idx > 0) return globalStore.questions_required[idx - 1]
-  } else if (globalStore.questions_unanswered.length > 0) {
-    const idx = globalStore.questions_unanswered.findIndex(q => q.uuid === currentQuestion.value.uuid)
-    if (idx > 0) return globalStore.questions_unanswered[idx - 1]
-  } else {
-    const idx = globalStore.questions.findIndex(q => q.uuid === currentQuestion.value.uuid)
-    if (idx > 0) return globalStore.questions[idx - 1]
-  }
-  return null
-})
-
-const nextQuestion = computed(() => {
-  if (!currentQuestion.value) return null
-
-  if (required) {
-    const idx = globalStore.questions_required.findIndex(q => q.uuid === currentQuestion.value.uuid)
-    if (idx > 0) return globalStore.questions_required[idx + 1]
-  } else if (globalStore.questions_unanswered.length > 0) {
-    currentQuestion.value = globalStore.questions_unanswered[0]
-  } else {
-    const idx = globalStore.questions.findIndex(q => q.uuid === currentQuestion.value.uuid)
-    if (idx >= 0) return globalStore.questions[idx + 1]
-  }
-  return null
-})
-
-if (required) {
-  if (globalStore.questions_unanswered_required.length > 0) {
-    currentQuestion.value = globalStore.questions_unanswered_required[0]
-  } else router.replace(`/dashboard`)
-} else if (globalStore.questions_unanswered.length > 0) {
-  currentQuestion.value = globalStore.questions_unanswered[0]
-} else {
-  currentQuestion.value = globalStore.questions[0]
+function assignAnswer() {
+  answer.value = []
+  answer.value = JSON.parse(JSON.stringify(globalStore.answers.filter(ans => ans.question_id === currentQuestion.value.uuid)))
+      .map(ans => ans.answer)
 }
-
-assignAnswer()
 
 async function handleNext() {
   loading.value = true
@@ -165,31 +124,8 @@ async function handleNext() {
   answer.value = []
 
   await globalStore.loadAnswers()
+  await fetchData()
   loading.value = false
-
-  await nextTick()
-
-  assignNext()
-}
-
-function handlePrev() {
-  if (prevQuestion.value) {
-    currentQuestion.value = prevQuestion.value
-    assignAnswer()
-  } else router.replace(`/dashboard`)
-}
-
-function assignNext() {
-  if (nextQuestion.value) {
-    currentQuestion.value = nextQuestion.value
-    assignAnswer()
-  } else router.replace(`/dashboard`)
-}
-
-function assignAnswer() {
-  answer.value = []
-  answer.value = JSON.parse(JSON.stringify(globalStore.answers.filter(ans => ans.question_id === currentQuestion.value.uuid)))
-      .map(ans => ans.answer)
 }
 
 function handleComponent() {
@@ -200,6 +136,15 @@ function handleComponent() {
   if (currentQuestion.value.type === 'text') return TypeText
   if (currentQuestion.value.type === 'calendar') return TypeCalendar
 }
+
+async function fetchData() {
+  const result = (await axios.get(`/questions/next?required=${required}`)).data
+  if (!result) window.location.href = '/dashboard'
+  currentQuestion.value = result
+  assignAnswer()
+}
+
+fetchData()
 </script>
 
 <style scoped>
@@ -274,11 +219,6 @@ function handleComponent() {
   align-items: center;
   justify-content: center;
   padding: 40px;
-}
-
-/* Progress Section */
-.progress-section {
-  margin: 16px 0 24px;
 }
 
 .progress-label {
