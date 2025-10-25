@@ -79,8 +79,8 @@ function handleOpen(){
 /* Bell */
 .notif-wrap {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: 16px;
@@ -95,7 +95,7 @@ function handleOpen(){
 }
 
 .bell {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .notifications-badge {
