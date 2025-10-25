@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <ion-modal id="example-modal" ref="modal" trigger="open-custom-dialog" :is-open="open" @didDismiss="open = false">
+    <ion-modal id="example-modal" ref="modal" :is-open="open" @didDismiss="open = false">
       <div :class="globalStore.currentTheme === 'dark' ? 'wrapper-dark theme-dark' : 'wrapper theme-white'">
         <h5 class="font-medium! ml-3 py-3 mt-3! mb-2! border-b-1 border-b-gray-100">Ειδοποιήσεις</h5>
         <div v-if="globalStore.user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>

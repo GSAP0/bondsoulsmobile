@@ -6,6 +6,7 @@ import moment from "moment";
 import {chatbubbleEllipsesOutline, shieldCheckmarkOutline, sparklesOutline, trophyOutline} from "ionicons/icons";
 
 export const useGlobalStore = defineStore('global-store', () => {
+    const needsRefresh = ref(false)
     const router = useRouter()
     const baseUrl = window.axios.defaults.baseURL.replace("mobile", "")
     const user = ref(null)
@@ -90,7 +91,7 @@ export const useGlobalStore = defineStore('global-store', () => {
 
     async function loadUser() {
         const res = await axios.get('user')
-        user.value = res.data
+        Object.assign(user.value, res.data)
     }
 
     async function loadFaq(){
@@ -139,6 +140,7 @@ export const useGlobalStore = defineStore('global-store', () => {
     }
 
     return {
+        needsRefresh,
         answers,
         total_answered,
         loaded,

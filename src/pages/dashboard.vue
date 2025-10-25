@@ -3,7 +3,7 @@
     <ion-content :fullscreen="true" class="ion-padding">
       <div class="scroll">
           <div class="profile-header">
-            <div class="header-image" :style="`background-image: url('${photo}')`">
+            <div class="header-image" :style="`background-image: url('${globalStore.userPhoto}')`">
               <ion-icon class="camera-btn" :icon="cameraOutline" @click="$router.push('/picture')"/>
             </div>
           </div>
@@ -116,7 +116,8 @@ import {
   IonItem,
   IonLabel,
   IonFooter,
-  IonChip,
+  IonChip, onIonViewWillEnter,
+  onIonViewDidEnter,
 } from '@ionic/vue'
 
 import {
@@ -137,7 +138,6 @@ const router = useIonRouter()
 const globalStore = useGlobalStore()
 
 const user = computed(() => globalStore.user)
-const photo = computed(() => globalStore.userPhoto)
 const unansweredCount = computed(() => globalStore.questions_unanswered.length)
 
 function findMatch() {

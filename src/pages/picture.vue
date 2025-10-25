@@ -136,13 +136,13 @@ async function savePhoto(shouldFinish = true) {
 
 
 function finish() {
-  window.location.href = `/dashboard`
+  globalStore.loadUser()
+  router.replace('/dashboard')
 }
 
 function deletePhoto(){
   image.value = null
   savePhoto(false)
-  globalStore.loadUser()
 }
 
 </script>

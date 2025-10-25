@@ -91,22 +91,24 @@ console.log('Environment:', isProduction ? 'Production' : 'Development');
 console.log('API Base URL:', apiBaseUrl);
 console.log('WebSocket connecting to:', `${scheme}://${wsHost}:${wsPort}`);
 
-window.echo = new Echo({
-    broadcaster: 'reverb',
-    key: reverbAppKey,
-    wsHost: wsHost,
-    wsPort: wsPort,
-    wssPort: wsPort,
-    forceTLS: isProduction,
-    enabledTransports: ['ws', 'wss'],
-    disableStats: true,
-    authEndpoint: `${apiBaseUrl}/broadcasting/auth`,
-    auth: {
-        headers: {
-            Authorization: `Bearer ${token}`,
+try {
+    window.echo = new Echo({
+        broadcaster: 'reverb',
+        key: reverbAppKey,
+        wsHost: wsHost,
+        wsPort: wsPort,
+        wssPort: wsPort,
+        forceTLS: isProduction,
+        enabledTransports: ['ws', 'wss'],
+        disableStats: true,
+        authEndpoint: `${apiBaseUrl}/broadcasting/auth`,
+        auth: {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         },
-    },
-})
+    })
+}catch(e){}
 
 const app = createApp(App)
     .use(createPinia())
