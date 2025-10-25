@@ -1,50 +1,65 @@
 <template>
   <ion-page>
     <ion-header>
-      <PageHeader :title="title" default-href="/dashboard" />
+      <PageHeader :title="title" default-href="/dashboard"/>
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding" :class="themeClass">
-        <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
+      <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
 
-        <!-- Tabs -->
-        <div class="tabs">
-          <button :class="['tab', tab==='axes' ? 'active' : '']" @click="switchTab('axes')">Άξονες</button>
-          <button :class="['tab', tab==='values' ? 'active' : '']" @click="switchTab('values')">Αξίες</button>
-        </div>
+      <!-- Tabs -->
+      <div class="tabs">
+        <button :class="['tab', tab==='axes' ? 'active' : '']" @click="switchTab('axes')">Άξονες</button>
+        <button :class="['tab', tab==='values' ? 'active' : '']" @click="switchTab('values')">Αξίες</button>
+      </div>
 
-        <!-- Data -->
-        <div class="body">
-          <div v-if="normalizedRows.length===0" class="loading">Φόρτωση…</div>
+      <!-- Data -->
+      <div v-if="store.questions_unanswered.length > 0" class="px-2 py-8 text-center rounded-2xl" style="
+            position: absolute;
+          top: 50%;
+          left: 50%;
+          text-shadow: 0 0 black;
+          background: white;
+          border: 1px solid black;
+          transform: translate(-50%);
+          width: 70%;
+          z-index: 1;"
+      >
+        <ion-icon :icon="lockClosedSharp" style="font-size: 24px"></ion-icon>
+        <p>Τα στατιστικά είναι διαθέσιμα αφού απαντηθούν όλες οι ερωτήσεις</p>
 
-          <div
-              v-for="(r,i) in normalizedRows"
-              :key="`${r.label}-${i}`"
-              class="stat-row"
-              :class="{'no-right': !splitLabel(r.label).right}"
-          >
-            <div class="label-left">{{ splitLabel(r.label).left }}</div>
-            <div class="mid">
-            </div>
-            <div class="rail">
-              <div class="rail-middle"></div>
-              <div class="bar" :style="barStyle(r.score)"></div>
-            </div>
-            <div class="label-right" v-if="splitLabel(r.label).right">
-              {{ splitLabel(r.label).right }}
-            </div>
+      </div>
+      <div class="body" :style="store.questions_unanswered.length > 0 ? 'filter: blur(7px);' : ''">
+        <div v-if="normalizedRows.length===0" class="loading">Φόρτωση…</div>
+        <div
+            v-for="(r,i) in normalizedRows"
+            :key="`${r.label}-${i}`"
+            class="stat-row"
+            :class="{'no-right': !splitLabel(r.label).right}"
+        >
+          <div class="label-left">{{ splitLabel(r.label).left }}</div>
+          <div class="mid">
+          </div>
+          <div class="rail">
+            <div class="rail-middle"></div>
+            <div class="bar" :style="barStyle(r.score)"></div>
+          </div>
+          <div class="label-right" v-if="splitLabel(r.label).right">
+            {{ splitLabel(r.label).right }}
           </div>
         </div>
+      </div>
       <!-- /card -->
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import {IonPage, IonContent, IonHeader} from '@ionic/vue';
-import { useGlobalStore } from '@/stores/globalStore.js';
-import { storeToRefs } from 'pinia';
+import {ref, computed} from 'vue';
+import {lockClosedSharp} from "ionicons/icons";
+import {IonPage, IonContent, IonHeader, IonIcon} from '@ionic/vue';
+import {useGlobalStore} from '@/stores/globalStore.js';
+import {storeToRefs} from 'pinia';
 import PageHeader from '@/components/PageHeader.vue';
 
 const brand = {
@@ -59,7 +74,7 @@ const brand = {
 const title = 'Το προφίλ μου';
 
 const store = useGlobalStore();
-const { themeClass } = storeToRefs(store);
+const {themeClass} = storeToRefs(store);
 
 const tab = ref('axes');
 
@@ -80,7 +95,7 @@ const normalizedRows = computed(() => {
     }));
   }
   if (src && typeof src === 'object') {
-    return Object.keys(src).map((k) => ({ label: k, score: src[k] }));
+    return Object.keys(src).map((k) => ({label: k, score: src[k]}));
   }
   return [];
 });

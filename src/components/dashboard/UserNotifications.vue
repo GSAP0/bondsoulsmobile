@@ -1,20 +1,19 @@
 <template>
-  <div class="demo-wrap" :data-theme="currentTheme">
-    <div class="notif-wrap" role="button" aria-label="Άνοιγμα ειδοποιήσεων" @click="open = true">
+  <div>
+    <div class="notif-wrap" role="button" aria-label="Άνοιγμα ειδοποιήσεων" @click="handleOpen">
       <div class="bell">🔔</div>
-      <div v-if="globalStore.user.unread_notifications.length > 0" class="notifications-badge">{{ globalStore.user.unread_notifications }}</div>
+      <div v-if="globalStore.user.unread_notifications.length > 0" class="notifications-badge">
+        {{ globalStore.user.unread_notifications.length }}
+      </div>
     </div>
 
-    <div v-if="open" class="modal-overlay" @click="open = false">
-      <div class="modal-card" @click.stop role="dialog" aria-modal="true">
-        <div class="modal-header">
-          <h2>Ειδοποιήσεις</h2>
-          <button class="close-btn" @click="open = false" aria-label="Κλείσιμο">✕</button>
-        </div>
+    <ion-modal id="example-modal" ref="modal" trigger="open-custom-dialog" :is-open="open" @didDismiss="open = false">
+      <div :class="globalStore.currentTheme === 'dark' ? 'wrapper-dark theme-dark' : 'wrapper theme-white'">
+        <h5 class="font-medium! ml-3 py-3 mt-3! mb-2! border-b-1 border-b-gray-100">Ειδοποιήσεις</h5>
+        <div v-if="globalStore.user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>
 
         <div class="notif-list">
-          <div v-if="globalStore.user.notifications.length === 0" class="notif-item empty">Καμία ειδοποίηση</div>
-          <div v-for="(n, i) in globalStore.user.notifications" :key="i" class="notif-item">
+          <div v-for="(n, i) in globalStore.user.notifications" :key="i" class="notif-item mb-2">
             <div class="notif-icon">{{ getIcon(n.type) }}</div>
             <div>
               <div class="notif-title">{{ getTitle(n.type) }}</div>
@@ -23,13 +22,8 @@
             </div>
           </div>
         </div>
-
-        <div class="footer">
-          <button class="btn secondary" @click="open = false">Κλείσιμο</button>
-          <button class="btn primary" @click="open = false">ΟΚ</button>
-        </div>
       </div>
-    </div>
+    </ion-modal>
   </div>
 </template>
 
@@ -38,6 +32,7 @@
 import {ref} from 'vue'
 import {useGlobalStore} from "@/stores/globalStore";
 import {storeToRefs} from "pinia";
+import {IonModal} from "@ionic/vue";
 
 const globalStore = useGlobalStore()
 const {currentTheme} = storeToRefs(globalStore)
@@ -70,50 +65,18 @@ function getSubtitle(n) {
   return ''
 }
 
+function handleOpen(){
+  open.value = true
+  axios.post("notifications/readAll")
+  globalStore.user.unread_notifications = []
+
+}
+
 </script>
 
 
 <style>
-:root {
-  --bg: #F2F2F7;
-  --card: #FFFFFF;
-  --muted: #6B7280;
-  --text: #11181C;
-  --primary: #0A84FF;
-  --accent: #FF2D55;
-  --border: rgba(0, 0, 0, 0.08);
-}
-
-
-[data-theme="dark"] {
-  --bg: #0A0E1A;
-  --card: #0F1424;
-  --muted: #9AA3AF;
-  --text: #F5F7FA;
-  --primary: #0A84FF;
-  --accent: #FF2D55;
-  --border: rgba(255, 255, 255, 0.08);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-
-/* IonContent root */
-
-.demo-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg);
-  color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial;
-}
-
-
 /* Bell */
-
 .notif-wrap {
   position: relative;
   width: 56px;
@@ -141,7 +104,7 @@ function getSubtitle(n) {
   right: -6px;
   min-width: 22px;
   height: 22px;
-  padding: 0 6px;
+  padding: 0 10px;
   border-radius: 999px;
   display: grid;
   place-items: center;
@@ -152,49 +115,16 @@ function getSubtitle(n) {
   border: 2px solid var(--bg);
 }
 
-
-/* Modal */
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 50;
+ion-modal#example-modal {
+  --width: fit-content - 10px;
+  --min-width: 350px;
+  --height: fit-content;
+  --min-height: 200px;
+  --border-radius: 15px;
+  padding: 12px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
 }
 
-.modal-card {
-  width: 100%;
-  max-width: 420px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  animation: pop .16s ease-out;
-}
-
-@keyframes pop {
-  from {
-    transform: translateY(6px);
-    opacity: .7;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-}
 
 .modal-header h2 {
   margin: 0;
@@ -202,26 +132,10 @@ function getSubtitle(n) {
   letter-spacing: .3px;
 }
 
-.close-btn {
-  background: transparent;
-  color: var(--muted);
-  border: 0;
-  font-size: 18px;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 10px;
-}
-
-.close-btn:hover {
-  background: rgba(0, 0, 0, 0.03);
-  color: var(--text);
-}
-
-
 .notif-list {
   max-height: 60vh;
   overflow: auto;
-  padding: 6px 2px;
+
 }
 
 .notif-item {
@@ -229,17 +143,19 @@ function getSubtitle(n) {
   grid-template-columns: 40px 1fr;
   gap: 12px;
   padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
+  border: 1px solid rgba(255,255,255,0.60);
+}
+
+.notif-item:nth-child(odd) {
+  background: linear-gradient(90deg, #0a84ff70, #ff2d5570);
+}
+
+.notif-item:nth-child(even) {
+  background: linear-gradient(90deg, #0a84ff40, #ff2d5540);
 }
 
 .notif-item:last-child {
   border-bottom: 0;
-}
-
-.notif-item.empty {
-  text-align: center;
-  color: var(--muted);
-  padding: 28px 0;
 }
 
 .notif-icon {
@@ -253,11 +169,13 @@ function getSubtitle(n) {
   font-size: 18px;
 }
 
-
-[data-theme="dark"] .notif-icon {
-  background: rgba(255, 255, 255, 0.06);
+.wrapper-dark{
+  background: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);;
 }
 
+.wrapper{
+  background: linear-gradient(90deg, rgba(10, 132, 255, 0.2), rgba(255, 45, 85, 0.2));
+}
 
 .notif-title {
   font-weight: 700;
@@ -275,41 +193,6 @@ function getSubtitle(n) {
   color: var(--muted);
   font-size: 12px;
   margin-top: 6px;
-}
-
-
-/* Small CTA row */
-
-.footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 12px 16px 16px;
-  border-top: 1px solid var(--border);
-}
-
-.btn {
-  appearance: none;
-  border: 0;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.btn.secondary {
-  background: rgba(0, 0, 0, 0.03);
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-
-[data-theme="dark"] .btn.secondary {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.btn.primary {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  color: white;
 }
 
 </style>
