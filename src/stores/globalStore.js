@@ -7,7 +7,7 @@ import {chatbubbleEllipsesOutline, shieldCheckmarkOutline, sparklesOutline, trop
 
 export const useGlobalStore = defineStore('global-store', () => {
     const router = useRouter()
-
+    const baseUrl = window.axios.defaults.baseURL.replace("mobile", "")
     const user = ref(null)
     const loaded = ref(false)
     const questions = ref([])
@@ -16,7 +16,8 @@ export const useGlobalStore = defineStore('global-store', () => {
     const faq = ref([])
     const currentTheme = useLocalStorage('theme', 'light')
     const themeClass = computed(() => (currentTheme.value === 'light' ? 'theme-light' : 'theme-dark'));
-    const logo = computed(() => currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png')
+    const logo = computed(() => currentTheme.value === 'dark' ? baseUrl + 'storage/assets/logobondWhite.png' : baseUrl + 'storage/assets/logobond.png')
+
 
     const total_answered = computed(() => {
         let ret = {}
@@ -43,7 +44,7 @@ export const useGlobalStore = defineStore('global-store', () => {
             .filter(item => item.required)
     })
 
-    const userPhoto = computed(() => user.value.image || logo)
+    const userPhoto = computed(() => user.value.image?.toString() ?? logo.value.toString())
     const userRating = computed(() => user.value.rating || 5)
 
     const userAge = computed(() => {

@@ -1,11 +1,11 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="app ion-padding" style="background: none !important;">
-      <div style="height: calc(100vh - 40px); overflow: hidden">
-        <div class="top-section">
-          <h1>Δημιουργία προφίλ</h1>
-        </div>
+      <PageHeader v-if="!optional">
+        Φωτογραφία χρήστη
+      </PageHeader>
 
+      <div style="height: calc(100vh - 100px); overflow: hidden">
         <div style="display: none">
           <input
               :key="renkey"
@@ -45,28 +45,32 @@
                       justify-content: center;
                       "
                        class="flex justify-center items-center">
-                    <ion-img style="width: 150px; height: 150px" :src="image" v-if="image"/>
-                    <IonIcon v-else style="width: 150px; height: 150px" :icon="camera"></IonIcon>
+                    <div v-if="loading">
+                      <ion-spinner></ion-spinner>
+                    </div>
+                    <div v-else>
+                      <ion-img style="width: 150px; height: 150px" :src="image" v-if="image"/>
+                      <IonIcon v-else style="width: 150px; height: 150px" :icon="camera"></IonIcon>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="text-4xl mb-4 text-center" style="color: #ad98cf;">Ένα βήμα έμεινε ακόμα</div>
-            <div class="text-lg mb-10 text-center">Ανέβασε μια προσωπική φωτογραφία σου Θυμήσου ότι όπως και
+            <div v-if="optional" class="text-4xl mb-4 mt-5 text-center" style="color: #ad98cf;">Ένα βήμα έμεινε ακόμα</div>
+            <div class="text-lg mb-10 mt-5 text-center">Ανέβασε μια προσωπική φωτογραφία σου Θυμήσου ότι όπως και
               εσύ, το ταίρι σου θα επιθυμούσε να δει τον πραγματικό σου
               εαυτό.
             </div>
           </div>
         </div>
         <div class="flex flex-col px-5" v-if="!image">
-          <ion-button style="color: #fff;background: #241332" class="mb-3" @click="fileInput?.click()">Προσθήκη
-            φωτογραφίας
-          </ion-button>
-          <ion-button @click="finish" style="color: #fff" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
+          <ion-button class="mb-3" @click="fileInput?.click()">Προσθήκη φωτογραφίας</ion-button>
+          <ion-button v-if="optional" @click="finish" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
+
         </div>
         <div class="flex flex-col px-5" v-else>
-          <ion-button @click="savePhoto" style="color: #fff;background: #241332" class="mb-3">Ολοκλήρωση</ion-button>
-          <ion-button @click="removePhoto" style="color: #fff" fill="clear">Αλλαγή φωτογραφίας</ion-button>
+          <ion-button @click="savePhoto" style="" class="mb-3">Ολοκλήρωση</ion-button>
+          <ion-button v-if="!optional" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας</ion-button>
         </div>
       </div>
     </ion-content>
@@ -74,14 +78,22 @@
 </template>
 
 <script setup>
-import {IonPage, IonContent, IonIcon, IonButton, IonImg, useIonRouter} from '@ionic/vue';
+import {IonPage, IonContent, IonIcon, IonButton, IonImg, useIonRouter, IonSpinner} from '@ionic/vue';
 import {camera} from "ionicons/icons";
 import {ref, useTemplateRef} from "vue";
+import {useRoute} from "vue-router";
+import PageHeader from "@/components/PageHeader.vue";
+import {useGlobalStore} from "@/stores/globalStore.js";
 
 const router = useIonRouter()
 
+const route = useRoute()
+const globalStore = useGlobalStore()
+const optional = route.query.hasOwnProperty('optional')
+
 const renkey = ref(0)
-const image = ref(null)
+const image = ref(JSON.parse(JSON.stringify(globalStore.user.image)))
+const loading = ref(false)
 const fileInput = useTemplateRef("fileInput")
 
 const selectFile = (event) => {
@@ -91,6 +103,7 @@ const selectFile = (event) => {
   uploadImage(file);
 };
 const uploadImage = async (file) => {
+  loading.value = true
   renkey.value++
   const formData = new FormData();
   formData.append("photo", file);
@@ -103,22 +116,33 @@ const uploadImage = async (file) => {
     image.value = response.data.url
   } catch (error) {
     console.error("Error uploading image:", error);
+  } finally {
+    loading.value = false
   }
 };
 
-function savePhoto() {
-  axios.post("/profile/save-photo", {
+async function savePhoto(shouldFinish = true) {
+  loading.value = true
+  await axios.post("/profile/save-photo", {
     photo: image.value
   })
-      .then(finish)
+
+  if(shouldFinish) {
+    finish()
+  }
+
+  loading.value = false
 }
 
-function removePhoto(){
+
+function finish() {
+  window.location.href = `/dashboard`
+}
+
+function deletePhoto(){
   image.value = null
-}
-
-function finish(){
-  router.replace(`/dashboard`)
+  savePhoto(false)
+  globalStore.loadUser()
 }
 
 </script>

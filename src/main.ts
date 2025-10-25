@@ -63,6 +63,7 @@ const reverbScheme = isProduction
     ? import.meta.env.VITE_REVERB_SCHEME_PROD
     : import.meta.env.VITE_REVERB_SCHEME;
 
+
 const token = localStorage.getItem('access_token')
 
 if (token)

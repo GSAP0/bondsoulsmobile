@@ -3,7 +3,7 @@
     <ion-content :fullscreen="true" class="ion-padding">
       <div class="scroll">
           <div class="profile-header">
-            <div class="header-image" :style="{ backgroundImage: `url(${globalStore.userPhoto})` }">
+            <div class="header-image" :style="`background-image: url('${photo}')`">
               <ion-icon class="camera-btn" :icon="cameraOutline" @click="$router.push('/picture')"/>
             </div>
           </div>
@@ -94,7 +94,7 @@
         <ion-icon :icon="heart" class="mr-3"></ion-icon>
         Match now
       </ion-button>
-      <ion-button style="border-radius: 20px; margin-top: -20px" class="p-3"  expand="block" color="secondary" @click="findMatch"
+      <ion-button style="border-radius: 20px; margin-top: -20px" class="p-3 mb-10"  expand="block" color="secondary" @click="findMatch"
                   v-else>
         <ion-icon :icon="chatbubble" class="mr-3"></ion-icon>
         Chat now
@@ -137,6 +137,7 @@ const router = useIonRouter()
 const globalStore = useGlobalStore()
 
 const user = computed(() => globalStore.user)
+const photo = computed(() => globalStore.userPhoto)
 const unansweredCount = computed(() => globalStore.questions_unanswered.length)
 
 function findMatch() {
