@@ -4,7 +4,6 @@ import router from './router';
 import axios from 'axios'
 import { register } from 'swiper/element/bundle';
 import { Capacitor } from '@capacitor/core';
-import { usePushNotifications } from '@/composables/usePushNotifications';
 
 register()
 
@@ -134,12 +133,4 @@ const app = createApp(App)
 
 router.isReady().then(() => {
     app.mount('#app');
-
-    // Initialize push notifications on native platforms only
-    if (Capacitor.isNativePlatform()) {
-        const { initialize } = usePushNotifications();
-        initialize().catch(error => {
-            console.error('Failed to initialize push notifications:', error);
-        });
-    }
 });

@@ -4,7 +4,10 @@
       "Bash(npm run dev)",
       "Bash(npx cap sync android)",
       "Bash(powershell:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npx @capacitor/assets:*)",
+      "Bash(npm install:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

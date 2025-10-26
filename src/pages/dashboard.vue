@@ -133,12 +133,32 @@ import {
 
 import {useGlobalStore} from '@/stores/globalStore'
 import UserNotifications from '@/components/dashboard/UserNotifications.vue'
+import {useLocation} from '@/composables/useLocation.js'
+import {usePushNotifications} from '@/composables/usePushNotifications.js'
+import {Capacitor} from '@capacitor/core'
 
 const router = useIonRouter()
 const globalStore = useGlobalStore()
+const { updateLocationToBackend } = useLocation()
+const { initialize: initializePushNotifications } = usePushNotifications()
 
 const user = computed(() => globalStore.user)
 const unansweredCount = computed(() => globalStore.questions_unanswered.length)
+
+// Ενημέρωση τοποθεσίας και push notifications όταν μπαίνει ο χρήστης στο dashboard
+onIonViewDidEnter(() => {
+  // Ενημέρωση τοποθεσίας
+  updateLocationToBackend().catch(error => {
+    console.log('Δεν ήταν δυνατή η ενημέρωση της τοποθεσίας:', error)
+  })
+
+  // Initialize push notifications μόνο σε native platform
+  if (Capacitor.isNativePlatform()) {
+    initializePushNotifications().catch(error => {
+      console.error('Failed to initialize push notifications:', error)
+    })
+  }
+})
 
 function findMatch() {
   if (user.value?.match_id) {
