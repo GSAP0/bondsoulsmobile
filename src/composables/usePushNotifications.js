@@ -29,18 +29,9 @@ export function usePushNotifications() {
             await PushNotifications.addListener('registration', async (token) => {
                 console.log('Push registration success, token: ' + token.value);
 
-                // Store token locally
+                // Store token locally (will be sent to backend after login)
                 localStorage.setItem('fcm_token', token.value);
-
-                // Send token to backend
-                try {
-                    const { useFcmToken } = await import('@/composables/useFcmToken');
-                    const { sendToBackend } = useFcmToken();
-                    await sendToBackend('/fcm-token');
-                    console.log('FCM token sent to backend successfully');
-                } catch (error) {
-                    console.error('Failed to send FCM token to backend:', error);
-                }
+                console.log('FCM token stored locally, will be sent after user login');
             });
 
             // Some issue with our setup and push will not work

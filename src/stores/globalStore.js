@@ -17,7 +17,7 @@ export const useGlobalStore = defineStore('global-store', () => {
     const faq = ref([])
     const currentTheme = useLocalStorage('theme', 'light')
     const themeClass = computed(() => (currentTheme.value === 'light' ? 'theme-light' : 'theme-dark'));
-    const logo = computed(() => currentTheme.value === 'dark' ? baseUrl + 'storage/assets/logobondWhite.png' : baseUrl + 'storage/assets/logobond.png')
+    const logo = computed(() => currentTheme.value === 'dark' ? baseUrl + 'assets/logobondWhite.png' : baseUrl + 'assets/logobond.png')
 
 
     const total_answered = computed(() => {

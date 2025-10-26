@@ -80,6 +80,21 @@ try {
     const response = await axios.get(`/user`)
     if (response.status === 200 && response.data) {
         localStorage.setItem('user', JSON.stringify(response.data))
+
+        // Send FCM token to backend if on native platform and token exists
+        if (Capacitor.isNativePlatform()) {
+            const fcmToken = localStorage.getItem('fcm_token');
+            if (fcmToken) {
+                try {
+                    const { useFcmToken } = await import('@/composables/useFcmToken');
+                    const { sendToBackend } = useFcmToken();
+                    await sendToBackend('/fcm-token');
+                    console.log('FCM token sent to backend on app startup');
+                } catch (fcmError) {
+                    console.error('Failed to send FCM token on startup:', fcmError);
+                }
+            }
+        }
     }
 }catch(e){
     localStorage.removeItem('user')

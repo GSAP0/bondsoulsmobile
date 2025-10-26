@@ -51,6 +51,8 @@ import { computed, ref, watch } from 'vue';
 import { IonPage, IonContent, IonInput, IonButton } from '@ionic/vue';
 import { useRoute } from 'vue-router';
 import axios from "axios";
+import { Capacitor } from '@capacitor/core';
+import { useFcmToken } from '@/composables/useFcmToken';
 
 const route = useRoute();
 const otpCode = ref('');
@@ -63,6 +65,35 @@ async function verifyOtp(){
   try {
     const res = await axios.post(`check_otp`, { otp: otpCode.value });
     localStorage.setItem('access_token', res.data);
+
+    // Update axios authorization header
+    axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+
+    // Fetch user data
+    try {
+      const userResponse = await axios.get(`/user`);
+      if (userResponse.status === 200 && userResponse.data) {
+        localStorage.setItem('user', JSON.stringify(userResponse.data));
+      }
+    } catch (userError) {
+      console.error('Failed to fetch user data:', userError);
+    }
+
+    // Send FCM token to backend if on native platform and token exists
+    if (Capacitor.isNativePlatform()) {
+      const fcmToken = localStorage.getItem('fcm_token');
+      if (fcmToken) {
+        try {
+          const { sendToBackend } = useFcmToken();
+          await sendToBackend('/fcm-token');
+          console.log('FCM token sent to backend after login');
+        } catch (fcmError) {
+          console.error('Failed to send FCM token after login:', fcmError);
+          // Don't block user flow if FCM fails
+        }
+      }
+    }
+
     handleNext();
   } catch (e) {
     console.error(e);
