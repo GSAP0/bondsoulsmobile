@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "342088935617",
+    "project_id": "bondsouls-defb5",
+    "storage_bucket": "bondsouls-defb5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342088935617:android:441a9929fdbda51b3fcc40",
+        "android_client_info": {
+          "package_name": "com.bondsouls.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzwSeKiGYlG0uY5q7IbKY4V5N95NNxUss"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
