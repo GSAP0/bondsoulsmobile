@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import {useGlobalStore} from "@/stores/globalStore";
+import {useGlobal} from "@/composables/useGlobal";
 function handleLogout(){
 
 }

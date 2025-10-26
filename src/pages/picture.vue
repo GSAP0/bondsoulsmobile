@@ -4,7 +4,6 @@
       <PageHeader v-if="!optional">
         Φωτογραφία χρήστη
       </PageHeader>
-
       <div style="height: calc(100vh - 100px); overflow: hidden">
         <div class="content-wrapper">
           <div class="content">
@@ -69,22 +68,36 @@
 </template>
 
 <script setup>
-import {IonPage, IonContent, IonIcon, IonButton, IonImg, useIonRouter, IonSpinner} from '@ionic/vue';
+import {
+  IonPage,
+  IonContent,
+  IonIcon,
+  IonButton,
+  IonImg,
+  useIonRouter,
+  IonSpinner,
+  IonToolbar,
+  IonButtons, IonTitle, IonBackButton, IonHeader
+} from '@ionic/vue';
 import {camera} from "ionicons/icons";
-import {ref} from "vue";
+import {nextTick, ref} from "vue";
 import {useRoute} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
-import {useGlobalStore} from "@/stores/globalStore.js";
+import {useGlobal} from "@/composables/useGlobal.js";
 import {Camera, CameraResultType, CameraSource} from '@capacitor/camera';
+import {useTest} from "@/composables/test.js";
 
 const router = useIonRouter()
 
 const route = useRoute()
-const globalStore = useGlobalStore()
+const globalStore = useGlobal()
 const optional = route.query.hasOwnProperty('optional')
 
-const image = ref(JSON.parse(JSON.stringify(globalStore.user.image)))
+const image = ref(JSON.parse(JSON.stringify(globalStore.user.value.image)))
 const loading = ref(false)
+
+const test = useTest()
+const { x } = test
 
 const takePicture = async () => {
   try {
@@ -123,6 +136,9 @@ async function savePhoto(shouldFinish = true) {
     photo: image.value
   })
 
+  await globalStore.loadUser()
+  await nextTick()
+
   if(shouldFinish) {
     finish()
   }
@@ -132,7 +148,6 @@ async function savePhoto(shouldFinish = true) {
 
 
 function finish() {
-  globalStore.loadUser()
   router.replace('/dashboard')
 }
 

@@ -1,18 +1,76 @@
 import {createRouter, createWebHistory} from '@ionic/vue-router';
-//@ts-ignore
-import { routes,handleHotUpdate } from 'vue-router/auto-routes'
-import {useGlobalStore} from "@/stores/globalStore";
+import {useGlobal} from "@/composables/useGlobal";
+import type { RouteRecordRaw } from 'vue-router';
 
 const publicRoutes = ['/', '/otp', '/verification', 'dashboard_new']
+
+const routes: RouteRecordRaw[] = [
+    {
+        path: '/',
+        component: () => import('@/pages/index.vue')
+    },
+    {
+        path: '/otp',
+        component: () => import('@/pages/otp.vue')
+    },
+    {
+        path: '/verification',
+        component: () => import('@/pages/verification.vue')
+    },
+    {
+        path: '/dashboard',
+        component: () => import('@/pages/dashboard.vue'),
+    },
+    {
+        path: '/survey',
+        component: () => import('@/pages/survey.vue')
+    },
+    {
+        path: '/questions',
+        component: () => import('@/pages/questions.vue')
+    },
+    {
+        path: '/statistics',
+        component: () => import('@/pages/statistics.vue')
+    },
+    {
+        path: '/interests',
+        component: () => import('@/pages/interests.vue')
+    },
+    {
+        path: '/bio',
+        component: () => import('@/pages/bio.vue')
+    },
+    {
+        path: '/instructions',
+        component: () => import('@/pages/instructions.vue')
+    },
+    {
+        path: '/picture',
+        component: () => import('@/pages/picture.vue')
+    },
+    {
+        path: '/match_filters',
+        component: () => import('@/pages/match_filters.vue')
+    },
+    {
+        path: '/settings',
+        component: () => import('@/pages/settings.vue')
+    },
+    {
+        path: '/chat',
+        component: () => import('@/pages/chat.vue')
+    },
+    {
+        path: '/profile_visit',
+        component: () => import('@/pages/profile_visit.vue')
+    }
+]
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 })
-
-if (import.meta.hot) {
-    handleHotUpdate(router)
-}
 
 router.beforeEach(async (to, from, next) => {
 
@@ -24,9 +82,9 @@ router.beforeEach(async (to, from, next) => {
         } else
             next()
     } else {
-        const globalStore = useGlobalStore()
+        const globalStore = useGlobal()
         if (usr) {
-            globalStore.user = JSON.parse(usr)
+            globalStore.user.value = JSON.parse(usr)
             next()
         } else next('/')
     }

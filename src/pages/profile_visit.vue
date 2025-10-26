@@ -102,20 +102,18 @@ import {
   trophyOutline, chatbubbleEllipsesOutline,
 } from 'ionicons/icons'
 
-import {useGlobalStore} from '@/stores/globalStore'
-
-import {storeToRefs} from 'pinia'
+import {useGlobal} from '@/composables/useGlobal'
 
 import moment from 'moment'
 import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 
 const router = useIonRouter()
-const globalStore = useGlobalStore()
-const {themeClass, currentTheme} = storeToRefs(globalStore)
+const globalStore = useGlobal()
+const {themeClass, currentTheme} = globalStore
 
 const user = computed(() => {
-  if (globalStore.user.uuid === globalStore.user.match.user1.uuid) return globalStore.user.match.user2
-  return globalStore.user.match.user1
+  if (globalStore.user.value.uuid === globalStore.user.value.match.user1.uuid) return globalStore.user.value.match.user2
+  return globalStore.user.value.match.user1
 })
 
 const userPhoto = computed(() => user.value.image || (currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png'))

@@ -1,10 +1,10 @@
 import { PushNotifications } from '@capacitor/push-notifications';
-import { useGlobalStore } from '@/stores/globalStore';
+import { useGlobal } from '@/composables/useGlobal';
 import { useRouter } from 'vue-router';
 
 export function usePushNotifications() {
     const router = useRouter();
-    const globalStore = useGlobalStore();
+    const globalStore = useGlobal();
 
     /**
      * Initialize push notifications

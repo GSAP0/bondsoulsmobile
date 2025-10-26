@@ -2,18 +2,18 @@
   <div>
     <div class="notif-wrap" role="button" aria-label="Άνοιγμα ειδοποιήσεων" @click="handleOpen">
       <div class="bell">🔔</div>
-      <div v-if="globalStore.user.unread_notifications.length > 0" class="notifications-badge">
-        {{ globalStore.user.unread_notifications.length }}
+      <div v-if="user?.unread_notifications && user.unread_notifications.length > 0" class="notifications-badge">
+        {{ user.unread_notifications.length }}
       </div>
     </div>
 
     <ion-modal id="example-modal" ref="modal" :is-open="open" @didDismiss="open = false">
-      <div :class="globalStore.currentTheme === 'dark' ? 'wrapper-dark theme-dark' : 'wrapper theme-white'">
+      <div :class="currentTheme === 'dark' ? 'wrapper-dark theme-dark' : 'wrapper theme-white'">
         <h5 class="font-medium! ml-3 py-3 mt-3! mb-2! border-b-1 border-b-gray-100">Ειδοποιήσεις</h5>
-        <div v-if="globalStore.user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>
+        <div v-if="!user?.notifications || user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>
 
-        <div class="notif-list">
-          <div v-for="(n, i) in globalStore.user.notifications" :key="i" class="notif-item mb-2">
+        <div class="notif-list" v-if="user?.notifications">
+          <div v-for="(n, i) in user.notifications" :key="i" class="notif-item mb-2">
             <div class="notif-icon">{{ getIcon(n.type) }}</div>
             <div>
               <div class="notif-title">{{ getTitle(n.type) }}</div>
@@ -29,13 +29,12 @@
 
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import {useGlobalStore} from "@/stores/globalStore";
-import {storeToRefs} from "pinia";
+import {ref, computed} from 'vue'
+import {useGlobal} from "@/composables/useGlobal";
 import {IonModal} from "@ionic/vue";
 
-const globalStore = useGlobalStore()
-const {currentTheme} = storeToRefs(globalStore)
+const globalStore = useGlobal()
+const {currentTheme, user} = globalStore
 
 type NotifType = 'match_found' | 'user_rating' | 'admin_custom' | 'other'
 
@@ -68,8 +67,9 @@ function getSubtitle(n) {
 function handleOpen(){
   open.value = true
   axios.post("notifications/readAll")
-  globalStore.user.unread_notifications = []
-
+  if (user.value?.unread_notifications) {
+    user.value.unread_notifications = []
+  }
 }
 
 </script>

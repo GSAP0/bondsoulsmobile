@@ -24,11 +24,11 @@
 import {
   IonModal,
 } from '@ionic/vue';
-import {useGlobalStore} from "@/stores/globalStore";
+import {useGlobal} from "@/composables/useGlobal";
 import {computed} from "vue";
 
-const globalStore = useGlobalStore();
-const user = computed(() => globalStore.user);
+const globalStore = useGlobal();
+const user = computed(() => globalStore.user.value);
 </script>
 
 <style>

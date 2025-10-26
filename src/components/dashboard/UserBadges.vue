@@ -13,13 +13,13 @@ import {
   medal,
   camera
 } from 'ionicons/icons';
-import {useGlobalStore} from "@/stores/globalStore";
+import {useGlobal} from "@/composables/useGlobal";
 import {computed} from "vue";
 
 const badgeSuccessColor = 'rgb(40 142 247)'
 
-const globalStore = useGlobalStore();
-const user = computed(() => globalStore.user);
+const globalStore = useGlobal();
+const user = computed(() => globalStore.user.value);
 
 function computeStyle(_var){
   if(!_var) return ``

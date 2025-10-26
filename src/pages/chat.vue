@@ -80,17 +80,16 @@ import {mic, send} from 'ionicons/icons'
 
 import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
 
-import {useGlobalStore} from '@/stores/globalStore'
-import {storeToRefs} from "pinia";
+import {useGlobal} from '@/composables/useGlobal'
 import PageHeader from "@/components/PageHeader.vue";
 
-const globalStore = useGlobalStore()
-const {currentTheme} = storeToRefs(globalStore)
+const globalStore = useGlobal()
+const {currentTheme} = globalStore
 
-const user = computed(() => globalStore.user)
+const user = computed(() => globalStore.user.value)
 const otherUser = computed(() => {
-  if(globalStore.user.uuid === globalStore.user.match.user1.uuid) return globalStore.user.match.user2
-  return globalStore.user.match.user1
+  if(globalStore.user.value.uuid === globalStore.user.value.match.user1.uuid) return globalStore.user.value.match.user2
+  return globalStore.user.value.match.user1
 })
 
 const messages = ref([])

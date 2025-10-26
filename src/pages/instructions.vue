@@ -3,7 +3,7 @@
   <ion-page>
     <ion-header>
       <PageHeader default-href="/dashboard">
-        {{headerTitle}}
+        {{ headerTitle }}
         <div class="subtitle">{{ headerSubtitle }}</div>
       </PageHeader>
 
@@ -11,23 +11,23 @@
     <ion-content :fullscreen="true" class="app" :class="store.themeClass">
       <div class="scroll">
         <div class="body">
-            <!-- Accordions (περιεχόμενο από backend) -->
-            <ion-accordion-group class="group">
-              <ion-accordion
-                  v-for="sec in store.faq"
-                  :key="sec.id"
-                  :value="sec.id"
-                  class="card"
-              >
-                <ion-item slot="header" lines="none" class="card-header">
-                  <div class="card-title">{{ sec.title }}</div>
-                </ion-item>
+          <!-- Accordions (περιεχόμενο από backend) -->
+          <ion-accordion-group class="group">
+            <ion-accordion
+                v-for="sec in store.faq"
+                :key="sec.id"
+                :value="sec.id"
+                class="card"
+            >
+              <ion-item slot="header" lines="none" class="card-header">
+                <div class="card-title">{{ sec.title }}</div>
+              </ion-item>
 
-                <div class="card-content" slot="content" v-html="sec.description"></div>
-              </ion-accordion>
-            </ion-accordion-group>
-          </div>
+              <div class="card-content" slot="content" v-html="sec.description"></div>
+            </ion-accordion>
+          </ion-accordion-group>
         </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -36,13 +36,13 @@
 import {
   IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem, IonHeader
 } from '@ionic/vue';
-import { useGlobalStore } from '@/stores/globalStore.js';
+import {useGlobal} from '@/composables/useGlobal.js';
 import PageHeader from '@/components/PageHeader.vue';
 
 defineProps({
-  headerTitle: { type: String, default: 'Γενικές Πληροφορίες' },
-  headerSubtitle: { type: String, default: 'Οδηγός πλοήγησης στην Bond Souls.' }
+  headerTitle: {type: String, default: 'Γενικές Πληροφορίες'},
+  headerSubtitle: {type: String, default: 'Οδηγός πλοήγησης στην Bond Souls.'}
 });
 
-const store = useGlobalStore();
+const store = useGlobal();
 </script>

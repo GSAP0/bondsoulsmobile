@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ion-textarea v-model="globalStore.user.bio"
+    <ion-textarea v-model="globalStore.user.value.bio"
                  fill="outline"
                  :auto-grow="true"
                  placeholder="Enter text"
@@ -11,13 +11,13 @@
 
 <script setup>
 import { IonTextarea, IonButton } from "@ionic/vue";
-import {useGlobalStore} from "@/stores/globalStore.js";
+import {useGlobal} from "@/composables/useGlobal.js";
 
-const globalStore = useGlobalStore()
+const globalStore = useGlobal()
 
 async function updateBio(){
   await axios.post(`user/updateBio`, {
-    bio: globalStore.user.bio
+    bio: globalStore.user.value.bio
   })
 
 }

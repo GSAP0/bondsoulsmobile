@@ -19,15 +19,15 @@
 
 <script setup>
 import {computed} from "vue";
-import {useGlobalStore} from "@/stores/globalStore.js";
+import {useGlobal} from "@/composables/useGlobal.js";
 import {IonModal} from "@ionic/vue";
 
 const min = 70
 const max = 130
 const multiplier = 3.5
 const width = (max - min) * multiplier
-const globalStore = useGlobalStore();
-const user = computed(() => globalStore.user);
+const globalStore = useGlobal();
+const user = computed(() => globalStore.user.value);
 const value = computed(() => {
   const elo = parseFloat(user.value.elo) * 100
   const clampedElo = Math.min(Math.max(elo, min), max)

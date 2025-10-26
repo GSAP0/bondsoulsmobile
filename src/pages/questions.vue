@@ -81,7 +81,7 @@
 </template>
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {useGlobalStore} from "@/stores/globalStore";
+import {useGlobal} from "@/composables/useGlobal";
 import {useRoute} from "vue-router";
 import {IonButton, IonContent, IonFooter, IonIcon, IonPage, IonItemDivider, IonSpinner} from "@ionic/vue";
 import {arrowForwardCircle} from "ionicons/icons";
@@ -93,7 +93,7 @@ import QuestionsSurvey from "@/components/questions/QuestionsSurvey.vue";
 import TypeCalendar from "@/components/questions/TypeCalendar.vue";
 import PageHeader from "@/components/PageHeader.vue";
 
-const globalStore = useGlobalStore()
+const globalStore = useGlobal()
 const route = useRoute()
 
 const required = route.query.hasOwnProperty('required')

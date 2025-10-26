@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import {useIonRouter} from "@ionic/vue";
 
 const props = defineProps({
   title: {
@@ -25,11 +25,11 @@ const props = defineProps({
   }
 });
 
-const router = useRouter();
+const router = useIonRouter();
 
 const handleBack = () => {
-  if (window.history.length > 1) {
-    router.back();
+  if (router.canGoBack()) {
+    router.navigate('/dashboard', 'back', 'replace');
   } else {
     router.replace(props.defaultHref);
   }

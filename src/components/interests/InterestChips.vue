@@ -2,7 +2,7 @@
   <div class="">
     <ion-chip
         class="px-3 mb-2 mr-3"
-        v-for="interest in globalStore.interests"
+        v-for="interest in globalStore.interests.value"
         :key="interest.id"
         :color="isActiveInterest(interest) ? 'success' : 'primary'"
         @click="toggleInterest(interest)"
@@ -15,12 +15,11 @@
 <script setup>
 import {checkmark} from "ionicons/icons";
 import {IonChip, IonIcon, IonLabel} from "@ionic/vue";
-import {useGlobalStore} from "@/stores/globalStore";
-import {storeToRefs} from "pinia";
+import {useGlobal} from "@/composables/useGlobal";
 import {nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 
-const globalStore = useGlobalStore()
-const { user } = storeToRefs(globalStore)
+const globalStore = useGlobal()
+const { user } = globalStore
 const selectedInterests = ref([]);
 
 function isActiveInterest(interest){
@@ -38,7 +37,7 @@ function toggleInterest(interest) {
 onMounted(async () => {
   selectedInterests.value = []
   user.value.interests.forEach(interest => {
-    const foundInterest = globalStore.interests.find(i => i.id === interest.interest_id)
+    const foundInterest = globalStore.interests.value.find(i => i.id === interest.interest_id)
     if(foundInterest) selectedInterests.value.push(JSON.parse(JSON.stringify(foundInterest)))
   })
 

@@ -5,7 +5,7 @@
     </div>
     <div v-else class="flex items-center justify-center h-screen">
       <div class="text-center">
-        <ion-img :src="globalStore.logo"></ion-img>
+        <ion-img :src="logo"></ion-img>
         <ion-spinner></ion-spinner>
       </div>
     </div>
@@ -15,18 +15,17 @@
 <script setup lang="ts">
 import {IonApp, IonRouterOutlet, IonSpinner, IonImg} from '@ionic/vue';
 import {onMounted, ref} from "vue";
-import {useGlobalStore} from "./stores/globalStore.js"
-import {storeToRefs} from "pinia";
+import {useGlobal} from "./composables/useGlobal.js"
 import {StatusBar} from "@capacitor/status-bar";
 
-const globalStore = useGlobalStore()
-const { themeClass } = storeToRefs(globalStore)
+const globalStore = useGlobal()
+const { themeClass, logo } = globalStore
 
 const loaded = ref(false)
 
 async function init() {
   try {
-    if (globalStore.user) {
+    if (globalStore.user.value) {
       await globalStore.load()
     }
   }catch(e){

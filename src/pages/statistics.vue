@@ -58,8 +58,7 @@
 import {ref, computed} from 'vue';
 import {lockClosedSharp} from "ionicons/icons";
 import {IonPage, IonContent, IonHeader, IonIcon} from '@ionic/vue';
-import {useGlobalStore} from '@/stores/globalStore.js';
-import {storeToRefs} from 'pinia';
+import {useGlobal} from '@/composables/useGlobal.js';
 import PageHeader from '@/components/PageHeader.vue';
 
 const brand = {
@@ -73,8 +72,8 @@ const brand = {
 
 const title = 'Το προφίλ μου';
 
-const store = useGlobalStore();
-const {themeClass} = storeToRefs(store);
+const store = useGlobal();
+const {themeClass} = store;
 
 const tab = ref('axes');
 

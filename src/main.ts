@@ -40,7 +40,6 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/style.css';
 import './theme/theme.css';
-import {createPinia} from "pinia";
 import Echo from "laravel-echo";
 import Pusher from 'pusher-js';
 
@@ -127,8 +126,10 @@ try {
 }catch(e){}
 
 const app = createApp(App)
-    .use(createPinia())
-    .use(IonicVue)
+    .use(IonicVue, {
+
+
+    })
     .use(router);
 
 router.isReady().then(() => {

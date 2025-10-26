@@ -64,13 +64,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { IonPage, IonContent, IonToggle , IonHeader} from '@ionic/vue';
-import {useGlobalStore} from "@/stores/globalStore.js";
+import {useGlobal} from "@/composables/useGlobal.js";
 import PageHeader from '@/components/PageHeader.vue';
 
 const title = 'Ρυθμίσεις';
 const userIsPaid = false;
 
-const store = useGlobalStore()
+const store = useGlobal()
 
 const toggleTheme = (ev) => {
   store.currentTheme = !!ev.detail.checked ? 'dark' : 'light';
