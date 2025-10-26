@@ -1,9 +1,9 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="ion-padding app">
-      <div class="frame">
-        <div class="scroll">
-          <div class="body">
+      <div class="">
+        <div class="">
+          <div class="">
             <div class="title">Επιβεβαίωση τηλεφώνου</div>
             <div class="subtitle">
               Συμπλήρωσε τον αριθμό σου. Αν έχεις κωδικό πρόσκλησης, βάλε τον από κάτω.
@@ -44,17 +44,19 @@
           </div>
         </div>
 
-        <!-- CTA -->
-        <ion-button
-            :disabled="phoneNumber.length !== 10"
-            expand="block"
-            class="cta"
-            @click="verifyPhone"
-        >
-          Συνέχεια
-        </ion-button>
       </div>
     </ion-content>
+    <ion-footer>
+      <!-- CTA -->
+      <ion-button
+          :disabled="phoneNumber.length !== 10"
+          expand="block"
+          class="cta"
+          @click="verifyPhone"
+      >
+        Συνέχεια
+      </ion-button>
+    </ion-footer>
   </ion-page>
 </template>
 

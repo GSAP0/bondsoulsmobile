@@ -6,15 +6,6 @@
       </PageHeader>
 
       <div style="height: calc(100vh - 100px); overflow: hidden">
-        <div style="display: none">
-          <input
-              :key="renkey"
-              type="file"
-              accept="image/*"
-              @change="selectFile($event)"
-              ref="fileInput"
-          />
-        </div>
         <div class="content-wrapper">
           <div class="content">
             <div class="flex justify-center items-center">
@@ -64,7 +55,7 @@
           </div>
         </div>
         <div class="flex flex-col px-5" v-if="!image">
-          <ion-button class="mb-3" @click="fileInput?.click()">Προσθήκη φωτογραφίας</ion-button>
+          <ion-button class="mb-3" @click="takePicture">Λήψη φωτογραφίας</ion-button>
           <ion-button v-if="optional" @click="finish" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
 
         </div>
@@ -80,10 +71,11 @@
 <script setup>
 import {IonPage, IonContent, IonIcon, IonButton, IonImg, useIonRouter, IonSpinner} from '@ionic/vue';
 import {camera} from "ionicons/icons";
-import {ref, useTemplateRef} from "vue";
+import {ref} from "vue";
 import {useRoute} from "vue-router";
 import PageHeader from "@/components/PageHeader.vue";
 import {useGlobalStore} from "@/stores/globalStore.js";
+import {Camera, CameraResultType, CameraSource} from '@capacitor/camera';
 
 const router = useIonRouter()
 
@@ -91,31 +83,35 @@ const route = useRoute()
 const globalStore = useGlobalStore()
 const optional = route.query.hasOwnProperty('optional')
 
-const renkey = ref(0)
 const image = ref(JSON.parse(JSON.stringify(globalStore.user.image)))
 const loading = ref(false)
-const fileInput = useTemplateRef("fileInput")
 
-const selectFile = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-  // Example: Upload or preview the image
-  uploadImage(file);
-};
-const uploadImage = async (file) => {
-  loading.value = true
-  renkey.value++
-  const formData = new FormData();
-  formData.append("photo", file);
+const takePicture = async () => {
   try {
-    const response = await axios.post("/profile/upload-photo", formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    const photo = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Camera
+    });
+
+    await uploadImage(photo.base64String, photo.format);
+  } catch (error) {
+    console.error("Error taking picture:", error);
+  }
+};
+
+const uploadImage = async (base64String, format) => {
+  loading.value = true
+  try {
+    const response = await window.axios.post("/profile/upload-photo", {
+      photo: base64String,
+      format: format
     });
     image.value = response.data.url
   } catch (error) {
     console.error("Error uploading image:", error);
+    console.error("Error details:", error.response?.data);
   } finally {
     loading.value = false
   }
@@ -123,7 +119,7 @@ const uploadImage = async (file) => {
 
 async function savePhoto(shouldFinish = true) {
   loading.value = true
-  await axios.post("/profile/save-photo", {
+  await window.axios.post("/profile/save-photo", {
     photo: image.value
   })
 
