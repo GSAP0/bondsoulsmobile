@@ -8,7 +8,7 @@
       </PageHeader>
 
     </ion-header>
-    <ion-content :fullscreen="true" class="app" :class="store.themeClass">
+    <ion-content :fullscreen="true" class="app">
       <div class="scroll">
         <div class="body">
           <!-- Accordions (περιεχόμενο από backend) -->

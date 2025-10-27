@@ -5,7 +5,6 @@
       <PageHeader :title="title" default-href="/dashboard" />
     </ion-header>
     <ion-content :fullscreen="true" class="ion-padding" :class="store.themeClass">
-
       <!-- Settings List (με theme ως γραμμή) -->
       <div class="list">
                 <!-- Plans highlight -->
@@ -58,12 +57,18 @@
         </div>
       </div>
     </ion-content>
+    <ion-footer>
+      <div class="text-center px-5 pb-5">
+        <ion-button @click="store.logout" color="danger" expand="block">Αποσύνδεση</ion-button>
+      </div>
+
+    </ion-footer>
   </ion-page>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
-import { IonPage, IonContent, IonToggle , IonHeader} from '@ionic/vue';
+import { IonPage, IonContent, IonToggle , IonHeader, IonButton} from '@ionic/vue';
 import {useGlobal} from "@/composables/useGlobal.js";
 import PageHeader from '@/components/PageHeader.vue';
 
@@ -73,7 +78,8 @@ const userIsPaid = false;
 const store = useGlobal()
 
 const toggleTheme = (ev) => {
-  store.currentTheme = !!ev.detail.checked ? 'dark' : 'light';
+  console.log('here')
+  store.currentTheme.value = !!ev.detail.checked ? 'dark' : 'light';
 };
 
 const showPaywall = ref(false);

@@ -142,8 +142,9 @@ export function useGlobal() {
 
     function logout() {
         localStorage.removeItem('user')
+        localStorage.removeItem('access_token')
         user.value = null
-        window.location = ``
+        window.location = `/`
     }
 
     async function submitReferralCode(referralCodeInput) {

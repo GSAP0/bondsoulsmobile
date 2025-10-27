@@ -4,7 +4,7 @@
       <PageHeader :title="title" default-href="/dashboard"/>
     </ion-header>
 
-    <ion-content :fullscreen="true" class="ion-padding" :class="themeClass">
+    <ion-content :fullscreen="true" class="ion-padding">
       <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
 
       <!-- Tabs -->
@@ -80,8 +80,8 @@ const tab = ref('axes');
 // Παίρνουμε ωμά τα δεδομένα από το store (αντικείμενο ή array)
 const rawRows = computed(() => {
   return tab.value === 'axes'
-      ? store.user.weights['Άξονες']
-      : store.user.weights['Αξίες'];
+      ? store.user.value.weights['Άξονες']
+      : store.user.value.weights['Αξίες'];
 });
 
 // Κανονικοποίηση σε [{ label, score }]
