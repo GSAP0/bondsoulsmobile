@@ -136,3 +136,4 @@ src/
 - **Store loading**: The app waits for `globalStore.load()` before rendering (see `App.vue`)
 - **Survey enforcement**: Users with incomplete required questions are auto-redirected to `/questions?required`
 - **Greek language**: UI is in Greek - maintain consistency when adding text
+- Αντι για ion-toolbar εχω φτιαξει ενα component @src\components\PageHeader.vue .
