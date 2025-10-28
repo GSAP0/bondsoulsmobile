@@ -14,20 +14,7 @@
       <div class="scroll">
         <div class="body">
           <!-- Accordions (περιεχόμενο από backend) -->
-          <ion-accordion-group class="group">
-            <ion-accordion
-                v-for="sec in store.faq"
-                :key="sec.id"
-                :value="sec.id"
-                class="card"
-            >
-              <ion-item slot="header" lines="none" class="card-header">
-                <div class="card-title">{{ sec.title }}</div>
-              </ion-item>
-
-              <div class="card-content" slot="content" v-html="sec.description"></div>
-            </ion-accordion>
-          </ion-accordion-group>
+          <FaqAccordion :faqs="store.faq.value"></FaqAccordion>
         </div>
       </div>
     </ion-content>
@@ -40,6 +27,7 @@ import {
 } from '@ionic/vue';
 import {useGlobal} from '@/composables/useGlobal.js';
 import PageHeader from '@/components/PageHeader.vue';
+import FaqAccordion from "@/components/instructions/FaqAccordion.vue";
 
 defineProps({
   headerTitle: {type: String, default: 'Γενικές Πληροφορίες'},
