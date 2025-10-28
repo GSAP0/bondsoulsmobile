@@ -18,22 +18,22 @@
       </div>
 
       <!-- Data -->
-      <div v-if="store.questions_unanswered.length > 0" class="px-2 py-8 text-center rounded-2xl" style="
+      <div v-if="questions_unanswered.length > 0" class="px-2 py-8 text-center rounded-2xl" :style="`
             position: absolute;
           top: 50%;
           left: 50%;
           text-shadow: 0 0 black;
-          background: white;
-          border: 1px solid black;
+          background: ${currentTheme === 'dark' ? '#0A0E1A' : 'white'};
+          border: 1px solid ${currentTheme === 'dark' ? '#0A0EFF' : 'black'};
           transform: translate(-50%);
           width: 70%;
-          z-index: 1;"
+          z-index: 1;`"
       >
         <ion-icon :icon="lockClosedSharp" style="font-size: 24px"></ion-icon>
         <p>Τα στατιστικά είναι διαθέσιμα αφού απαντηθούν όλες οι ερωτήσεις</p>
 
       </div>
-      <div class="body" :style="store.questions_unanswered.length > 0 ? 'filter: blur(7px);' : ''">
+      <div class="body" :style="questions_unanswered.length > 0 ? 'filter: blur(7px);' : ''">
         <div v-if="normalizedRows.length===0" class="loading">Φόρτωση…</div>
         <div
             v-for="(r,i) in normalizedRows"
@@ -77,14 +77,19 @@ const brand = {
 const title = 'Το προφίλ μου';
 
 const store = useGlobal();
+const {
+  currentTheme,
+  user,
+  questions_unanswered
+} = store
 
 const tab = ref('axes');
 
 // Παίρνουμε ωμά τα δεδομένα από το store (αντικείμενο ή array)
 const rawRows = computed(() => {
   return tab.value === 'axes'
-      ? store.user.value.weights['Άξονες']
-      : store.user.value.weights['Αξίες'];
+      ? user.value.weights['Άξονες']
+      : user.value.weights['Αξίες'];
 });
 
 // Κανονικοποίηση σε [{ label, score }]
