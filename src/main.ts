@@ -2,8 +2,8 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import router from './router';
 import axios from 'axios'
-import { register } from 'swiper/element/bundle';
-import { Capacitor } from '@capacitor/core';
+import {register} from 'swiper/element/bundle';
+import {Capacitor} from '@capacitor/core';
 
 register()
 
@@ -64,29 +64,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 window.axios.defaults.withCredentials = true
 window.axios.defaults.baseURL = apiBaseUrl
 
-try {
-    const response = await axios.get(`/user`)
-    if (response.status === 200 && response.data) {
-        localStorage.setItem('user', JSON.stringify(response.data))
-
-        // Send FCM token to backend if on native platform and token exists
-        if (Capacitor.isNativePlatform()) {
-            const fcmToken = localStorage.getItem('fcm_token');
-            if (fcmToken) {
-                try {
-                    const { useFcmToken } = await import('@/composables/useFcmToken');
-                    const { sendToBackend } = useFcmToken();
-                    await sendToBackend('/fcm-token');
-                    console.log('FCM token sent to backend on app startup');
-                } catch (fcmError) {
-                    console.error('Failed to send FCM token on startup:', fcmError);
-                }
-            }
-        }
-    }
-}catch(e){
-    localStorage.removeItem('user')
-}
 
 const wsHost = reverbHost || 'localhost';
 const wsPort = reverbPort || 8080;
@@ -113,13 +90,35 @@ try {
             },
         },
     })
-}catch(e){}
+} catch (e) {
+}
+
+try {
+    const response = await axios.get(`/user`)
+    if (response.status === 200 && response.data) {
+        localStorage.setItem('user', JSON.stringify(response.data))
+
+        // Send FCM token to backend if on native platform and token exists
+        if (Capacitor.isNativePlatform()) {
+            const fcmToken = localStorage.getItem('fcm_token');
+            if (fcmToken) {
+                try {
+                    const {useFcmToken} = await import('@/composables/useFcmToken');
+                    const {sendToBackend} = useFcmToken();
+                    await sendToBackend('/fcm-token');
+                    console.log('FCM token sent to backend on app startup');
+                } catch (fcmError) {
+                    console.error('Failed to send FCM token on startup:', fcmError);
+                }
+            }
+        }
+    }
+} catch (e) {
+    localStorage.removeItem('user')
+}
 
 const app = createApp(App)
-    .use(IonicVue, {
-
-
-    })
+    .use(IonicVue, {})
     .use(router);
 
 router.isReady().then(() => {
