@@ -27,7 +27,7 @@
                   <div class="row-right">
                     <template v-if="item.key === 'theme'">
                       <ion-toggle
-                          :checked="store.currentTheme === 'dark'"
+                          :checked="store.currentTheme.value === 'dark'"
                           @ionChange="toggleTheme"
                           class="toggle"
                       />
@@ -78,7 +78,6 @@ const userIsPaid = false;
 const store = useGlobal()
 
 const toggleTheme = (ev) => {
-  console.log('here')
   store.currentTheme.value = !!ev.detail.checked ? 'dark' : 'light';
 };
 

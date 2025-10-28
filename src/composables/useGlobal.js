@@ -189,6 +189,14 @@ export function useGlobal() {
         return chatbubbleEllipsesOutline
     }
 
+    async function handleRefresh(event){
+        await loadUser()
+        await load()
+
+        console.log(event)
+        event.target.complete();
+    }
+
     return {
         needsRefresh,
         answers,
@@ -210,6 +218,7 @@ export function useGlobal() {
         tesPercentage,
         logo,
 
+        handleRefresh,
         getBadgeIcon,
         submitReferralCode,
         logout,

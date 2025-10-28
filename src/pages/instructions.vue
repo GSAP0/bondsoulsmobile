@@ -6,9 +6,11 @@
         {{ headerTitle }}
         <div class="subtitle">{{ headerSubtitle }}</div>
       </PageHeader>
-
     </ion-header>
     <ion-content :fullscreen="true" class="app">
+      <ion-refresher slot="fixed" @ionRefresh="store.handleRefresh">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
       <div class="scroll">
         <div class="body">
           <!-- Accordions (περιεχόμενο από backend) -->
@@ -34,7 +36,7 @@
 
 <script setup>
 import {
-  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem, IonHeader
+  IonPage, IonContent, IonAccordionGroup, IonAccordion, IonItem, IonHeader, IonRefresherContent, IonRefresher
 } from '@ionic/vue';
 import {useGlobal} from '@/composables/useGlobal.js';
 import PageHeader from '@/components/PageHeader.vue';

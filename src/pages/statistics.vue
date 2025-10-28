@@ -5,6 +5,10 @@
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">
+      <ion-refresher slot="fixed" @ionRefresh="store.handleRefresh">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
       <div>Πώς ξεχωρίζει το προφίλ σου ανάμεσα στους υπόλοιπους</div>
 
       <!-- Tabs -->
@@ -57,7 +61,7 @@
 <script setup>
 import {ref, computed} from 'vue';
 import {lockClosedSharp} from "ionicons/icons";
-import {IonPage, IonContent, IonHeader, IonIcon} from '@ionic/vue';
+import {IonPage, IonContent, IonHeader, IonIcon, IonRefresher, IonRefresherContent} from '@ionic/vue';
 import {useGlobal} from '@/composables/useGlobal.js';
 import PageHeader from '@/components/PageHeader.vue';
 
@@ -73,7 +77,6 @@ const brand = {
 const title = 'Το προφίλ μου';
 
 const store = useGlobal();
-const {themeClass} = store;
 
 const tab = ref('axes');
 

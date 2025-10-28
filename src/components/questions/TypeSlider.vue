@@ -1,9 +1,9 @@
 <template>
   <div style="width: 100%;">
-    <div class="bg-white rounded-2xl w-[]" style="width: 100%;">
+    <div class="rounded-2xl" style="width: 100%;">
       <div v-if="extra.multiple"></div>
       <div v-else class="px-1 py-4">
-        <div class="text-black">
+        <div class="">
           <div class="flex justify-between align-bottom">
             <div>
               <div v-if="extra.options?.min_label && extra.options?.min_label">

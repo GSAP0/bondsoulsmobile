@@ -12,7 +12,7 @@
               Ερωτηματολόγιο
             </PageHeader>
 
-            <hr style="background: rgba(0,0,0,0.1)" />
+            <hr style="background: rgba(0,0,0,0.1)"/>
 
             <!-- Question Card -->
             <div v-if="loading" class="loading">
@@ -33,7 +33,7 @@
           </div>
         </div>
       </ion-content>
-      <ion-footer class="px-3 pb-3 bg-white">
+      <ion-footer class="px-3 pb-3">
         <!-- Progress Bar -->
         <div class="my-4 px-3">
           <div class="progress-label">Πρόοδος</div>
@@ -42,17 +42,7 @@
           </div>
         </div>
 
-        <!-- Navigation Buttons -->
         <div class="nav-buttons">
-          <!--              <ion-button-->
-          <!--                fill="clear"-->
-          <!--                :disabled="!prevQuestion"-->
-          <!--                @click="handlePrev"-->
-          <!--                class="nav-btn"-->
-          <!--              >-->
-          <!--                <ion-icon :icon="arrowBackCircle"></ion-icon>-->
-          <!--              </ion-button>-->
-
           <ion-button
               @click="handleNext"
               :disabled="answer.length === 0 || loading"
@@ -65,7 +55,7 @@
         </div>
 
         <!-- Skip/Return Buttons -->
-        <div v-if="globalStore.questions_unanswered_required.length === 0" class="action-buttons">
+        <div v-if="globalStore.questions_unanswered_required.value.length === 0" class="action-buttons">
           <ion-button
               @click="$router.replace('/dashboard')"
               fill="outline"
@@ -94,6 +84,12 @@ import TypeCalendar from "@/components/questions/TypeCalendar.vue";
 import PageHeader from "@/components/PageHeader.vue";
 
 const globalStore = useGlobal()
+const {
+  answers,
+  total_answered,
+  questions
+} = globalStore
+
 const route = useRoute()
 
 const required = route.query.hasOwnProperty('required')
@@ -104,12 +100,12 @@ const loading = ref(false)
 const currentQuestion = ref(null)
 
 const percentage = computed(() => {
-  return globalStore.total_answered / globalStore.questions.length
+  return total_answered.value / questions.value.length
 })
 
 function assignAnswer() {
   answer.value = []
-  answer.value = JSON.parse(JSON.stringify(globalStore.answers.filter(ans => ans.question_id === currentQuestion.value.uuid)))
+  answer.value = JSON.parse(JSON.stringify(answers.value.filter(ans => ans.question_id === currentQuestion.value.uuid)))
       .map(ans => ans.answer)
 }
 
