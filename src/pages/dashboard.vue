@@ -63,9 +63,9 @@
             </ion-item>
           </div>
 
-          <div class="section-container">
+          <div class="section-container" v-if="unansweredCount > 0 ">
             <div class="section-header">ΕΡΩΤΗΜΑΤΟΛΟΓΙΟ</div>
-            <ion-item button @click="() => unansweredCount > 0 ? $router.push('/questions') : null" class="rounded-item">
+            <ion-item button @click="$router.push('/questions')" class="rounded-item">
               <ion-icon :icon="listOutline" slot="start"/>
               <ion-label>
                 <h2>Επόμενες ερωτήσεις</h2>
