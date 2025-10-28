@@ -29,7 +29,7 @@ const router = useIonRouter();
 
 const handleBack = () => {
   if (router.canGoBack()) {
-    router.navigate('/dashboard', 'back', 'replace');
+    router.back();
   } else {
     router.replace(props.defaultHref);
   }

@@ -45,23 +45,13 @@ import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
 
-// Environment-specific configuration
+// Environment-specific configuration (loaded from .env.development or .env.production)
 const isProduction = import.meta.env.PROD;
-const apiBaseUrl = isProduction
-    ? import.meta.env.VITE_API_BASE_URL_PROD
-    : import.meta.env.VITE_API_BASE_URL;
-const reverbAppKey = isProduction
-    ? import.meta.env.VITE_REVERB_APP_KEY_PROD
-    : import.meta.env.VITE_REVERB_APP_KEY;
-const reverbHost = isProduction
-    ? import.meta.env.VITE_REVERB_HOST_PROD
-    : import.meta.env.VITE_REVERB_HOST;
-const reverbPort = isProduction
-    ? import.meta.env.VITE_REVERB_PORT_PROD
-    : import.meta.env.VITE_REVERB_PORT;
-const reverbScheme = isProduction
-    ? import.meta.env.VITE_REVERB_SCHEME_PROD
-    : import.meta.env.VITE_REVERB_SCHEME;
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const reverbAppKey = import.meta.env.VITE_REVERB_APP_KEY;
+const reverbHost = import.meta.env.VITE_REVERB_HOST;
+const reverbPort = import.meta.env.VITE_REVERB_PORT;
+const reverbScheme = import.meta.env.VITE_REVERB_SCHEME;
 
 
 const token = localStorage.getItem('access_token')

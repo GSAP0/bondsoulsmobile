@@ -12,13 +12,13 @@
         <h5 class="font-medium! ml-3 py-3 mt-3! mb-2! border-b-1 border-b-gray-100">Ειδοποιήσεις</h5>
         <div v-if="!user?.notifications || user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>
 
-        <div class="notif-list" v-if="user?.notifications">
-          <div v-for="(n, i) in user.notifications" :key="i" class="notif-item mb-2">
+        <div class="notif-list">
+          <div v-for="(n, i) in user.notifications" :key="i" class="notif-item mb-2" @click="open = false;$router.push(`/notification?id=${n.id}`)">
             <div class="notif-icon">{{ getIcon(n.type) }}</div>
             <div>
               <div class="notif-title">{{ getTitle(n.type) }}</div>
               <div>{{ getSubtitle(n) }}</div>
-              <div class="notif-meta">{{ n.created_at }}</div>
+              <div class="notif-meta">{{ formatDateTime(n.created_at) }}</div>
             </div>
           </div>
         </div>
@@ -29,12 +29,14 @@
 
 
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import {ref} from 'vue'
 import {useGlobal} from "@/composables/useGlobal";
 import {IonModal} from "@ionic/vue";
+import { formatDateTime } from "@/helpers";
 
 const globalStore = useGlobal()
 const {currentTheme, user} = globalStore
+
 
 type NotifType = 'match_found' | 'user_rating' | 'admin_custom' | 'other'
 

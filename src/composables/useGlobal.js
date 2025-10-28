@@ -3,6 +3,7 @@ import {useRouter} from "vue-router";
 import {useLocalStorage} from "@vueuse/core";
 import moment from "moment";
 import {chatbubbleEllipsesOutline, shieldCheckmarkOutline, sparklesOutline, trophyOutline} from "ionicons/icons";
+import {toastController} from "@ionic/vue";
 
 // Initialize user from localStorage
 const storedUser = localStorage.getItem('user')
@@ -119,6 +120,28 @@ export function useGlobal() {
         faq.value = res.data
     }
 
+    async function showNotificationToast(notification) {
+        const toast = await toastController.create({
+            message: 'Έχετε μια νέα ειδοποίηση!',
+            duration: 5000,
+            position: 'top',
+            color: 'primary',
+            buttons: [
+                {
+                    text: 'Δείτε',
+                    handler: () => {
+                        router.push(`/notification?id=${notification.id}`)
+                    }
+                },
+                {
+                    text: 'Κλείσιμο',
+                    role: 'cancel'
+                }
+            ]
+        })
+        await toast.present()
+    }
+
     async function load() {
         await Promise.all([
             loadQuestions(),
@@ -128,11 +151,13 @@ export function useGlobal() {
         ])
 
         if (window.echo && user.value?.uuid) {
-            window.echo.private(`App.Models.MobileUser.${user.value.uuid}`).notification((notification) => {
+            window.echo.private(`App.Models.MobileUser.${user.value.uuid}`)
+                .notification((notification) => {
                 if (user.value?.notifications) {
                     user.value.notifications.push(notification)
                 }
                 console.log(notification)
+                showNotificationToast(notification)
             })
         }
 
