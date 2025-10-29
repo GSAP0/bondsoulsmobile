@@ -17,6 +17,7 @@ export function usePushNotifications() {
 
             if (permStatus.receive === 'granted') {
                 console.log('Push notification permission granted');
+
                 // Register with Apple / Google to receive push via APNS/FCM
                 await PushNotifications.register();
             } else {
@@ -27,6 +28,7 @@ export function usePushNotifications() {
             // On success, we should be able to receive notifications
             await PushNotifications.addListener('registration', async (token) => {
                 console.log('Push registration success, token: ' + token.value);
+
                 // Store token locally (will be sent to backend after login)
                 localStorage.setItem('fcm_token', token.value);
                 console.log('FCM token stored locally, will be sent after user login');
@@ -40,6 +42,16 @@ export function usePushNotifications() {
             // Show us the notification payload if the app is open on our device
             await PushNotifications.addListener('pushNotificationReceived', async (notification) => {
                 console.log('Push notification received: ', notification);
+
+                // Update global store if needed
+                // For example, reload user data or specific data based on notification type
+                if (notification.data?.refresh_data) {
+                    try {
+                        await globalStore.load();
+                    } catch (error) {
+                        console.error('Failed to refresh data:', error);
+                    }
+                }
 
                 // You can show a toast or alert here if needed
                 // For example using Ionic's ToastController
@@ -57,6 +69,15 @@ export function usePushNotifications() {
                         await router.push(data.route);
                     } catch (error) {
                         console.error('Failed to navigate:', error);
+                    }
+                }
+
+                // Update global store if needed
+                if (data?.refresh_data) {
+                    try {
+                        await globalStore.load();
+                    } catch (error) {
+                        console.error('Failed to refresh data:', error);
                     }
                 }
             });
