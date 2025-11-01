@@ -1,14 +1,14 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="ion-padding app">
-      <div class="frame">
-        <div class="scroll">
-          <div class="body">
-            <div class="title">Επιβεβαίωση κωδικού OTP</div>
+      <div class="">
+        <div class="">
+          <div class="">
+            <div class="title text-center">Επιβεβαίωση κωδικού OTP</div>
             <div class="subtitle">Πληκτρολόγησε ή κάνε επικόλληση τον 6ψήφιο κωδικό που λάβαμε με SMS.</div>
 
             <!-- Card -->
-            <div class="card">
+            <div style="background:  var(--rowBg)">
               <!-- Single OTP Input -->
               <ion-input
                   v-model="otpCode"
@@ -37,12 +37,13 @@
           </div>
         </div>
 
-        <!-- CTA -->
-        <ion-button expand="block" class="cta" @click="verifyOtp" :disabled="otpCode.length !== 6">
-          <span class="text-white!">Συνέχεια</span>
-        </ion-button>
       </div>
     </ion-content>
+    <ion-footer>
+      <ion-button expand="block" class="cta" @click="verifyOtp" :disabled="otpCode.length !== 6">
+        <span class="text-white!">Συνέχεια</span>
+      </ion-button>
+    </ion-footer>
   </ion-page>
 </template>
 
@@ -155,12 +156,10 @@ watch(tick, (value) => {
 
 /* Single OTP Input */
 .otp-single {
-  --background: rgba(255,255,255,0.03);
-  --color: #F5F7FA;
   --padding-start: 16px;
   --inner-padding-end: 16px;
   --border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
+  border: 1px solid var(--bg);
   text-align: center;
   font-size: 24px;
   height: 56px;
@@ -174,6 +173,7 @@ watch(tick, (value) => {
   gap: 10px;
   margin-top: 6px;
 }
+
 .timer { font-weight: 700; letter-spacing: .5px; }
 .hint { font-size: 12px; opacity: .7; }
 
@@ -190,10 +190,5 @@ watch(tick, (value) => {
   transform: translateX(-50%);
   bottom: 20px;
   width: 340px;
-  border-radius: 9999px;
-  --background: linear-gradient(90deg, #0A84FF, #FF2D55);
-  --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);
-  --box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  font-weight: 700;
 }
 </style>

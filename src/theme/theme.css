@@ -693,9 +693,9 @@ ion-fab-button ion-icon {
 /* ==================== CTA ==================== */
 
 .cta {
-    @apply sticky z-10;
-    bottom: 10px;
-    left: 5px;
-    right: 5px;
-    padding: 0 5px;
+    border-radius: 9999px;
+    --background: linear-gradient(90deg, #0A84FF, #FF2D55);
+    --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    font-weight: 700;
 }

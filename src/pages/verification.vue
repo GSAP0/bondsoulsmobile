@@ -4,13 +4,13 @@
       <div class="">
         <div class="">
           <div class="">
-            <div class="title">Επιβεβαίωση τηλεφώνου</div>
+            <div class="title text-center ">Επιβεβαίωση τηλεφώνου</div>
             <div class="subtitle">
               Συμπλήρωσε τον αριθμό σου. Αν έχεις κωδικό πρόσκλησης, βάλε τον από κάτω.
             </div>
 
             <!-- Card -->
-            <div class="card">
+            <div class="">
               <!-- Τηλέφωνο -->
               <ion-item lines="none" class="input-row">
                 <ion-select v-model="countryCode" interface="popover" class="cc">
@@ -20,7 +20,7 @@
                     v-model="phoneNumber"
                     type="tel"
                     placeholder="6900000000"
-                    class="phone"
+                    class="ml-2"
                     autofocus
                 />
               </ion-item>
@@ -90,34 +90,6 @@ const verifyPhone = async () => {
 </script>
 
 <style scoped>
-
-.app {
-  --ion-background-color: #0A0E1A;
-  display: grid;
-  place-items: center;
-}
-
-.frame {
-  width: 100%;
-  height: 780px;
-  border-radius: 44px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, .4);
-  background: #0a0e1a;
-}
-
-.scroll {
-  height: 100%;
-  overflow-y: auto;
-  padding-bottom: 120px;
-}
-
-.body {
-  padding: 32px 20px;
-  color: #F5F7FA;
-}
-
 .title {
   font-size: 22px;
   font-weight: 700;
@@ -130,16 +102,7 @@ const verifyPhone = async () => {
   margin-bottom: 20px;
 }
 
-.card {
-  background: #0E111A;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 16px;
-}
-
 .input-row {
-  --background: transparent;
-  --color: #F5F7FA;
   --padding-start: 8px;
   --inner-padding-end: 8px;
   width: 100%;
@@ -149,36 +112,10 @@ const verifyPhone = async () => {
   margin-top: 4px;
 }
 
-.mt-3 {
-  margin-top: 14px;
-}
-
-.cc {
-  min-width: 92px;
-}
-
-.phone {
-  margin-left: 8px;
-}
-
 .help {
   display: block;
   margin: 6px 6px 2px;
-  color: rgba(255, 255, 255, 0.7);
   font-size: 12px;
-}
-
-.cta {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 20px;
-  width: 340px;
-  border-radius: 9999px;
-  --background: linear-gradient(90deg, #0A84FF, #FF2D55);
-  --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);
-  --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-  font-weight: 700;
 }
 </style>
 
