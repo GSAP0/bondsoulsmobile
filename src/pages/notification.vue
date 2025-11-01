@@ -1,7 +1,9 @@
 <template>
   <ion-page>
     <ion-header>
-      <PageHeader title="Ειδοποίηση" default-href="/dashboard"/>
+      <ion-toolbar>
+        <PageHeader title="Ειδοποίηση" default-href="/dashboard"/>
+      </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">
@@ -36,7 +38,7 @@ import {
 
 import {useGlobal} from '@/composables/useGlobal'
 import PageHeader from '@/components/PageHeader.vue'
-import { formatDateTime } from '@/helpers.js'
+import {formatDateTime} from '@/helpers.js'
 
 const router = useRouter()
 const route = useRoute()

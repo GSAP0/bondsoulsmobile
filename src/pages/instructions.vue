@@ -2,10 +2,12 @@
 <template>
   <ion-page>
     <ion-header>
-      <PageHeader default-href="/dashboard">
-        {{ headerTitle }}
-        <div class="subtitle">{{ headerSubtitle }}</div>
-      </PageHeader>
+      <ion-toolbar>
+        <PageHeader default-href="/dashboard">
+          {{ headerTitle }}
+          <div class="subtitle">{{ headerSubtitle }}</div>
+        </PageHeader>
+      </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true" class="app">
       <ion-refresher slot="fixed" @ionRefresh="store.handleRefresh">

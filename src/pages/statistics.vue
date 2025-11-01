@@ -1,7 +1,9 @@
 <template>
   <ion-page>
     <ion-header>
-      <PageHeader :title="title" default-href="/dashboard"/>
+      <ion-toolbar>
+        <PageHeader :title="title" default-href="/dashboard"/>
+      </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">

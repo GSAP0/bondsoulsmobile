@@ -185,10 +185,12 @@ onActivated(() => {
 })
 
 function findMatch() {
-  if (user.value?.match_id) {
+  if (user.value.match_id) {
     router.push('/chat')
+  } else if (user.value.active){
+    router.push('/searching')
   } else {
-    router.push('/match_filters')
+    router.push('/match_filters_new')
   }
 }
 

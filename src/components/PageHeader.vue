@@ -1,8 +1,10 @@
 <template>
-  <div class="header">
-    <button class="back" v-if="hasBack" @click="handleBack">‹</button>
+  <div class="header pt-4">
+    <button class="back" v-if="hasBack" @click="handleBack" :disabled>‹</button>
     <div v-else></div>
-    <div class="title"><slot>{{ title }}</slot></div>
+    <div class="title">
+      <slot>{{ title }}</slot>
+    </div>
     <div></div>
   </div>
 </template>
@@ -11,6 +13,11 @@
 import {useIonRouter} from "@ionic/vue";
 
 const props = defineProps({
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   title: {
     type: String,
     required: false
@@ -42,7 +49,6 @@ const handleBack = () => {
   grid-template-columns: 40px 1fr 40px;
   align-items: center;
   gap: 10px;
-  padding: 10px 6px;
 }
 
 .back {

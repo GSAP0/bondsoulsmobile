@@ -54,6 +54,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/pages/match_filters.vue')
     },
     {
+        path: '/match_filters_new',
+        component: () => import('@/pages/matchi_filters_new.vue')
+    },
+    {
+        path: '/searching',
+        component: () => import('@/pages/searching.vue')
+    },
+    {
         path: '/settings',
         component: () => import('@/pages/settings.vue')
     },

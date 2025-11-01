@@ -167,10 +167,10 @@ h1,h2,h3,h4,h5{
     @apply px-4 py-2;
 }
 
+
 .section-header {
-    @apply text-xs font-semibold tracking-wide uppercase mb-2 px-1;
+    @apply text-xs font-semibold tracking-wide mb-2 px-1;
     color: var(--muted);
-    letter-spacing: 1px;
 }
 
 /* ==================== Profile Components ==================== */
