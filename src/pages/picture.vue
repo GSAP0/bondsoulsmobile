@@ -1,10 +1,14 @@
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="app ion-padding" style="background: none !important;">
-      <PageHeader v-if="!optional">
-        Φωτογραφία χρήστη
-      </PageHeader>
-      <div style="height: calc(100vh - 100px); overflow: hidden">
+    <ion-header v-if="!optional">
+      <ion-toolbar>
+        <PageHeader>
+          Φωτογραφία χρήστη
+        </PageHeader>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content :fullscreen="true" class="app ion-padding">
+      <div style="">
         <div class="content-wrapper">
           <div class="content">
             <div class="flex justify-center items-center">
@@ -46,7 +50,8 @@
                 </div>
               </div>
             </div>
-            <div v-if="optional" class="text-4xl mb-4 mt-5 text-center" style="color: #ad98cf;">Ένα βήμα έμεινε ακόμα</div>
+            <div v-if="optional" class="text-4xl mb-4 mt-5 text-center" style="color: #ad98cf;">Ένα βήμα έμεινε ακόμα
+            </div>
             <div class="text-lg mb-10 mt-5 text-center">Ανέβασε μια προσωπική φωτογραφία σου Θυμήσου ότι όπως και
               εσύ, το ταίρι σου θα επιθυμούσε να δει τον πραγματικό σου
               εαυτό.
@@ -55,12 +60,14 @@
         </div>
         <div class="flex flex-col px-5" v-if="!image">
           <ion-button class="mb-3" @click="takePicture">Λήψη φωτογραφίας</ion-button>
+          <ion-button class="mb-3" @click="selectFromGallery" fill="outline">Επιλογή από συλλογή</ion-button>
           <ion-button v-if="optional" @click="finish" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
 
         </div>
         <div class="flex flex-col px-5" v-else>
           <ion-button @click="savePhoto" style="" class="mb-3">Ολοκλήρωση</ion-button>
-          <ion-button v-if="!optional" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας</ion-button>
+          <ion-button v-if="!optional" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας
+          </ion-button>
         </div>
       </div>
     </ion-content>
@@ -97,7 +104,7 @@ const image = ref(JSON.parse(JSON.stringify(globalStore.user.value.image)))
 const loading = ref(false)
 
 const test = useTest()
-const { x } = test
+const {x} = test
 
 const takePicture = async () => {
   try {
@@ -111,6 +118,21 @@ const takePicture = async () => {
     await uploadImage(photo.base64String, photo.format);
   } catch (error) {
     console.error("Error taking picture:", error);
+  }
+};
+
+const selectFromGallery = async () => {
+  try {
+    const photo = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Base64,
+      source: CameraSource.Photos
+    });
+
+    await uploadImage(photo.base64String, photo.format);
+  } catch (error) {
+    console.error("Error selecting from gallery:", error);
   }
 };
 
@@ -139,7 +161,7 @@ async function savePhoto(shouldFinish = true) {
   await globalStore.loadUser()
   await nextTick()
 
-  if(shouldFinish) {
+  if (shouldFinish) {
     finish()
   }
 
@@ -151,7 +173,7 @@ function finish() {
   router.replace('/dashboard')
 }
 
-function deletePhoto(){
+function deletePhoto() {
   image.value = null
   savePhoto(false)
 }
