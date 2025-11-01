@@ -34,6 +34,7 @@
                     :key="i"
                     :color="badge.active ? 'primary' : 'medium'"
                     :outline="!badge.active"
+                    @click="showBadgeInfo(badge)"
                 >
                   <ion-icon :icon="getBadgeIcon(badge.name)"/>
                   <!--                    <ion-label>{{ badge.name }}</ion-label>-->
@@ -125,6 +126,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   onIonViewDidEnter,
+  alertController,
 } from '@ionic/vue'
 
 import {
@@ -192,6 +194,17 @@ function findMatch() {
   } else {
     router.push('/match_filters_new')
   }
+}
+
+async function showBadgeInfo(badge) {
+  const alert = await alertController.create({
+    header: badge.name,
+    message: badge.description,
+    buttons: ['OK'],
+    cssClass: 'badge-info-alert'
+  })
+
+  await alert.present()
 }
 
 const brand = {

@@ -7,7 +7,9 @@
       "Bash(npm run build:*)",
       "Bash(npx @capacitor/assets:*)",
       "Bash(npm install:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:danielsogl.gitbook.io)"
     ],
     "deny": [],
     "ask": []

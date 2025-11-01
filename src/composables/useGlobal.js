@@ -86,9 +86,9 @@ export function useGlobal() {
         if (!user.value) return []
 
         const badges = [
-            {name: 'Active', active: total_answered.value > 0},
-            {name: 'Verified', active: user.value?.verified || false},
-            {name: 'Respected', active: total_answered.value > 20},
+            {name: 'Ενεργός', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: total_answered.value > 0},
+            {name: 'Επαληθευμένος', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: user.value?.verified || false},
+            {name: 'Respected', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: total_answered.value > 20},
         ]
         const activeCount = badges.filter(b => b.active).length
         return badges.filter(b => b.active || activeCount < 2)
