@@ -7,38 +7,66 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true" class="ion-padding" :class="store.themeClass">
-      <!-- Settings List (με theme ως γραμμή) -->
+      <!-- Settings List -->
       <div class="list">
-        <!-- Plans highlight -->
-        <button
-            v-for="item in listWithTheme"
-            :key="item.key"
-            type="button"
-            @click="onRowClick(item)"
-            class="row"
-            :class="{
-                    plans: item.key === 'plans',
-                    locked: item.requiresPaid && !userIsPaid,
-                    control: item.key === 'theme'
-                  }"
-            :aria-disabled="item.key === 'theme' ? 'true' : undefined"
-        >
-          <div class="row-title">{{ item.title }}</div>
-
-          <!-- Right side: είτε arrow είτε toggle είτε lock -->
+        <!-- Plans -->
+        <button type="button" @click="onPlans" class="row plans">
+          <div class="row-title">Πακέτα subscription</div>
           <div class="row-right">
-            <template v-if="item.key === 'theme'">
-              <ion-toggle
-                  :checked="store.currentTheme.value === 'dark'"
-                  @ionChange="toggleTheme"
-                  class="toggle"
-              />
-            </template>
+            <span class="row-arrow">›</span>
+          </div>
+        </button>
 
-            <template v-else>
-              <span v-if="item.requiresPaid && !userIsPaid" class="lock" aria-hidden="true">🔒</span>
-              <span v-else class="row-arrow">›</span>
-            </template>
+        <!-- Invite -->
+        <button type="button" @click="onInvite" class="row">
+          <div class="row-title">Προσκάλεσε φίλους <br> <small>Κωδικός πρόσκλησης: {{ store.user.value.referral_code }}</small></div>
+        </button>
+
+        <!-- Theme -->
+        <button type="button" class="row control" aria-disabled="true">
+          <div class="row-title">Dark mode</div>
+          <div class="row-right">
+            <ion-toggle
+                :checked="store.currentTheme.value === 'dark'"
+                @ionChange="toggleTheme"
+                class="toggle"
+            />
+          </div>
+        </button>
+
+        <!-- Interests -->
+        <button type="button" @click="onInterests" class="row" :class="{ locked: !userIsPaid }">
+          <div class="row-title">Ενδιαφέροντα</div>
+          <div class="row-right">
+            <span v-if="!userIsPaid" class="lock" aria-hidden="true">🔒</span>
+            <span v-else class="row-arrow">›</span>
+          </div>
+        </button>
+
+        <!-- Bio -->
+        <button type="button" @click="onBio" class="row" :class="{ locked: !userIsPaid }">
+          <div class="row-title">Σχετικά με εμένα</div>
+          <div class="row-right">
+            <span v-if="!userIsPaid" class="lock" aria-hidden="true">🔒</span>
+            <span v-else class="row-arrow">›</span>
+          </div>
+        </button>
+
+        <!-- Location -->
+        <button type="button" @click="onLocation" class="row" :class="{ locked: !userIsPaid }">
+          <div class="row-title">Τοποθεσία</div>
+          <div class="row-right">
+            <span v-if="!userIsPaid" class="lock" aria-hidden="true">🔒</span>
+            <span v-else class="row-arrow">›</span>
+          </div>
+        </button>
+
+        <!-- Username -->
+        <button type="button" @click="onUsername" class="row" :class="{ locked: !userIsPaid }">
+          <div class="row-title">Επεξεργασία Username</div>
+          <div class="row-right">
+            <span v-if="!userIsPaid" class="lock" aria-hidden="true">🔒</span>
+            <span v-else class="row-arrow">›</span>
           </div>
         </button>
       </div>
@@ -61,7 +89,7 @@
     </ion-content>
     <ion-footer>
       <div class="text-center px-5 pb-5">
-        <ion-button @click="store.logout" color="danger" expand="block">Αποσύνδεση</ion-button>
+        <ion-button @click="confirmLogout" color="danger" expand="block">Αποσύνδεση</ion-button>
       </div>
 
     </ion-footer>
@@ -70,7 +98,7 @@
 
 <script setup>
 import {ref, computed} from 'vue';
-import {IonPage, IonContent, IonToggle, IonHeader, IonButton} from '@ionic/vue';
+import {IonPage, IonContent, IonToggle, IonHeader, IonButton, alertController} from '@ionic/vue';
 import {useGlobal} from "@/composables/useGlobal.js";
 import PageHeader from '@/components/PageHeader.vue';
 
@@ -86,47 +114,81 @@ const toggleTheme = (ev) => {
 const showPaywall = ref(false);
 const payItem = ref(null);
 
-const settingsItems = [
-  {key: 'plans', title: 'Πακέτα subscription'},
-  {key: 'invite', title: 'Προσκάλεσε φίλους'},
-  {key: 'interests', title: 'Ενδιαφέροντα', requiresPaid: true},
-  {key: 'bio', title: 'Σχετικά με εμένα', requiresPaid: true},
-  {key: 'location', title: 'Τοποθεσία', requiresPaid: true},
-  {key: 'username', title: 'Επεξεργασία Username', requiresPaid: true},
-];
-
-// Προσθήκη theme ως κανονική γραμμή στη λίστα (μετά τα plans)
-const listWithTheme = computed(() => {
-  const arr = [...settingsItems];
-  const themeRow = {key: 'theme', title: 'Dark mode'};
-  // βάλε στη 2η θέση αν υπάρχει plans πρώτο
-  const plansIdx = arr.findIndex(i => i.key === 'invite');
-  if (plansIdx >= 0) arr.splice(plansIdx + 1, 0, themeRow);
-  else arr.unshift(themeRow);
-  return arr;
-});
-
-const onStub = (name) => alert(name);
 const triggerPaywall = (title) => {
   payItem.value = title;
   showPaywall.value = true;
 };
 
-const onRowClick = (item) => {
-  if (item.key === 'theme') return; // δεν είναι clickable
-  if (item.requiresPaid && !userIsPaid) {
-    triggerPaywall(item.title);
+const onPlans = () => {
+  // TODO: Navigate to plans page
+  console.log('Πακέτα subscription');
+};
+
+const onInvite = () => {
+  // TODO: Navigate to invite friends page
+  console.log('Προσκάλεσε φίλους');
+};
+
+const onInterests = () => {
+  if (!userIsPaid) {
+    triggerPaywall('Ενδιαφέροντα');
     return;
   }
-  if (item.key === 'plans') {
-    onStub('Πακέτα subscription');
+  // TODO: Navigate to interests page
+  console.log('Ενδιαφέροντα');
+};
+
+const onBio = () => {
+  if (!userIsPaid) {
+    triggerPaywall('Σχετικά με εμένα');
     return;
   }
-  onStub(item.title);
+  // TODO: Navigate to bio page
+  console.log('Σχετικά με εμένα');
+};
+
+const onLocation = () => {
+  if (!userIsPaid) {
+    triggerPaywall('Τοποθεσία');
+    return;
+  }
+  // TODO: Navigate to location page
+  console.log('Τοποθεσία');
+};
+
+const onUsername = () => {
+  if (!userIsPaid) {
+    triggerPaywall('Επεξεργασία Username');
+    return;
+  }
+  // TODO: Navigate to username edit page
+  console.log('Επεξεργασία Username');
 };
 
 const goPlans = () => {
   showPaywall.value = false;
-  onStub('Πακέτα subscription');
+  onPlans();
+};
+
+const confirmLogout = async () => {
+  const alert = await alertController.create({
+    header: 'Αποσύνδεση',
+    message: 'Είστε σίγουροι ότι θέλετε να αποσυνδεθείτε;',
+    buttons: [
+      {
+        text: 'Άκυρο',
+        role: 'cancel'
+      },
+      {
+        text: 'Αποσύνδεση',
+        role: 'confirm',
+        handler: () => {
+          store.logout();
+        }
+      }
+    ]
+  });
+
+  await alert.present();
 };
 </script>
