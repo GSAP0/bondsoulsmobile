@@ -1,18 +1,23 @@
 <template>
-  <ion-page>
+  <ion-page class="welcome-page">
     <ion-content :fullscreen="true" class="ion-padding app">
       <div class="">
         <div class="">
           <div class="">
-            <div class="title text-center ">Επιβεβαίωση τηλεφώνου</div>
-            <div class="subtitle">
-              Συμπλήρωσε τον αριθμό σου. Αν έχεις κωδικό πρόσκλησης, βάλε τον από κάτω.
+            <h1 class="text-center text-[2rem]! font-extrabold! mb-5 leading-tight! welcome-title">
+              Bond Souls
+            </h1>
+            <br>
+            <div class="subtitle text-white! text-center" style="font-size: 1.3rem">
+              Για να προχωρήσουμε, χρειαζόμαστε το τηλέφωνό σου.<br><br>
+              Είναι ο τρόπος μας να διατηρούμε την κοινότητα αυθεντική.
             </div>
+            <br>
 
             <!-- Card -->
             <div class="">
               <!-- Τηλέφωνο -->
-              <ion-item lines="none" class="input-row">
+              <ion-item lines="none" class="input-row" style="  border-radius: 12px;border: 1px solid var(--rowBorder)">
                 <ion-select v-model="countryCode" interface="popover" class="cc">
                   <ion-select-option value="+30">+30</ion-select-option>
                 </ion-select>
@@ -25,11 +30,11 @@
                 />
               </ion-item>
               <ion-note class="help">
-                Θα σου σταλεί SMS με κωδικό μίας χρήσης. Δεν κάνουμε spam.
+                Θα σου σταλεί SMS με κωδικό μίας χρήσης.
               </ion-note>
-
+              <br><br>
               <!-- Κωδικός πρόσκλησης -->
-              <ion-item lines="none" class="input-row mt-3">
+              <ion-item lines="none" class="input-row mt-3" style="  border-radius: 12px;border: 1px solid var(--rowBorder)">
                 <ion-input
                     v-model="referralCode"
                     type="text"
@@ -37,7 +42,7 @@
                 />
               </ion-item>
               <ion-note class="help">
-                Αν έχεις κωδικό από φίλο, βάλε τον εδώ για έξτρα boost.
+                Αν έχεις κωδικό πρόσκλησης από φίλο, βάλε τον εδώ για έξτρα boost.
               </ion-note>
               <ion-toast  v-if="error.length > 0" color="danger" :is-open="true" :message="error" :duration="5000"></ion-toast>
             </div>
@@ -46,7 +51,7 @@
 
       </div>
     </ion-content>
-    <ion-footer>
+    <ion-footer  class="px-3 py-3">
       <!-- CTA -->
       <ion-button
           :disabled="phoneNumber.length !== 10"
@@ -62,7 +67,18 @@
 
 <script setup>
 import {ref} from 'vue';
-import {IonToast, IonPage, IonContent, IonItem, IonInput, IonSelect, IonSelectOption, IonButton, IonNote} from '@ionic/vue';
+import {
+  IonToast,
+  IonPage,
+  IonContent,
+  IonItem,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  IonButton,
+  IonNote,
+  IonFooter
+} from '@ionic/vue';
 import {useRouter} from 'vue-router';
 import axios from 'axios';
 
@@ -90,18 +106,6 @@ const verifyPhone = async () => {
 </script>
 
 <style scoped>
-.title {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.subtitle {
-  font-size: 13.5px;
-  opacity: .75;
-  margin-top: 4px;
-  margin-bottom: 20px;
-}
-
 .input-row {
   --padding-start: 8px;
   --inner-padding-end: 8px;
@@ -112,10 +116,18 @@ const verifyPhone = async () => {
   margin-top: 4px;
 }
 
-.help {
-  display: block;
-  margin: 6px 6px 2px;
-  font-size: 12px;
+.welcome-page {
+  --background: #050729;
+  background: #050729;
+  backdrop-filter: invert(1);
+}
+
+.welcome-title {
+  color: var(--text);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 </style>
 

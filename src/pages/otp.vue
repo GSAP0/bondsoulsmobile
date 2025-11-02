@@ -1,16 +1,21 @@
 <template>
-  <ion-page>
+  <ion-page class="welcome-page">
     <ion-content :fullscreen="true" class="ion-padding app">
       <div class="">
         <div class="">
           <div class="">
-            <div class="title text-center">Επιβεβαίωση κωδικού OTP</div>
-            <div class="subtitle">Πληκτρολόγησε ή κάνε επικόλληση τον 6ψήφιο κωδικό που λάβαμε με SMS.</div>
+            <h1 class="text-center text-[2rem]! font-extrabold! mb-5 leading-tight! welcome-title">
+              Bond Souls
+            </h1>
+
 
             <!-- Card -->
-            <div style="background:  var(--rowBg)">
+            <div style="position: absolute; left: 50%; top: 40%; transform: translate(-50%, -40%); width: 80%" class="mt-10">
               <!-- Single OTP Input -->
+              <div class="title text-center text-white mb-5">Επιβεβαίωση κωδικού</div>
+
               <ion-input
+                  style="background:  var(--rowBg);border-radius: 12px;border: 1px solid var(--rowBorder)"
                   v-model="otpCode"
                   maxlength="6"
                   type="tel"
@@ -19,7 +24,8 @@
                   placeholder="Συμπλήρωσε τον κωδικό"
               ></ion-input>
 
-              <div class="meta">
+              <div class="subtitle text-white! text-center" style="font-size: 1rem;margin-bottom: 30px;">Συμπλήρωσε τον 6ψήφιο κωδικό που λάβατε με SMS.</div>
+              <div class="meta text-white">
                 <span class="timer">{{ displayTick }}</span>
                 <span class="hint">Δεν έλαβες κωδικό;</span>
               </div>
@@ -31,7 +37,7 @@
                   class="resend"
                   @click="resendOtp"
               >
-                Ξαναποστολή κωδικού
+                Επαναποστολή κωδικού
               </ion-button>
             </div>
           </div>
@@ -39,7 +45,7 @@
 
       </div>
     </ion-content>
-    <ion-footer>
+    <ion-footer  class="px-3 py-3">
       <ion-button expand="block" class="cta" @click="verifyOtp" :disabled="otpCode.length !== 6">
         <span class="text-white!">Συνέχεια</span>
       </ion-button>
@@ -49,7 +55,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
-import { IonPage, IonContent, IonInput, IonButton } from '@ionic/vue';
+import { IonPage, IonContent, IonInput, IonButton, IonFooter } from '@ionic/vue';
 import { useRoute } from 'vue-router';
 import axios from "axios";
 import { Capacitor } from '@capacitor/core';
@@ -123,38 +129,11 @@ watch(tick, (value) => {
 </script>
 
 <style scoped>
-.app {
-  --ion-background-color: #0A0E1A;
-  display: grid;
-  place-items: center;
-}
-.frame {
-  width: 100%;
-  height: 100%;
-  border-radius: 44px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 25px 60px rgba(0,0,0,.4);
-  background: #0a0e1a;
-}
-.scroll {
-  height: 100%;
-  overflow-y: auto;
-  padding-bottom: 120px;
-}
-.body { padding: 24px 20px; color: #F5F7FA; }
+
 .title { font-size: 20px; font-weight: 700; }
-.subtitle { font-size: 13.5px; opacity: .75; margin-top: 4px; }
+.subtitle {  opacity: .75; margin-top: 4px; }
 
-.card {
-  margin-top: 16px;
-  background: #0E111A;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 20px;
-}
 
-/* Single OTP Input */
 .otp-single {
   --padding-start: 16px;
   --inner-padding-end: 16px;
@@ -183,12 +162,17 @@ watch(tick, (value) => {
   --color: #F5F7FA;
 }
 
-/* CTA */
-.cta {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 20px;
-  width: 340px;
+.welcome-page {
+  --background: #050729;
+  background: #050729;
+  backdrop-filter: invert(1);
+}
+
+.welcome-title {
+  color: var(--text);
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 </style>

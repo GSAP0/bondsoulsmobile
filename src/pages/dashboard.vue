@@ -93,13 +93,14 @@
       </div>
     </ion-content>
     <ion-footer class="px-3 py-3 bg-transparent!">
-      <ion-button style="border-radius: 20px;" expand="block" color="secondary" @click="findMatch"
-                  class=""
+      <ion-button style="" expand="block" @click="findMatch"
+                  class="cta"
                   v-if="!user?.match_id">
         <ion-icon :icon="heart" class="mr-3"></ion-icon>
         Match now
       </ion-button>
-      <ion-button style="border-radius: 20px; margin-top: -20px" class="p-3 mb-10" expand="block" color="secondary"
+      <ion-button style="" expand="block" color="secondary"
+                  class="cta"
                   @click="findMatch"
                   v-else>
         <ion-icon :icon="chatbubble" class="mr-3"></ion-icon>

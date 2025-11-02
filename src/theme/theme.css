@@ -693,6 +693,9 @@ ion-fab-button ion-icon {
 /* ==================== CTA ==================== */
 
 .cta {
+    text-transform: unset;
+    min-height: 50px;
+    font-size: 1.4em;
     border-radius: 9999px;
     --background: linear-gradient(90deg, #0A84FF, #FF2D55);
     --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);

@@ -1,7 +1,7 @@
 <template>
   <div style="flex-grow: 1;width: 100%;">
     <div style="background: white; color: black; width: 100%; padding: 5px 10px">
-      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+      <ion-datetime-button class="datetimebtn" locale="el-GR" datetime="datetime"></ion-datetime-button>
 
       <ion-modal :keep-contents-mounted="true">
         <ion-datetime presentation="date"
@@ -17,8 +17,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import {IonInput, IonDatetime, IonDatetimeButton} from "@ionic/vue";
-import {computed} from "vue";
+import {IonModal, IonDatetime, IonDatetimeButton} from "@ionic/vue";
+import {ref, computed} from "vue";
 
 const props = defineProps({
   question: {
@@ -26,6 +26,8 @@ const props = defineProps({
     required: true
   }
 })
+
+// const open = ref(true)
 
 const theModel = defineModel({
   required: true,
@@ -46,4 +48,5 @@ const extra = computed(() => {
 const maxDate = new Date();
 maxDate.setFullYear(maxDate.getFullYear() - 18);
 const maxDateString = maxDate.toISOString().split('T')[0]; // e.g. "2007-06-28
+theModel.value = maxDateString
 </script>

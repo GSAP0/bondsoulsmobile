@@ -1,9 +1,5 @@
 <template>
   <ion-page>
-    <div v-if="show_survey">
-      <QuestionsSurvey @close="show_survey=false"></QuestionsSurvey>
-    </div>
-    <template v-else>
       <ion-content :fullscreen="true" class="ion-padding app">
         <div class="">
           <div class="">
@@ -66,7 +62,6 @@
           </ion-button>
         </div>
       </ion-footer>
-    </template>
   </ion-page>
 </template>
 <script setup lang="ts">

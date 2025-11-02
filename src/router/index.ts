@@ -2,12 +2,12 @@ import {createRouter, createWebHistory} from '@ionic/vue-router';
 import {useGlobal} from "@/composables/useGlobal";
 import type { RouteRecordRaw } from 'vue-router';
 
-const publicRoutes = ['/', '/otp', '/verification', 'dashboard_new']
+const publicRoutes = ['/', '/otp', '/verification', '/dashboard_new', '/welcome1', '/welcome2', '/welcome3',]
 
 const routes: RouteRecordRaw[] = [
     {
         path: '/',
-        component: () => import('@/pages/index.vue')
+        component: () => import('@/pages/welcome/welcome1.vue')
     },
     {
         path: '/otp',
@@ -76,7 +76,19 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/notification',
         component: () => import('@/pages/notification.vue')
-    }
+    },
+    {
+        path: '/welcome1',
+        component: () => import('@/pages/welcome/welcome1.vue')
+    },
+    {
+        path: '/welcome2',
+        component: () => import('@/pages/welcome/welcome2.vue')
+    },
+    {
+        path: '/welcome3',
+        component: () => import('@/pages/welcome/welcome3.vue')
+    },
 ]
 
 const router = createRouter({
@@ -87,6 +99,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
 
     const usr = localStorage.getItem('user')
+    const globalStore = useGlobal()
 
     if (publicRoutes.includes(to.path)) {
         if (usr) {
@@ -94,11 +107,10 @@ router.beforeEach(async (to, from, next) => {
         } else
             next()
     } else {
-        const globalStore = useGlobal()
         if (usr) {
             globalStore.user.value = JSON.parse(usr)
             next()
-        } else next('/')
+        } else next('/welcome1')
     }
 })
 
