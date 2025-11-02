@@ -5,7 +5,6 @@
       <ion-toolbar>
         <PageHeader default-href="/dashboard">
           {{ headerTitle }}
-          <div class="subtitle">{{ headerSubtitle }}</div>
         </PageHeader>
       </ion-toolbar>
     </ion-header>
