@@ -29,7 +29,7 @@
           </div>
         </div>
       </ion-content>
-      <ion-footer class="px-3 pb-3">
+      <ion-footer class="px-3 pb-3" style="background: var(--bg)">
         <!-- Progress Bar -->
         <div class="my-4 px-3">
           <div class="progress-label">Πρόοδος</div>

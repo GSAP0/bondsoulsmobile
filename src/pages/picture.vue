@@ -12,8 +12,8 @@
         <div class="content-wrapper">
           <div class="content">
             <div class="flex justify-center items-center">
-              <div style="height: 320px;
-                      width: 320px;
+              <div style="height: 20em;
+                      width: 20em;
                       z-index: 10;
                       background-color: #8A56AC20;
                       border-radius: 120px;
@@ -21,8 +21,8 @@
                       justify-content: center;
                       "
                    class="flex justify-center items-center">
-                <div style="height: 280px;
-                      width: 280px;
+                <div style="height: 18em;
+                      width: 18em;
                       z-index: 20;
                       background-color: #8A56AC50;
                       border-radius: 120px;
@@ -30,8 +30,8 @@
                       justify-content: center;
                       "
                      class="flex justify-center items-center">
-                  <div style="height: 240px;
-                      width: 240px;
+                  <div style="height: 16em;
+                      width: 16em;
                       z-index: 30;
                       background-color: #8A56AC90;
                       border-radius: 120px;
@@ -44,15 +44,15 @@
                     </div>
                     <div v-else>
                       <ion-img style="" :src="image" v-if="image"/>
-                      <IonIcon v-else style="width: 150px; height: 150px" :icon="camera"></IonIcon>
+                      <IonIcon v-else style="width: 10em; height: 10em" :icon="camera"></IonIcon>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div v-if="optional" class="text-4xl mb-4 mt-5 text-center" style="">Ένα βήμα έμεινε ακόμα
+            <div v-if="optional" class="mb-4 mt-5 text-center" style="font-size: 1.65em">Ένα βήμα έμεινε ακόμα
             </div>
-            <div class="text-lg mb-10 mt-5 text-center">Ανέβασε μια προσωπική φωτογραφία σου. <br>
+            <div class="mb-10 mt-5 text-center" style="font-size: 1.35em">Ανέβασε μια προσωπική φωτογραφία σου. <br>
               Θυμήσου ότι όπως και εσύ, το ταίρι σου θα επιθυμούσε να δει τον πραγματικό σου
               εαυτό.
             </div>

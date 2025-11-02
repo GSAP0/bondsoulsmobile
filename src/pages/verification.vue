@@ -8,7 +8,7 @@
               Bond Souls
             </h1>
             <br>
-            <div class="subtitle text-white! text-center" style="font-size: 1.3rem">
+            <div class="subtitle text-white! text-center" style="font-size: 1.3em">
               Για να προχωρήσουμε, χρειαζόμαστε το τηλέφωνό σου.<br><br>
               Είναι ο τρόπος μας να διατηρούμε την κοινότητα αυθεντική.
             </div>

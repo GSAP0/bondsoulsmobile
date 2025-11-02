@@ -6,7 +6,7 @@
         <div class="">
           <div class="flex justify-between align-bottom">
             <div>
-              <div v-if="extra.options?.min_label && extra.options?.min_label">
+              <div v-if="extra.options?.min_label && extra.options?.min_label" style="font-size: 1rem">
                 {{ extra.options.min_label }}
               </div>
             </div>
@@ -17,7 +17,7 @@
               </div>
             </div>
             <div>
-              <div v-if="extra.options?.max_label && extra.options?.max_label">
+              <div v-if="extra.options?.max_label && extra.options?.max_label" style="font-size: 1rem">
                 {{ extra.options.max_label }}
               </div>
             </div>

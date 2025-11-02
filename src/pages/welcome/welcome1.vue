@@ -7,12 +7,12 @@
         </h1>
 
         <div class="text-center flex justify-center mt-10">
-          <ion-img src="https://operator.bondsouls.com/questionIcon.png" style="width: min(150px, 99vw);"></ion-img>
+          <ion-img src="https://operator.bondsouls.com/questionIcon.png" style="width: min(10em, 99vw);"></ion-img>
         </div>
         <div class="stack" style="position: absolute;top: 50%; left:50%; transform: translate(-50%,-50%);">
           <div class="flex flex-col justify-center items-center text-center min-h-[60vh] p-5">
             <div class="">
-              <p class="text-base text-white" style="font-size: 1.5rem">
+              <p class="text-base text-white" style="font-size: 1.5em">
                 Η εφαρμογή που θα σε βοηθήσει να δημιουργήσεις σταθερές και ποιοτικές σχέσεις
               </p>
             </div>

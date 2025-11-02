@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BondSouls is a mobile dating/social networking application built with Ionic Framework (Vue 3) and Capacitor, targeting both iOS and Android platforms. The app connects to a Laravel backend API hosted at `https://operator.bondsouls.com/mobile` (development: `http://bondsoulsadmin.test/mobile`).
+BondSouls is a mobile dating/social networking application built with Ionic Framework (Vue 3) and Capacitor, targeting
+both iOS and Android platforms. The app connects to a Laravel backend API hosted at
+`https://operator.bondsouls.com/mobile` (development: `http://bondsoulsadmin.test/mobile`).
 
 ## Technology Stack
 
@@ -20,23 +22,27 @@ BondSouls is a mobile dating/social networking application built with Ionic Fram
 ## Common Commands
 
 ### Development
+
 ```bash
 npm run dev           # Start Vite dev server (http://localhost:5173)
 ```
 
 ### Building
+
 ```bash
 npm run build         # Build web assets to dist/
 npm run preview       # Preview production build locally
 ```
 
 ### Testing
+
 ```bash
 npm run test:unit     # Run Vitest unit tests
 npm run test:e2e      # Run Cypress e2e tests (requires dev server running)
 ```
 
 ### Mobile Platforms
+
 ```bash
 npx cap sync          # Sync web build to native platforms
 npx cap open ios      # Open iOS project in Xcode
@@ -48,6 +54,7 @@ npx cap run android   # Build and run on Android
 ## Architecture
 
 ### Authentication Flow
+
 - Token-based authentication using localStorage (`access_token`)
 - User data cached in localStorage (`user` key)
 - Authentication initialized in `src/main.ts` before app mount
@@ -56,6 +63,7 @@ npx cap run android   # Build and run on Android
 - Public routes: `/`, `/otp`, `/verification`
 
 ### Routing
+
 - **File-based routing** via `unplugin-vue-router`
 - Route files in `src/pages/` automatically generate routes
 - `src/pages/index.vue` → `/`
@@ -63,27 +71,32 @@ npx cap run android   # Build and run on Android
 - Router guards check authentication and redirect unauthenticated users
 
 ### State Management (Pinia)
+
 - **globalStore** (`src/stores/globalStore.js`):
-  - `user`: Current user object
-  - `questions`, `answers`, `interests`: Survey/profile data
-  - `load()`: Loads all data in parallel and redirects to `/questions?required` if unanswered required questions exist
-  - Computed properties for filtering unanswered/required questions
+    - `user`: Current user object
+    - `questions`, `answers`, `interests`: Survey/profile data
+    - `load()`: Loads all data in parallel and redirects to `/questions?required` if unanswered required questions exist
+    - Computed properties for filtering unanswered/required questions
 
 ### API Integration
+
 - Base axios instance configured in `src/main.ts`:
-  - Base URL: `https://operator.bondsouls.com/mobile`
-  - Credentials: withCredentials enabled
-  - Authorization header set from localStorage token
+    - Base URL: `https://operator.bondsouls.com/mobile`
+    - Credentials: withCredentials enabled
+    - Authorization header set from localStorage token
 - Global `window.axios` available throughout the app
 - Endpoints used: `/user`, `/questions`, `/answers`, `/interests`
 
 ### Key Application Features
+
 - **Onboarding Flow**: Welcome → Phone verification → OTP → Survey → Bio/Interests
-- **Survey System**: Dynamic question types (text, choice, multiple choice, slider, calendar) in `src/components/questions/`
+- **Survey System**: Dynamic question types (text, choice, multiple choice, slider, calendar) in
+  `src/components/questions/`
 - **Dashboard**: User profile with statistics, questionnaire completion, interests, bio, instructions
 - **Required Questions**: App enforces completion of required survey questions before full access
 
 ### Component Structure
+
 ```
 src/
 ├── pages/              # Route pages (file-based routing)
@@ -113,17 +126,20 @@ src/
 ```
 
 ### Styling
+
 - Ionic theming via CSS variables in `src/theme/variables.css`
 - Dark mode configured with system preference: `@ionic/vue/css/palettes/dark.system.css`
 - Tailwind CSS 4 with Vite plugin for utility classes
 - Ionic utility classes for padding, flexbox, alignment
 
 ### TypeScript Configuration
+
 - Path alias: `@/` → `src/`
 - ESNext target with strict mode
 - Vitest globals enabled for testing
 
 ### Build Configuration
+
 - Top-level await supported via esbuild config
 - Legacy browser support via `@vitejs/plugin-legacy`
 - Assets output to `dist/` directory
@@ -137,3 +153,16 @@ src/
 - **Survey enforcement**: Users with incomplete required questions are auto-redirected to `/questions?required`
 - **Greek language**: UI is in Greek - maintain consistency when adding text
 - Αντι για ion-toolbar εχω φτιαξει ενα component @src\components\PageHeader.vue .
+
+## Design System
+
+- Follow Apple Human Interface Guidelines (HIG) for all UI components and styling
+- Reference: https://developer.apple.com/design/resources/
+- Key principles:
+    - Border radius: 10-13px for cards/modals, 8-10px for buttons
+    - Typography: SF-style letter spacing (-0.4px for titles, -0.2px for body), font weights 400/600/700
+    - Spacing: Use multiples of 8px (8, 16, 24, 32px)
+    - Shadows: Subtle and layered (e.g., `0 10px 40px rgba(0,0,0,0.15), 0 0 1px rgba(0,0,0,0.1)`)
+    - Colors: Use semantic iOS colors via CSS variables
+    - Animations: Smooth with ease-out timing (0.3s typical duration)
+    - Always support dark mode with `@media (prefers-color-scheme: dark)`
