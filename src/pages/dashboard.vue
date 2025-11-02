@@ -90,17 +90,20 @@
           </ion-item>
         </div>
       </div>
-      <ion-modal id="badgeInfo" :is-open="badgeInfoModal" @didDismiss="badgeInfoModal = false">
+      <ion-modal id="badgeInfo" :is-open="badgeInfoModal" @willDismiss="closeBadgeModal">
         <template v-if="activeBadgeInfo">
-          <ion-header>
-            <ion-toolbar class="px-3 font-bold">
-              <ion-icon :icon="activeBadgeInfo.icon"></ion-icon>
-              {{ activeBadgeInfo.name }}
-            </ion-toolbar>
-          </ion-header>
-          <div class="px-3 py-5">
-            <div class="rounded-item">
+          <div class="badge-modal-content">
+            <div class="badge-modal-header">
+              <ion-icon :icon="activeBadgeInfo.icon" class="badge-modal-icon"></ion-icon>
+              <h2 class="badge-modal-title">{{ activeBadgeInfo.name }}</h2>
+            </div>
+            <div class="badge-modal-body">
               <p v-html="activeBadgeInfo.description"></p>
+            </div>
+            <div class="badge-modal-footer">
+              <ion-button expand="block" @click="moveToTips">
+                Περισσότερα στα tips
+              </ion-button>
             </div>
           </div>
         </template>
@@ -126,7 +129,7 @@
 
 
 <script setup lang="ts">
-import {computed, ref} from 'vue'
+import {computed, nextTick, ref} from 'vue'
 
 import {
   useIonRouter,
@@ -141,7 +144,7 @@ import {
   IonRefresher,
   IonRefresherContent,
   onIonViewDidEnter,
-  alertController,
+  IonModal,
 } from '@ionic/vue'
 
 import {
@@ -199,6 +202,19 @@ function showBadgeInfo(badge) {
   badgeInfoModal.value = true
 }
 
+async function closeBadgeModal() {
+  badgeInfoModal.value = false
+  await nextTick()
+  activeBadgeInfo.value = null
+}
+
+async function moveToTips(){
+  badgeInfoModal.value = false
+  await nextTick()
+  activeBadgeInfo.value = null
+  router.push('/instructions')
+}
+
 function findMatch() {
   if (user.value.match_id) {
     router.push('/chat')
@@ -249,15 +265,78 @@ const barStyle = (score) => {
 };
 </script>
 
-<style>
+<style scoped>
+/* Apple HIG-inspired Modal Styling */
 ion-modal#badgeInfo {
-  --width: fit-content -10px;
-  --min-width: 350px;
-  --height: fit-content;
-  --min-height: 200px;
-  --border-radius: 15px;
-  padding: 12px;
-  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+  --width: 90%;
+  --max-width: 400px;
+  --height: auto;
+  --border-radius: 13px;
+  --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+  --backdrop-opacity: 0.4;
+}
+
+.badge-modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--ion-background-color, #ffffff);
+}
+
+.badge-modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.badge-modal-icon {
+  font-size: 48px;
+  color: var(--ion-color-primary);
+  opacity: 0.9;
+}
+
+.badge-modal-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: var(--ion-text-color);
+  text-align: center;
+}
+
+.badge-modal-body {
+  margin-bottom: 24px;
+}
+
+.badge-modal-body p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ion-color-medium-shade);
+  text-align: center;
+}
+
+.badge-modal-footer {
+  margin-top: auto;
+}
+
+.badge-modal-footer ion-button {
+  --border-radius: 10px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: -0.4px;
+  text-transform: none;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  ion-modal#badgeInfo {
+    --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
+  }
 }
 
 </style>
