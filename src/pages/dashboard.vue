@@ -19,7 +19,11 @@
                 <div class="left">
                   <h1 class="user-name">
                     {{ user?.name || 'Χρήστης' }}
-                    <span class="rating-pill"><span class="star">★</span>{{ userRating }}</span>
+                    <span @click="showBadgeInfo({
+                    name: 'Rating',
+                    description: 'Ο μέσος όρος των αξιολογήσεων που λαμβάνετε',
+                    icon: starOutline
+                    })" class="rating-pill"><span class="star">★</span>{{ userRating }}</span>
                   </h1>
                 </div>
                 <div class="right">
@@ -155,7 +159,8 @@ import {
   settingsOutline,
   informationCircleOutline,
   chatbubble,
-  heart
+  heart,
+  starOutline
 } from 'ionicons/icons'
 
 import {useGlobal} from '@/composables/useGlobal'
