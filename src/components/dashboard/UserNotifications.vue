@@ -10,18 +10,44 @@
     <ion-modal id="example-modal" ref="modal" :is-open="open" @didDismiss="open = false">
       <div :class="currentTheme === 'dark' ? 'wrapper-dark theme-dark' : 'wrapper theme-white'">
         <h5 class="font-medium! ml-3 py-3 mt-3! mb-2! border-b-1 border-b-gray-100">Ειδοποιήσεις</h5>
-        <div v-if="!user?.notifications || user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση</div>
-
-        <div class="notif-list">
-          <div v-for="(n, i) in user.notifications" :key="i" class="notif-item mb-2" @click="open = false;$router.push(`/notification?id=${n.id}`)">
-            <div class="notif-icon">{{ getIcon(n.type) }}</div>
-            <div>
-              <div class="notif-title">{{ getTitle(n.type) }}</div>
-              <div>{{ getSubtitle(n) }}</div>
-              <div class="notif-meta">{{ formatDateTime(n.created_at) }}</div>
-            </div>
-          </div>
+        <div v-if="!user?.notifications || user.notifications.length === 0" class="px-3 text-center">Καμία ειδοποίηση
         </div>
+
+        <ion-accordion-group v-else class="group" @ionChange="handleAccordionChange">
+          <ion-accordion
+              v-for="n in user.notifications"
+              :key="n.id"
+              :value="n.id.toString()"
+              class="notif-item"
+          >
+            <div slot="header">
+              <div>
+                <div class="notif-icon">{{ getIcon(n.type) }}</div>
+                <div>
+                  <div class="notif-title">{{ getTitle(n.type) }}</div>
+                  <div class="notif-meta">{{ formatDateTime(n.created_at) }}</div>
+                </div>
+              </div>
+            </div>
+              <div slot="content">
+                <div class="card-content pb-3! pt-2! px-3!" slot="content">
+                  <div class="notif-content">{{ getSubtitle(n) }}</div>
+                </div>
+              </div>
+          </ion-accordion>
+        </ion-accordion-group>
+
+
+        <!--        <div class="notif-list">-->
+        <!--          <div v-for="(n, i) in user.notifications" :key="i" class="notif-item mb-2" @click="open = false;$router.push(`/notification?id=${n.id}`)">-->
+        <!--            <div class="notif-icon">{{ getIcon(n.type) }}</div>-->
+        <!--            <div>-->
+        <!--              <div class="notif-title">{{ getTitle(n.type) }}</div>-->
+        <!--              <div>{{ getSubtitle(n) }}</div>-->
+        <!--              <div class="notif-meta">{{ formatDateTime(n.created_at) }}</div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
       </div>
     </ion-modal>
   </div>
@@ -31,8 +57,8 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {useGlobal} from "@/composables/useGlobal";
-import {IonModal} from "@ionic/vue";
-import { formatDateTime } from "@/helpers";
+import {IonModal, IonAccordion, IonAccordionGroup} from "@ionic/vue";
+import {formatDateTime} from "@/helpers";
 
 const globalStore = useGlobal()
 const {currentTheme, user} = globalStore
@@ -43,7 +69,7 @@ type NotifType = 'match_found' | 'user_rating' | 'admin_custom' | 'other'
 const open = ref(false)
 
 function getIcon(type: NotifType): string {
-  if (type === 'admin_custom') return '✉️'
+  if (type === 'App\\Notifications\\CustomAdminNotification') return '✉️'
   if (type === 'match_found') return '✨'
   if (type === 'user_rating') return '⭐'
 
@@ -51,7 +77,7 @@ function getIcon(type: NotifType): string {
 }
 
 function getTitle(type: NotifType): string {
-  if (type === 'admin_custom') return 'Μήνυμα συστήματος'
+  if (type === 'App\\Notifications\\CustomAdminNotification') return 'Μήνυμα συστήματος'
   if (type === 'match_found') return 'Βρέθηκε ματσάρισμα!'
   if (type === 'user_rating') return 'Νέα αξιολόγηση'
 
@@ -59,18 +85,47 @@ function getTitle(type: NotifType): string {
 }
 
 function getSubtitle(n) {
-  if (n.type === 'admin_custom') return n.data?.message ?? ''
+  if (n.type === 'App\\Notifications\\CustomAdminNotification') return n.data?.message ?? ''
   if (n.type === 'match_found') return 'Άνοιξε για να δεις το ταίριασμα'
   if (n.type === 'user_rating') return 'Κάποιος σε αξιολόγησε'
 
   return ''
 }
 
-function handleOpen(){
+function handleOpen() {
   open.value = true
   axios.post("notifications/readAll")
   if (user.value?.unread_notifications) {
     user.value.unread_notifications = []
+  }
+}
+
+async function handleAccordionChange(event: CustomEvent) {
+  const value = event.detail.value
+  if (value) {
+    const notif = user.value.notifications.find(n => n.id === value)
+    if (!notif) return
+
+    // Αν το notification είναι ήδη διαβασμένο, δεν χρειάζεται να καλέσουμε το API
+    if (notif.read_at) return
+
+    // Καλούμε το API για να σημειώσουμε το notification ως διαβασμένο
+    try {
+      await window.axios.post(`/notifications/${value}/read`, {notification_id: value})
+
+      // Ενημερώνουμε το local state
+      notif.read_at = new Date().toISOString()
+
+      // Αφαιρούμε από τα unread_notifications
+      if (user.value.unread_notifications) {
+        const unreadIndex = user.value.unread_notifications.findIndex(n => n.id === value)
+        if (unreadIndex !== -1) {
+          user.value.unread_notifications.splice(unreadIndex, 1)
+        }
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error)
+    }
   }
 }
 
@@ -118,10 +173,10 @@ function handleOpen(){
 }
 
 ion-modal#example-modal {
-  --width: fit-content - 10px;
-  --min-width: 350px;
+  --width: calc(100vw - 80px);
+  --max-height: calc(100vh - 220px);
   --height: fit-content;
-  --min-height: 200px;
+  --overflow: auto;
   --border-radius: 15px;
   padding: 12px;
   --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
@@ -141,11 +196,8 @@ ion-modal#example-modal {
 }
 
 .notif-item {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 12px;
   padding: 14px 16px;
-  border: 1px solid rgba(255,255,255,0.60);
+  border: 1px solid rgba(255, 255, 255, 0.60);
 }
 
 .notif-item:nth-child(odd) {
@@ -171,11 +223,11 @@ ion-modal#example-modal {
   font-size: 18px;
 }
 
-.wrapper-dark{
+.wrapper-dark {
   background: linear-gradient(180deg, #0A0E1A 0%, #10172A 100%);;
 }
 
-.wrapper{
+.wrapper {
   background: linear-gradient(90deg, rgba(10, 132, 255, 0.2), rgba(255, 45, 85, 0.2));
 }
 
