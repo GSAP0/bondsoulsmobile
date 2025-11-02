@@ -71,8 +71,8 @@ export function useGlobal() {
     })
 
     const userRating = computed(() => {
-        if (!user.value) return 5
-        return user.value.rating || 5
+        if (!user.value) return 0
+        return user.value.ratings_avg.toFixed(1)
     })
 
     const userAge = computed(() => {
