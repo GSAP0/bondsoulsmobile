@@ -2,7 +2,14 @@ import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useLocalStorage} from "@vueuse/core";
 import moment from "moment";
-import {chatbubbleEllipsesOutline, shieldCheckmarkOutline, sparklesOutline, trophyOutline} from "ionicons/icons";
+import {
+    starOutline,
+    shieldCheckmarkOutline,
+    sparklesOutline,
+    trophyOutline,
+    cameraOutline,
+    bulbOutline, personCircleOutline, infiniteOutline, diamondOutline, rocketOutline
+} from "ionicons/icons";
 import {toastController} from "@ionic/vue";
 
 // Initialize user from localStorage
@@ -85,13 +92,48 @@ export function useGlobal() {
     const displayBadges = computed(() => {
         if (!user.value) return []
 
+        const activeSubscription = user.value.subscriptions.filter(s => s.active)
+
+        console.log(activeSubscription)
+
+        const hasPremium = activeSubscription.find(s => s.type === 'premium') !== undefined
+        const hasUltimate = activeSubscription.find(s => s.type === 'ultimate') !== undefined
+
         const badges = [
-            {name: 'Ενεργός', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: total_answered.value > 0},
-            {name: 'Επαληθευμένος', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: user.value?.verified || false},
-            {name: 'Respected', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: total_answered.value > 20},
+            // {name: 'Rating', description: 'Lorem Ipsum. Περισσότερα στα TIPS', active: total_answered.value > 0, icon: starOutline},
+            {
+                name: 'Photo Upload',
+                description: 'Ανεβάστε τη φωτογραφία σας, ξεκινήστε τη σταδιακή αποκάλυψή της και ενισχύστε το TES σκορ σας.<br>Περισσότερα στα tips.',
+                active: !!user.value.image || false,
+                icon: cameraOutline
+            },
+            {
+                name: 'Insight',
+                description: 'Απαντήστε σε επιπλέον ερωτήσεις, δείχνοντας συνέπεια και πρόθεση για ουσιαστική γνωριμία. Έτσι βελτιώνεται η ακρίβεια των ταιριασμάτων σας.<br>Περισσότερα στα tips.',
+                active: total_answered.value > 13,
+                icon: bulbOutline
+            },
+            {
+                name: 'Complete Profile',
+                description: 'Απαντήστε σε όλες τις ερωτήσεις και ξεκλειδώστε τα στατιστικά σας. Το πλήρες προφίλ σας, βοηθά να ταιριάξετε με τον πιο συμβατό άνθρωπο.<br>Περισσότερα στα tips.',
+                active: questions_unanswered.value === 0,
+                icon: personCircleOutline
+            },
+            {
+                name: 'Premium',
+                description: 'Αποκτήστε προηγμένα φίλτρα αναζήτησης και αφαιρέστε τις διαφημίσεις για μια βελτιωμένη εμπειρία.<br>Περισσότερα στα tips.',
+                active: hasPremium || false,
+                icon: rocketOutline
+            },
+            {
+                name: 'Ultimate',
+                description: 'Ενισχύστε την εμπειρία σας με πλήρη φίλτρα αναζήτησης και πρόσβαση σε εξειδικευμένες λειτουργίες.<br>Περισσότερα στα tips.',
+                active: hasUltimate,
+                icon: diamondOutline
+            },
         ]
-        const activeCount = badges.filter(b => b.active).length
-        return badges.filter(b => b.active || activeCount < 2)
+
+        return badges
     })
 
     async function loadQuestions() {
@@ -153,12 +195,12 @@ export function useGlobal() {
         if (window.echo && user.value?.uuid) {
             window.echo.private(`App.Models.MobileUser.${user.value.uuid}`)
                 .notification((notification) => {
-                if (user.value?.notifications) {
-                    user.value.notifications.push(notification)
-                }
-                console.log(notification)
-                showNotificationToast(notification)
-            })
+                    if (user.value?.notifications) {
+                        user.value.notifications.push(notification)
+                    }
+                    console.log(notification)
+                    showNotificationToast(notification)
+                })
         }
 
         loaded.value = true
@@ -182,14 +224,7 @@ export function useGlobal() {
         return response.data
     }
 
-    function getBadgeIcon(name) {
-        if (name === 'Active') return sparklesOutline
-        if (name === 'Verified') return shieldCheckmarkOutline
-        if (name === 'Respected') return trophyOutline
-        return chatbubbleEllipsesOutline
-    }
-
-    async function handleRefresh(event){
+    async function handleRefresh(event) {
         await loadUser()
         await load()
 
@@ -219,7 +254,6 @@ export function useGlobal() {
         logo,
 
         handleRefresh,
-        getBadgeIcon,
         submitReferralCode,
         logout,
         loadAnswers,

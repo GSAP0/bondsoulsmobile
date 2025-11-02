@@ -26,7 +26,6 @@
                   <UserNotifications/>
                 </div>
               </div>
-
               <div class="badges-row">
                 <ion-chip
                     class="p-[10px]"
@@ -36,7 +35,7 @@
                     :outline="!badge.active"
                     @click="showBadgeInfo(badge)"
                 >
-                  <ion-icon :icon="getBadgeIcon(badge.name)"/>
+                  <ion-icon :icon="badge.icon"/>
                   <!--                    <ion-label>{{ badge.name }}</ion-label>-->
                 </ion-chip>
               </div>
@@ -91,6 +90,21 @@
           </ion-item>
         </div>
       </div>
+      <ion-modal id="badgeInfo" :is-open="badgeInfoModal" @didDismiss="badgeInfoModal = false">
+        <template v-if="activeBadgeInfo">
+          <ion-header>
+            <ion-toolbar class="px-3 font-bold">
+              <ion-icon :icon="activeBadgeInfo.icon"></ion-icon>
+              {{ activeBadgeInfo.name }}
+            </ion-toolbar>
+          </ion-header>
+          <div class="px-3 py-5">
+            <div class="rounded-item">
+              <p v-html="activeBadgeInfo.description"></p>
+            </div>
+          </div>
+        </template>
+      </ion-modal>
     </ion-content>
     <ion-footer class="px-3 py-3 bg-transparent!">
       <ion-button style="" expand="block" @click="findMatch"
@@ -112,7 +126,7 @@
 
 
 <script setup lang="ts">
-import {computed, onActivated} from 'vue'
+import {computed, ref} from 'vue'
 
 import {
   useIonRouter,
@@ -157,22 +171,22 @@ const {
   userRating,
   userPhoto,
   tesPercentage,
-  getBadgeIcon,
   questions_unanswered,
 } = globalStore
 
 const {updateLocationToBackend} = useLocation()
 const {initialize: initializePushNotifications} = usePushNotifications()
 
+const badgeInfoModal = ref(false)
+const activeBadgeInfo = ref(null)
+
 const unansweredCount = computed(() => questions_unanswered.value.length)
 
 onIonViewDidEnter(() => {
-  // Ενημέρωση τοποθεσίας
   updateLocationToBackend().catch(error => {
     console.log('Δεν ήταν δυνατή η ενημέρωση της τοποθεσίας:', error)
   })
 
-  // Initialize push notifications μόνο σε native platform
   if (Capacitor.isNativePlatform()) {
     initializePushNotifications().catch(error => {
       console.error('Failed to initialize push notifications:', error)
@@ -180,33 +194,31 @@ onIonViewDidEnter(() => {
   }
 })
 
-
-onActivated(() => {
-  console.log('Component activated (keep-alive)')
-  // Force reload
-  location.reload() // Extreme, αλλά θα δουλέψει 😄
-})
+function showBadgeInfo(badge) {
+  activeBadgeInfo.value = JSON.parse(JSON.stringify(badge))
+  badgeInfoModal.value = true
+}
 
 function findMatch() {
   if (user.value.match_id) {
     router.push('/chat')
-  } else if (user.value.active){
+  } else if (user.value.active) {
     router.push('/searching')
   } else {
     router.push('/match_filters_new')
   }
 }
 
-async function showBadgeInfo(badge) {
-  const alert = await alertController.create({
-    header: badge.name,
-    message: badge.description,
-    buttons: ['OK'],
-    cssClass: 'badge-info-alert'
-  })
-
-  await alert.present()
-}
+// async function showBadgeInfo(badge) {
+//   const alert = await alertController.create({
+//     header: badge.name,
+//     message: badge.description,
+//     buttons: ['OK'],
+//     cssClass: 'badge-info-alert'
+//   })
+//
+//   await alert.present()
+// }
 
 const brand = {
   primary: '#0A84FF',
@@ -236,3 +248,16 @@ const barStyle = (score) => {
   };
 };
 </script>
+
+<style>
+ion-modal#badgeInfo {
+  --width: fit-content -10px;
+  --min-width: 350px;
+  --height: fit-content;
+  --min-height: 200px;
+  --border-radius: 15px;
+  padding: 12px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+}
+
+</style>

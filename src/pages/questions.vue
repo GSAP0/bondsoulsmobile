@@ -88,7 +88,6 @@ const {
 const route = useRoute()
 
 const required = route.query.hasOwnProperty('required')
-const show_survey = ref(!localStorage.getItem('questions_required'))
 
 const answer = ref([])
 const loading = ref(false)
@@ -130,7 +129,12 @@ function handleComponent() {
 
 async function fetchData() {
   const result = (await axios.get(`/questions/next?required=${required}`)).data
-  if (!result) window.location.href = '/dashboard'
+  if (!result) {
+    if(required)
+      window.location.href = '/picture?optional'
+      else
+    window.location.href = '/dashboard'
+  }
   currentQuestion.value = result
   assignAnswer()
 }

@@ -695,10 +695,21 @@ ion-fab-button ion-icon {
 .cta {
     text-transform: unset;
     min-height: 50px;
-    font-size: 1.4em;
+    font-size: 1.25em;
     border-radius: 9999px;
     --background: linear-gradient(90deg, #0A84FF, #FF2D55);
     --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);
+    --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    font-weight: 700;
+}
+
+.ctb {
+    text-transform: unset;
+    min-height: 50px;
+    font-size: 1.25em;
+    border-radius: 9999px;
+    --background: linear-gradient(270deg, #0A84FF, #FF2D55);
+    --background-activated: linear-gradient(270deg, #0c6fce, #e03a5f);
     --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
     font-weight: 700;
 }
