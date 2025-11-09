@@ -15,7 +15,7 @@
 
       <div class="">
         <div class="profile-header" :style="`filter:blur(${calcBlur()}px`">
-          <div class="header-image" :style="`background-image: url('${user.match.user_info.image}')`">
+          <div class="header-image" :style="`background-image: url('${match.user_info.image}')`">
           </div>
         </div>
 
@@ -25,8 +25,8 @@
               <div class="top-row">
                 <div class="left">
                   <h1 class="user-name">
-                    {{ user.match.user_info.name || 'Χρήστης' }}
-                    <span class="rating-pill"><span class="star">★</span>{{ user.match.user_info.ratings_avg }}</span>
+                    {{ match.user_info.name || 'Χρήστης' }}
+                    <span class="rating-pill"><span class="star">★</span>{{ match.user_info.ratings_avg }}</span>
                   </h1>
                 </div>
               </div>
@@ -44,7 +44,7 @@
             </div>
             <p class="user-location">
               <ion-icon :icon="locationOutline"/>
-              {{ user.match.user_info.city || 'Αθήνα' }} • {{ user.match.user_info.name }} χρονών
+              {{ match.user_info.city || 'Αθήνα' }} • {{ match.user_info.name }} χρονών
             </p>
           </div>
           <div class="tes-section">
@@ -52,7 +52,7 @@
               <span class="tes-label">TES</span>
             </div>
             <div class="rail" style="background: #e9e5e5">
-              <div :style="barStyle(user.match.user_info.elo)"></div>
+              <div :style="barStyle(match.user_info.elo)"></div>
             </div>
           </div>
         </div>
@@ -60,7 +60,7 @@
         <!-- Statistics -->
         <div class="section-container">
           <div class="section-header">ΣΤΑΤΙΣΤΙΚΑ</div>
-          <StatisticsGraph :user="user.match.user_info" :is-blur="!user.match.user_info.is_statistics_available">
+          <StatisticsGraph :user="match.user_info" :is-blur="!match.user_info.is_statistics_available">
             Ο Χρήστης δεν έχει απαντήσει όλες τις ερωτήσεις
           </StatisticsGraph>
         </div>
@@ -77,17 +77,16 @@ import {
   IonPage,
   IonContent,
   IonIcon,
-  IonItem,
-  IonLabel,
   IonChip,
   IonRefresher,
-  IonRefresherContent, IonHeader, IonButton, IonFooter,
+  IonRefresherContent,
+  IonHeader,
+  IonToolbar,
+  IonFooter,
 } from '@ionic/vue'
 
 import {
   locationOutline,
-  barChartOutline,
-  shieldCheckmark,
 } from 'ionicons/icons'
 
 import moment from 'moment'
@@ -96,27 +95,16 @@ import {useGlobal} from '@/composables/useGlobal'
 import {useSettings} from '@/composables/useSettings'
 import StatisticsGraph from "@/components/statistics/StatisticsGraph.vue";
 import PageHeader from "@/components/PageHeader.vue";
-import {ref} from "vue";
 import EndChatButton from "@/components/chat/EndChatButton.vue";
+import {useMatching} from "@/composables/useMatching";
 
 const settings = useSettings()
+
+const matching = useMatching()
+const { match } = matching
+
 const globalStore = useGlobal()
 const { user } = globalStore
-
-const openConfirm = ref(false)
-
-const actionButtons = [
-  {
-    text: 'Τερματισμός',
-    role: 'destructive',
-    icon: shieldCheckmark,
-    handler: () => {}
-  },
-  {
-    text: 'Άκυρο',
-    role: 'cancel'
-  }
-]
 
 const brand = {
   primary: '#0A84FF',
@@ -147,7 +135,7 @@ const barStyle = (score) => {
 };
 
 function calcBlur(){
-  const dt = globalStore.user.value.match.first_message_date
+  const dt = match.value.first_message_date
   if(!dt) {
     console.log('No messages here...')
     return 10_000
@@ -157,7 +145,7 @@ function calcBlur(){
 
   const s = moment(dt);
   const e = moment(dt).add('hours', parseFloat(days));
-  const multiplier = 1 + globalStore.user.value.match.words_count / parseFloat(multiplierEffect);
+  const multiplier = 1 + match.value.words_count / parseFloat(multiplierEffect);
 
   const now = moment();
   const D0 = Math.max(1, e.diff(s));
@@ -176,19 +164,3 @@ function calcBlur(){
   return blur
 }
 </script>
-
-<style>
-.endchat-btn {
-  --border-radius: 9999px;
-  --padding-start: 18px;
-  --padding-end: 18px;
-  --background: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
-  --background-activated: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
-  --background-focused: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
-  --background-hover: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
-  --box-shadow: 0 8px 24px rgba(10,132,255,0.35);
-  --color: #FFFFFF;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-</style>

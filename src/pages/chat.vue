@@ -81,9 +81,15 @@ import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
 
 import {useGlobal} from '@/composables/useGlobal'
 import PageHeader from "@/components/PageHeader.vue";
+import {useMatching} from "@/composables/useMatching.js";
 
 const globalStore = useGlobal()
 const {user} = globalStore
+
+const matching = useMatching()
+const { match } = matching
+
+if(!match.value) window.location.href = '/'
 
 const messages = ref([])
 const messageText = ref('')
@@ -113,7 +119,7 @@ function genderColor(g) {
 function colorForMessage(msg) {
   const isMe = msg.sender_id === user.value.uuid
   const myColor = genderColor(user.value.gender)
-  const otherColor = genderColor(user.value.match.user_info.gender)
+  const otherColor = genderColor(match.value.user_info.gender)
 
   return isMe ? myColor : otherColor
 }

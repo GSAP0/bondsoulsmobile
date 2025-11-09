@@ -17,10 +17,13 @@ import {IonApp, IonRouterOutlet, IonSpinner, IonImg} from '@ionic/vue';
 import {onMounted, ref} from "vue";
 import {useGlobal} from "./composables/useGlobal.js"
 import { useSettings } from "./composables/useSettings"
+import { useMatching } from "./composables/useMatching"
 import {StatusBar} from "@capacitor/status-bar";
 
-const settings = useSettings()
 const globalStore = useGlobal()
+const settings = useSettings()
+const matching = useMatching()
+
 const { themeClass, logo } = globalStore
 
 const loaded = ref(false)
@@ -30,6 +33,9 @@ async function init() {
     if (globalStore.user.value) {
       await globalStore.load()
       await settings.load()
+      await matching.load()
+
+      if(globalStore.user.value){}
     }
   }catch(e){
     console.log('err')

@@ -181,6 +181,7 @@ export function useGlobal() {
 
         loaded.value = true
         if (questions_unanswered_required.value.length > 0) await router.replace(`/questions?required`)
+        else if(user.value.feedback_pending_for_user_id !== null) await router.replace(`/feedback`)
     }
 
     function logout() {

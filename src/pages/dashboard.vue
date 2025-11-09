@@ -116,7 +116,7 @@
     <ion-footer class="px-3 py-3 bg-transparent!">
       <ion-button style="" expand="block" @click="findMatch"
                   class="cta"
-                  v-if="!user?.match_id">
+                  v-if="!match">
         <ion-icon :icon="heart" class="mr-3"></ion-icon>
         Match now
       </ion-button>
@@ -168,9 +168,12 @@ import UserNotifications from '@/components/dashboard/UserNotifications.vue'
 import {useLocation} from '@/composables/useLocation.js'
 import {usePushNotifications} from '@/composables/usePushNotifications.js'
 import {Capacitor} from '@capacitor/core'
+import {useMatching} from "@/composables/useMatching";
 
 const router = useIonRouter()
 const globalStore = useGlobal()
+const matching = useMatching()
+const { match } = matching
 
 const {
   user,
@@ -217,7 +220,8 @@ async function moveToTips(){
 }
 
 function findMatch() {
-  if (user.value.match_id) {
+  console.log('match', match)
+  if (match.value !== null) {
     router.push('/chat')
   } else if (user.value.active) {
     router.push('/searching')

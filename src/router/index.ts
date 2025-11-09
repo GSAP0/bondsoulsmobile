@@ -89,10 +89,9 @@ const routes: RouteRecordRaw[] = [
         path: '/welcome3',
         component: () => import('@/pages/welcome/welcome3.vue')
     },
-
     {
-        path: '/test',
-        component: () => import('@/pages/test.vue')
+        path: '/feedback',
+        component: () => import('@/pages/feedback.vue')
     },
 
 ]

@@ -1,9 +1,13 @@
 <!-- EndChatButton.vue -->
 <template>
   <div>
-    <ion-button expand="block" color="danger"  @click="openConfirm = true">
+    <div class="text-center" v-if="loading">
+      <ion-spinner></ion-spinner>
+    </div>
+    <ion-button v-else expand="block" color="danger" @click="openConfirm = true">
       Τερματισμός συνομιλίας
     </ion-button>
+
     <IonActionSheet
         :is-open="openConfirm"
         header="Είστε βέβαιοι;"
@@ -16,21 +20,28 @@
 <script setup>
 import {ref} from 'vue'
 import {
+  IonSpinner,
   IonButton,
   IonActionSheet
 } from '@ionic/vue'
-import {closeCircle, shieldCheckmark} from 'ionicons/icons'
+
+import {shieldCheckmark} from 'ionicons/icons'
+import {useMatching} from "@/composables/useMatching.js";
+
+const matching = useMatching()
 
 const openConfirm = ref(false)
-
-const emit = defineEmits(['endChat'])
+const loading = ref(false)
 
 const actionButtons = [
   {
     text: 'Τερματισμός',
     role: 'destructive',
     icon: shieldCheckmark,
-    handler: () => emit('endChat')
+    handler: () => {
+      loading.value = true
+      matching.finishMatching().then(() => window.location.href = '/feedback')
+    }
   },
   {
     text: 'Άκυρο',
