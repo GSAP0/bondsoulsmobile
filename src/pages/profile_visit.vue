@@ -12,7 +12,7 @@
     </ion-header>
     <ion-content :fullscreen="true" class="ion-padding app" :class="themeClass">
       <div class="scroll">
-          <div class="profile-header">
+          <div class="profile-header" :style="`filter:blur(${calcBlur()}px)`">
             <div class="header-image" :style="{ backgroundImage: `url(${userPhoto})` }">
             </div>
           </div>
@@ -102,7 +102,8 @@ import {
   trophyOutline, chatbubbleEllipsesOutline,
 } from 'ionicons/icons'
 
-import {useGlobal} from '@/composables/useGlobal'
+import {useGlobal} from '@/composables/useGlobal.js'
+import { useSettings } from '@/composables/useSettings.js'
 
 import moment from 'moment'
 import InterestsSection from "@/components/dashboard/InterestsSection.vue";
@@ -110,6 +111,8 @@ import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 const router = useIonRouter()
 const globalStore = useGlobal()
 const {themeClass, currentTheme} = globalStore
+const settings = useSettings()
+const { getSettings } = settings
 
 const user = computed(() => {
   if (globalStore.user.value.uuid === globalStore.user.value.match.user1.uuid) return globalStore.user.value.match.user2
@@ -182,6 +185,36 @@ const barStyle = (score: number) => {
     borderRadius: '999px',
     background: grad
   }
+}
+
+function calcBlur(){
+  const dt = globalStore.user.value.match.first_message_date
+  if(!dt) {
+    console.log('No messages here...')
+    return 10_000
+  }
+
+  const { days, blurMultiplier, multiplierEffect} = settings.settings.match_state
+
+  const s = moment(dt);
+  const e = moment(dt).add('hours', parseFloat(days));
+  const multiplier = 1 + globalStore.user.value.match.words_count / parseFloat(multiplierEffect);
+
+  const now = moment();
+  const D0 = Math.max(1, e.diff(s));
+  const R  = Math.max(0, e.diff(now)) / multiplier;
+
+  const ratio = Math.min(1, Math.max(0, R / D0));
+  const blur  = parseFloat(blurMultiplier) * ratio;
+
+  console.log(
+      multiplier,
+      blur,
+      ratio,
+      s.format('DD/MM/YYYY HH:mm:ss'),
+      moment().format('DD/MM/YYYY HH:mm:ss'))
+
+  return blur
 }
 
 </script>
