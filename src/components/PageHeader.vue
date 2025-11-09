@@ -5,7 +5,9 @@
     <div class="title">
       <slot>{{ title }}</slot>
     </div>
-    <div></div>
+    <div>
+      <slot name="actions"></slot>
+    </div>
   </div>
 </template>
 

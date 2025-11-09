@@ -7,7 +7,7 @@
 
       <div class="scroll">
         <div class="profile-header">
-          <div class="header-image" :style="`background-image: url('${userPhoto}')`">
+          <div class="header-image" :style="`background-image: url('${user.photo}')`">
             <ion-icon class="camera-btn" :icon="cameraOutline" @click="$router.push('/picture')"/>
           </div>
         </div>
@@ -18,12 +18,12 @@
               <div class="top-row">
                 <div class="left">
                   <h1 class="user-name">
-                    {{ user?.name || 'Χρήστης' }}
+                    {{ user.name || 'Χρήστης' }}
                     <span @click="showBadgeInfo({
                     name: 'Rating',
                     description: 'Ο μέσος όρος των αξιολογήσεων που λαμβάνετε',
                     icon: starOutline
-                    })" class="rating-pill"><span class="star">★</span>{{ userRating }}</span>
+                    })" class="rating-pill"><span class="star">★</span>{{ user.ratings_avg }}</span>
                   </h1>
                 </div>
                 <div class="right">
@@ -46,7 +46,7 @@
             </div>
             <p class="user-location">
               <ion-icon :icon="locationOutline"/>
-              {{ user?.city || 'Αθήνα' }} • {{ userAge }} χρονών
+              {{ user.city || 'Αθήνα' }} • {{ user.age }} χρονών
             </p>
           </div>
           <div class="tes-section">
@@ -54,7 +54,7 @@
               <span class="tes-label">TES</span>
             </div>
             <div class="rail" style="background: #e9e5e5">
-              <div :style="barStyle(tesPercentage)"></div>
+              <div :style="barStyle(user.elo)"></div>
             </div>
           </div>
         </div>
@@ -175,10 +175,6 @@ const globalStore = useGlobal()
 const {
   user,
   displayBadges,
-  userAge,
-  userRating,
-  userPhoto,
-  tesPercentage,
   questions_unanswered,
 } = globalStore
 

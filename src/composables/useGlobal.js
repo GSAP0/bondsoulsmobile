@@ -65,30 +65,6 @@ export function useGlobal() {
             .filter(item => item.required)
     })
 
-    const userPhoto = computed(() => {
-        if (!user.value) return logo.value?.toString() || ''
-        return user.value.image?.toString() ?? logo.value?.toString() ?? ''
-    })
-
-    const userRating = computed(() => {
-        if (!user.value) return 0
-        return user.value.ratings_avg.toFixed(1)
-    })
-
-    const userAge = computed(() => {
-        if (!user.value?.birthdate) return '-'
-        const birthDate = moment(user.value.birthdate)
-        return moment().diff(birthDate, 'years')
-    })
-
-    const tesPercentage = computed(() => {
-        const total = questions.value.length
-        const answered = total_answered.value
-        if (total === 0) return 0
-
-        return Math.round((answered / total) * 100)
-    })
-
     const displayBadges = computed(() => {
         if (!user.value) return []
 
@@ -246,19 +222,12 @@ export function useGlobal() {
         questions_unanswered_required,
         currentTheme,
         themeClass,
-        userPhoto,
-        userRating,
-        userAge,
         displayBadges,
-        tesPercentage,
         logo,
 
         handleRefresh,
-        submitReferralCode,
         logout,
         loadAnswers,
-        loadQuestions,
-        loadInterests,
         loadUser,
         load,
     }

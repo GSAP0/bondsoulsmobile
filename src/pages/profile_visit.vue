@@ -1,163 +1,101 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-back-button default-href="/chat"></ion-back-button>
-        </ion-buttons>
-        <ion-title>
-          {{user.name}} προφίλ
-        </ion-title>
-      </ion-toolbar>
+      <PageHeader default-href="/chat">
+        Προφίλ χρήστη
+      </PageHeader>
     </ion-header>
-    <ion-content :fullscreen="true" class="ion-padding app" :class="themeClass">
-      <div class="scroll">
-          <div class="profile-header" :style="`filter:blur(${calcBlur()}px)`">
-            <div class="header-image" :style="{ backgroundImage: `url(${userPhoto})` }">
-            </div>
+
+    <ion-content :fullscreen="true" class="ion-padding">
+      <ion-refresher slot="fixed" @ionRefresh="globalStore.handleRefresh">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+      <div class="">
+        <div class="profile-header" :style="`filter:blur(${calcBlur()}px`">
+          <div class="header-image" :style="`background-image: url('${user.match.user_info.image}')`">
           </div>
-          <div class="user-info-container">
-            <div class="user-info">
-              <div class="name-badges">
-                <div class="top-row">
-                  <div class="left">
-                    <h1 class="user-name">
-                      {{ user.name }}
-                      <span class="rating-pill"><span class="star">★</span>{{ userRating }}</span>
-                    </h1>
-                  </div>
-                </div>
-                <div class="badges-row">
-                  <ion-chip
-                      class="p-[10px] badge-chip"
-                      v-for="(badge, i) in displayBadges"
-                      :key="i"
-                      :color="badge.active ? 'primary' : 'medium'"
-                      :outline="!badge.active"
-                  >
-                    <ion-icon :icon="getBadgeIcon(badge.name)"/>
-                  </ion-chip>
-                </div>
-              </div>
-              <p class="user-location">
-                <ion-icon :icon="locationOutline"/>
-                {{ user?.city || 'Αθήνα' }} • {{ userAge }} χρονών
-              </p>
-            </div>
-
-            <!-- TES -->
-            <div class="tes-section">
-              <div class="tes-header">
-                <span class="tes-label">TES</span>
-              </div>
-              <div class="rail">
-                <div :style="barStyle(tesPercentage)"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Μεχρι 150 χαρακτηρες -->
-          <div class="px-3">
-            <div>{{ user.bio }}</div>
-          </div>
-          <InterestsSection :interests="user.interests"></InterestsSection>
-
-          <!-- InterestsSection.vue -->
-          <template>
-            <div v-if="user.interests.length" class="section">
-              <div class="section-title">ΕΝΔΙΑΦΕΡΟΝΤΑ</div>
-              <div class="card">
-                <div class="pills">
-                  <span v-for="(t, i) in user.interests" :key="i" class="pill">{{ t.interest }}</span>
-                </div>
-              </div>
-            </div>
-          </template>
-
         </div>
-    </ion-content>
 
+        <div class="user-info-container">
+          <div class="user-info">
+            <div class="name-badges">
+              <div class="top-row">
+                <div class="left">
+                  <h1 class="user-name">
+                    {{ user.match.user_info.name || 'Χρήστης' }}
+                    <span class="rating-pill"><span class="star">★</span>{{ user.match.user_info.ratings_avg }}</span>
+                  </h1>
+                </div>
+              </div>
+              <div class="badges-row">
+                <ion-chip
+                    class="p-[10px]"
+                    v-for="(badge, i) in displayBadges"
+                    :key="i"
+                    :color="badge.active ? 'primary' : 'medium'"
+                    :outline="!badge.active"
+                >
+                  <ion-icon :icon="badge.icon"/>
+                </ion-chip>
+              </div>
+            </div>
+            <p class="user-location">
+              <ion-icon :icon="locationOutline"/>
+              {{ user.match.user_info.city || 'Αθήνα' }} • {{ user.match.user_info.name }} χρονών
+            </p>
+          </div>
+          <div class="tes-section">
+            <div class="tes-header">
+              <span class="tes-label">TES</span>
+            </div>
+            <div class="rail" style="background: #e9e5e5">
+              <div :style="barStyle(user.match.user_info.elo)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="section-container">
+          <div class="section-header">ΣΤΑΤΙΣΤΙΚΑ</div>
+          <StatisticsGraph :user="user.match.user_info" :is-blur="!user.match.user_info.is_statistics_available">
+            Ο Χρήστης δεν έχει απαντήσει όλες τις ερωτήσεις
+          </StatisticsGraph>
+        </div>
+      </div>
+    </ion-content>
   </ion-page>
+
 
 </template>
 
-
 <script setup lang="ts">
-import {computed} from 'vue'
 import {
-  useIonRouter,
   IonPage,
   IonContent,
   IonIcon,
+  IonItem,
+  IonLabel,
   IonChip,
-  IonButtons,
-  IonTitle,
-  IonBackButton,
-  IonHeader, IonToolbar
+  IonRefresher,
+  IonRefresherContent, IonHeader,
 } from '@ionic/vue'
 
 import {
   locationOutline,
-  sparklesOutline, shieldCheckmarkOutline,
-  trophyOutline, chatbubbleEllipsesOutline,
+  barChartOutline,
 } from 'ionicons/icons'
 
-import {useGlobal} from '@/composables/useGlobal.js'
-import { useSettings } from '@/composables/useSettings.js'
-
 import moment from 'moment'
-import InterestsSection from "@/components/dashboard/InterestsSection.vue";
 
-const router = useIonRouter()
-const globalStore = useGlobal()
-const {themeClass, currentTheme} = globalStore
+import {useGlobal} from '@/composables/useGlobal'
+import {useSettings} from '@/composables/useSettings'
+import StatisticsGraph from "@/components/statistics/StatisticsGraph.vue";
+import PageHeader from "@/components/PageHeader.vue";
+
 const settings = useSettings()
-const { getSettings } = settings
-
-const user = computed(() => {
-  if (globalStore.user.value.uuid === globalStore.user.value.match.user1.uuid) return globalStore.user.value.match.user2
-  return globalStore.user.value.match.user1
-})
-
-const userPhoto = computed(() => user.value.image || (currentTheme.value === 'dark' ? '/assets/images/logobondWhite.png' : '/assets/images/logobond.png'))
-const userRating = computed(() => user.value.rating || 5)
-
-const userAge = computed(() => {
-  if (!user.value?.birthdate) return '-'
-  const birthDate = moment(user.value.birthdate)
-  return moment().diff(birthDate, 'years')
-})
-
-const tesPercentage = computed(() => {
-  const total = globalStore.questions.length
-  const answered = globalStore.total_answered
-
-  if (total === 0) return 0
-
-  return Math.round((answered / total) * 100)
-})
-
-const displayBadges = computed(() => {
-
-  const badges = [
-    {name: 'Active', active: globalStore.total_answered > 0},
-    {name: 'Verified', active: user.value?.verified || false},
-    {name: 'Respected', active: globalStore.total_answered > 20},
-  ]
-
-  const activeCount = badges.filter(b => b.active).length
-
-  return badges.filter(b => b.active || activeCount < 2)
-})
-
-function getBadgeIcon(name: string) {
-  if (name === 'Active') return sparklesOutline
-  if (name === 'Verified') return shieldCheckmarkOutline
-  if (name === 'Respected') return trophyOutline
-
-  return chatbubbleEllipsesOutline
-
-}
+const globalStore = useGlobal()
+const { user } = globalStore
 
 const brand = {
   primary: '#0A84FF',
@@ -165,27 +103,27 @@ const brand = {
   bgLight: '#F2F2F7',
   bgDark: '#0A0E1A',
   textLight: '#11181C',
-  textDark: '#F5F7FA'
-}
+  textDark: '#F5F7FA',
+};
 
-const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v))
+const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-const barStyle = (score: number) => {
-
-  const safe = clamp(Number(score) || 0, 0, 100)
-
+const barStyle = (score) => {
+  const safe = clamp(Number(score) || 0, 50, 150); // -50%..+50%
+  const widthPct = `${Math.abs(safe)}%`;
   const grad = `linear-gradient(90deg, ${brand.primary}, ${brand.accent})`
-
   return {
     left: '0%',
     top: 0,
     bottom: 0,
-    width: safe + '%',
+    width: widthPct,
     position: 'absolute',
     borderRadius: '999px',
-    background: grad
-  }
-}
+    background: grad,
+    transformOrigin: 'left',
+    transform: 'translateX(0)',
+  };
+};
 
 function calcBlur(){
   const dt = globalStore.user.value.match.first_message_date
@@ -216,5 +154,4 @@ function calcBlur(){
 
   return blur
 }
-
 </script>

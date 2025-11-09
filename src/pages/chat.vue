@@ -2,8 +2,17 @@
   <ion-page>
     <ion-header>
         <PageHeader>
-          <div class="font-semibold">{{ otherUser?.name || 'Chat' }}</div>
-          <div class="text-xs opacity-70">{{ isOnline ? 'Συνδεδεμένος' : 'Αποσυνδεδεμένος' }}</div>
+          <ion-button @click="$router.push(`/profile_visit`)" class="font-semibold">
+            Δες το ταίρι σου
+          </ion-button>
+
+          <template #actions>
+            <div style="position: relative; width: 25px; height:25px;background: red; border-radius: 1000px" class="text-center">
+              <div style="position: absolute; left:50%; top:50%; transform: translate(-50%, -50%)">
+                <ion-icon :icon="close"></ion-icon>
+              </div>
+            </div>
+          </template>
         </PageHeader>
     </ion-header>
 
@@ -76,7 +85,7 @@ import {
   IonButton, IonIcon, IonTextarea, IonSpinner, IonButtons, IonBackButton, IonModal
 } from '@ionic/vue'
 
-import {mic, send} from 'ionicons/icons'
+import {mic, send, close} from 'ionicons/icons'
 
 import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
 
@@ -84,13 +93,7 @@ import {useGlobal} from '@/composables/useGlobal'
 import PageHeader from "@/components/PageHeader.vue";
 
 const globalStore = useGlobal()
-const {currentTheme} = globalStore
-
-const user = computed(() => globalStore.user.value)
-const otherUser = computed(() => {
-  if(globalStore.user.value.uuid === globalStore.user.value.match.user1.uuid) return globalStore.user.value.match.user2
-  return globalStore.user.value.match.user1
-})
+const { user }  = globalStore
 
 const messages = ref([])
 const messageText = ref('')
@@ -98,7 +101,6 @@ const loading = ref(true)
 const isTyping = ref(false)
 const isRecording = ref(false)
 const contentRef = ref(null)
-const showUserDetails = ref(false)
 const sendLoading = ref(false)
 const isOnline = ref(false)
 
@@ -119,9 +121,9 @@ function genderColor(g) {
 }
 
 function colorForMessage(msg) {
-  const isMe = msg.sender_id === user?.value.uuid
+  const isMe = msg.sender_id === user.value.uuid
   const myColor = genderColor(user.value.gender)
-  const otherColor = genderColor(otherUser.value.gender)
+  const otherColor = genderColor(user.value.match.user_info.gender)
 
   return isMe ? myColor : otherColor
 }
@@ -129,15 +131,6 @@ function colorForMessage(msg) {
 function bubbleStyle(message) {
   return {'--bubble-bg': colorForMessage(message)}
 }
-
-const otherUserAge = computed(() => {
-  if (!otherUser.value?.birthdate) return null
-  const birthDate = window.moment ? window.moment(otherUser.value.birthdate) : null
-  if (!birthDate) return null
-  const now = window.moment()
-
-  return now.diff(birthDate, 'years')
-})
 
 const formatTime = (timestamp) => {
   return window.moment ? window.moment(timestamp).format('HH:mm') : ''
@@ -224,7 +217,6 @@ const startRecording = async () => {
   }
 
 }
-
 
 const stopRecording = () => {
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
