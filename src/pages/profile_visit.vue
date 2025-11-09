@@ -1,9 +1,11 @@
 <template>
   <ion-page>
     <ion-header>
+      <ion-toolbar>
       <PageHeader default-href="/chat">
         Προφίλ χρήστη
       </PageHeader>
+      </ion-toolbar>
     </ion-header>
 
     <ion-content :fullscreen="true" class="ion-padding">
@@ -64,9 +66,10 @@
         </div>
       </div>
     </ion-content>
+    <ion-footer class="px-10 pt-3 pb-5 mb-5 bg-transparent!">
+      <EndChatButton></EndChatButton>
+    </ion-footer>
   </ion-page>
-
-
 </template>
 
 <script setup lang="ts">
@@ -78,12 +81,13 @@ import {
   IonLabel,
   IonChip,
   IonRefresher,
-  IonRefresherContent, IonHeader,
+  IonRefresherContent, IonHeader, IonButton, IonFooter,
 } from '@ionic/vue'
 
 import {
   locationOutline,
   barChartOutline,
+  shieldCheckmark,
 } from 'ionicons/icons'
 
 import moment from 'moment'
@@ -92,10 +96,27 @@ import {useGlobal} from '@/composables/useGlobal'
 import {useSettings} from '@/composables/useSettings'
 import StatisticsGraph from "@/components/statistics/StatisticsGraph.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import {ref} from "vue";
+import EndChatButton from "@/components/chat/EndChatButton.vue";
 
 const settings = useSettings()
 const globalStore = useGlobal()
 const { user } = globalStore
+
+const openConfirm = ref(false)
+
+const actionButtons = [
+  {
+    text: 'Τερματισμός',
+    role: 'destructive',
+    icon: shieldCheckmark,
+    handler: () => {}
+  },
+  {
+    text: 'Άκυρο',
+    role: 'cancel'
+  }
+]
 
 const brand = {
   primary: '#0A84FF',
@@ -155,3 +176,19 @@ function calcBlur(){
   return blur
 }
 </script>
+
+<style>
+.endchat-btn {
+  --border-radius: 9999px;
+  --padding-start: 18px;
+  --padding-end: 18px;
+  --background: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
+  --background-activated: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
+  --background-focused: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
+  --background-hover: linear-gradient(90deg, #0A84FF 0%, #FF2D55 100%);
+  --box-shadow: 0 8px 24px rgba(10,132,255,0.35);
+  --color: #FFFFFF;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+</style>

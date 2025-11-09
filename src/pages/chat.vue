@@ -5,14 +5,6 @@
           <ion-button @click="$router.push(`/profile_visit`)" class="font-semibold">
             Δες το ταίρι σου
           </ion-button>
-
-          <template #actions>
-            <div style="position: relative; width: 25px; height:25px;background: red; border-radius: 1000px" class="text-center">
-              <div style="position: absolute; left:50%; top:50%; transform: translate(-50%, -50%)">
-                <ion-icon :icon="close"></ion-icon>
-              </div>
-            </div>
-          </template>
         </PageHeader>
     </ion-header>
 
@@ -81,19 +73,17 @@
 <script setup>
 
 import {
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonFooter,
-  IonButton, IonIcon, IonTextarea, IonSpinner, IonButtons, IonBackButton, IonModal
-} from '@ionic/vue'
+  IonPage, IonHeader, IonContent, IonFooter,
+  IonButton, IonIcon, IonTextarea, IonSpinner} from '@ionic/vue'
 
-import {mic, send, close} from 'ionicons/icons'
-
+import {mic, send} from 'ionicons/icons'
 import {ref, computed, onMounted, onUnmounted, nextTick} from 'vue'
 
 import {useGlobal} from '@/composables/useGlobal'
 import PageHeader from "@/components/PageHeader.vue";
 
 const globalStore = useGlobal()
-const { user }  = globalStore
+const {user} = globalStore
 
 const messages = ref([])
 const messageText = ref('')
