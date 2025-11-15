@@ -10,7 +10,7 @@
     <ion-content :fullscreen="true" class="app ion-padding">
       <div style="">
         <div class="content-wrapper">
-          <div class="content">
+          <div class="content" v-if="!image">
             <div class="flex justify-center items-center">
               <div style="height: 20em;
                       width: 20em;
@@ -43,8 +43,7 @@
                       <ion-spinner></ion-spinner>
                     </div>
                     <div v-else>
-                      <ion-img style="" :src="image" v-if="image"/>
-                      <IonIcon v-else style="width: 10em; height: 10em" :icon="camera"></IonIcon>
+                      <IonIcon style="width: 10em; height: 10em" :icon="camera"></IonIcon>
                     </div>
                   </div>
                 </div>
@@ -57,17 +56,21 @@
               εαυτό.
             </div>
           </div>
+          <div class="content mb-5" v-else>
+            <ion-img style="" :src="image" v-if="image"/>
+          </div>
         </div>
         <div class="flex flex-col px-5" v-if="!image">
-          <ion-button class="mb-3 cta" @click="takePicture">Λήψη φωτογραφίας</ion-button>
-          <ion-button class="mb-3 ctb text-white" @click="selectFromGallery" fill="outline">Επιλογή από συλλογή
+          <ion-button class="mb-3 cta" style="--background: #8A56AC90;" @click="takePicture">Λήψη φωτογραφίας
+          </ion-button>
+          <ion-button class="mb-3 cta" style="--background: #8A56AC90;" @click="selectFromGallery">Επιλογή από συλλογή
           </ion-button>
           <ion-button v-if="optional" @click="finish" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
 
         </div>
         <div class="flex flex-col px-5" v-else>
-          <ion-button @click="savePhoto" style="" class="mb-3">Ολοκλήρωση</ion-button>
-          <ion-button v-if="!optional" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας
+          <ion-button @click="savePhoto" style="" class="cta mb-3">Ολοκλήρωση</ion-button>
+          <ion-button v-if="!optional" style="text-transform: unset" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας
           </ion-button>
         </div>
       </div>
@@ -180,7 +183,3 @@ function deletePhoto() {
 }
 
 </script>
-
-<style>
-
-</style>

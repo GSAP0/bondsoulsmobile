@@ -49,7 +49,12 @@
               {{ user.area || 'Ελλάδα' }} • {{ user.age }} χρονών
             </p>
           </div>
-          <div class="tes-section">
+          <div class="tes-section" @click="showBadgeInfo({
+                    name: 'Total Engagement Score',
+                    icon: shieldCheckmarkOutline,
+                    description: 'Αντικατοπτρίζει τη συνέπεια, τη συμπεριφορά και την αυθεντικότητά σας στη BondSouls — από τον τρόπο που επικοινωνείτε, μέχρι το πόσο ολοκληρωμένο είναι το προφίλ σας. Ένα υψηλό TES αυξάνει την προτεραιότητα και την ποιότητα των ταιριασμάτων σας. ',
+                    })"
+          >
             <div class="tes-header">
               <span class="tes-label">TES</span>
             </div>
@@ -160,7 +165,8 @@ import {
   informationCircleOutline,
   chatbubble,
   heart,
-  starOutline
+  starOutline,
+  shieldCheckmarkOutline
 } from 'ionicons/icons'
 
 import {useGlobal} from '@/composables/useGlobal'

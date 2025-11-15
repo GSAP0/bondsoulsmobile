@@ -710,7 +710,7 @@ ion-fab-button ion-icon {
 .ctb {
     text-transform: unset;
     min-height: 50px;
-    font-size: 1.25em;
+    font-size: 1rem;
     border-radius: 9999px;
     --background: linear-gradient(270deg, #0A84FF, #FF2D55);
     --background-activated: linear-gradient(270deg, #0c6fce, #e03a5f);
