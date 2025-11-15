@@ -29,18 +29,17 @@
       <div
           v-for="(r,i) in normalizedRows"
           :key="`${r.label}-${i}`"
-          class="stat-row"
-          :class="{'no-right': !splitLabel(r.label).right}"
+
       >
-        <div class="label-left">{{ splitLabel(r.label).left }}</div>
-        <div class="mid">
+        <div class="flex justify-between my-2">
+          <div class="">{{ splitLabel(r.label).left }}</div>
+          <div class="" v-if="splitLabel(r.label).right">
+            {{ splitLabel(r.label).right }}
+          </div>
         </div>
         <div class="rail">
           <div class="rail-middle"></div>
           <div class="bar" :style="barStyle(r.score, r)"></div>
-        </div>
-        <div class="label-right" v-if="splitLabel(r.label).right">
-          {{ splitLabel(r.label).right }}
         </div>
       </div>
     </div>
@@ -98,7 +97,6 @@ const brand = {
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
 const barStyle = (score, r) => {
-  console.log(score, r.label)
   const safe = clamp(Number(score) || 0, -0.5, 0.5); // -50%..+50%
   const isPos = safe >= 0;
   const widthPct = `${Math.abs(safe) * 100}%`;

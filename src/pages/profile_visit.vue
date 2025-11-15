@@ -135,13 +135,13 @@ const barStyle = (score) => {
 };
 
 function calcBlur(){
+  const { days, blurMultiplier, multiplierEffect} = settings.settings.match_state
+
   const dt = match.value.first_message_date
   if(!dt) {
     console.log('No messages here...')
-    return 10_000
+    return blurMultiplier
   }
-
-  const { days, blurMultiplier, multiplierEffect} = settings.settings.match_state
 
   const s = moment(dt);
   const e = moment(dt).add('hours', parseFloat(days));
@@ -153,13 +153,6 @@ function calcBlur(){
 
   const ratio = Math.min(1, Math.max(0, R / D0));
   const blur  = parseFloat(blurMultiplier) * ratio;
-
-  console.log(
-      multiplier,
-      blur,
-      ratio,
-      s.format('DD/MM/YYYY HH:mm:ss'),
-      moment().format('DD/MM/YYYY HH:mm:ss'))
 
   return blur
 }

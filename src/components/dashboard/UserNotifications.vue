@@ -97,7 +97,6 @@ function handleOpen() {
 }
 
 async function handleAccordionChange(event: CustomEvent) {
-  console.log('click here', event)
   const value = event.detail.value
   if (value) {
     const notif = user.value.unread_notifications.find(n => n.id === value)

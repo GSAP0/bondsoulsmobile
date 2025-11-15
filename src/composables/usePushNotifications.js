@@ -1,10 +1,12 @@
 import { PushNotifications } from '@capacitor/push-notifications';
 import { useGlobal } from '@/composables/useGlobal';
 import { useRouter } from 'vue-router';
+import {useMatching} from "@/composables/useMatching.js";
 
 export function usePushNotifications() {
     const router = useRouter();
     const globalStore = useGlobal();
+    const matching = useMatching()
 
     /**
      * Initialize push notifications
@@ -33,6 +35,7 @@ export function usePushNotifications() {
             await PushNotifications.addListener('pushNotificationReceived', async (notification) => {
                 console.log('Push notification received: ', notification);
                 globalStore.load();
+                matching.load();
             });
 
             await PushNotifications.addListener('pushNotificationActionPerformed', async (notification) => {

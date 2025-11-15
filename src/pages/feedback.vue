@@ -40,7 +40,7 @@
               <ion-textarea
                   v-model="feedbackText"
                   placeholder=""
-                  class="w-full text-2xl!"
+                  class="w-full text-1xl!"
                   rows="10"
                   maxlength="500"
               />
