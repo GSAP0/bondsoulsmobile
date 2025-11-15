@@ -10,7 +10,20 @@
     <ion-content :fullscreen="true" class="app ion-padding">
       <div style="">
         <div class="content-wrapper">
-          <div class="content" v-if="!image">
+          <!-- Cropper View -->
+          <div class="content" v-if="showCropper">
+            <Cropper
+              ref="cropperRef"
+              :src="srcImage"
+              :stencil-props="{
+                aspectRatio: 1/1
+              }"
+              class="cropper"
+            />
+          </div>
+
+          <!-- Default View (No Image) -->
+          <div class="content" v-else-if="!image">
             <div class="flex justify-center items-center">
               <div style="height: 20em;
                       width: 20em;
@@ -56,18 +69,31 @@
               εαυτό.
             </div>
           </div>
+
+          <!-- Image Uploaded View -->
           <div class="content mb-5" v-else>
             <ion-img style="" :src="image" v-if="image"/>
           </div>
         </div>
-        <div class="flex flex-col px-5" v-if="!image">
+        <!-- Cropper Buttons -->
+        <div class="flex flex-col px-5" v-if="showCropper">
+          <ion-button class="mb-3 cta" :disabled="loading" @click="cropImage">
+            <ion-spinner v-if="loading" slot="start"></ion-spinner>
+            Αποδοχή
+          </ion-button>
+          <ion-button @click="cancelCrop" fill="clear" :disabled="loading">Ακύρωση</ion-button>
+        </div>
+
+        <!-- Initial Buttons (No Image) -->
+        <div class="flex flex-col px-5" v-else-if="!image">
           <ion-button class="mb-3 cta" style="--background: #8A56AC90;" @click="takePicture">Λήψη φωτογραφίας
           </ion-button>
           <ion-button class="mb-3 cta" style="--background: #8A56AC90;" @click="selectFromGallery">Επιλογή από συλλογή
           </ion-button>
           <ion-button v-if="optional" @click="finish" fill="clear">Όχι τώρα, ίσως αργότερα</ion-button>
-
         </div>
+
+        <!-- Image Uploaded Buttons -->
         <div class="flex flex-col px-5" v-else>
           <ion-button @click="savePhoto" style="" class="cta mb-3">Ολοκλήρωση</ion-button>
           <ion-button v-if="!optional" style="text-transform: unset" @click="deletePhoto" color="danger" fill="clear">Αφαίρεση φωτογραφίας
@@ -97,6 +123,8 @@ import PageHeader from "@/components/PageHeader.vue";
 import {useGlobal} from "@/composables/useGlobal.js";
 import {Camera, CameraResultType, CameraSource} from '@capacitor/camera';
 import {useTest} from "@/composables/test.js";
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-advanced-cropper/dist/style.css';
 
 const router = useIonRouter()
 
@@ -105,6 +133,8 @@ const globalStore = useGlobal()
 const optional = route.query.hasOwnProperty('optional')
 
 const image = ref(JSON.parse(JSON.stringify(globalStore.user.value.photo)))
+const srcImage = ref(null)
+const showCropper = ref(false)
 const loading = ref(false)
 
 const test = useTest()
@@ -119,7 +149,8 @@ const takePicture = async () => {
       source: CameraSource.Camera
     });
 
-    await uploadImage(photo.base64String, photo.format);
+    srcImage.value = `data:image/${photo.format};base64,${photo.base64String}`;
+    showCropper.value = true;
   } catch (error) {
     console.error("Error taking picture:", error);
   }
@@ -134,10 +165,43 @@ const selectFromGallery = async () => {
       source: CameraSource.Photos
     });
 
-    await uploadImage(photo.base64String, photo.format);
+    srcImage.value = `data:image/${photo.format};base64,${photo.base64String}`;
+    showCropper.value = true;
   } catch (error) {
     console.error("Error selecting from gallery:", error);
   }
+};
+
+const cropperRef = ref(null);
+
+const cropImage = async () => {
+  if (!cropperRef.value) return;
+
+  loading.value = true;
+  try {
+    const { canvas } = cropperRef.value.getResult();
+    if (canvas) {
+      canvas.toBlob(async (blob) => {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64String = reader.result.split(',')[1];
+          await uploadImage(base64String, 'jpeg');
+          showCropper.value = false;
+          srcImage.value = null;
+        };
+        reader.readAsDataURL(blob);
+      }, 'image/jpeg', 0.9);
+    }
+  } catch (error) {
+    console.error("Error cropping image:", error);
+    loading.value = false;
+  }
+};
+
+const cancelCrop = () => {
+  showCropper.value = false;
+  srcImage.value = null;
+  loading.value = false;
 };
 
 const uploadImage = async (base64String, format) => {
@@ -183,3 +247,20 @@ function deletePhoto() {
 }
 
 </script>
+
+<style scoped>
+.cropper {
+  height: 400px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .cropper {
+    height: 300px;
+  }
+}
+</style>
