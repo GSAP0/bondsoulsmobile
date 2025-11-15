@@ -104,7 +104,7 @@ const matching = useMatching()
 const { match } = matching
 
 const globalStore = useGlobal()
-const { displayBadges, logo } = globalStore
+const { displayBadges, logo, user } = globalStore
 
 const brand = {
   primary: '#0A84FF',
@@ -154,6 +154,6 @@ function calcBlur(){
   const ratio = Math.min(1, Math.max(0, R / D0));
   const blur  = parseFloat(blurMultiplier) * ratio;
 
-  return blur
+  return blur / user.value.elo
 }
 </script>
