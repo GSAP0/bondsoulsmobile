@@ -11,7 +11,7 @@
             :color="theModel.includes(option.value) ? 'primary' : 'light'">
           <ion-checkbox :checked="theModel.includes(option.value)"
                         :value="option.value"
-                        @ionChange="handleChange(option.value)"
+                        @ionChange.stop.prevent="handleChange(option.value)"
                         justify="space-between"
                         >
             <div class="my-label" :class="theModel.includes(option.value) ? 'text-white!' : 'text-black'">
@@ -63,7 +63,8 @@ function handleChange(v) {
   else {
     const max = extra.value?.options?.multiple_max ?? -1
     if(max > 0 && theModel.value.length >= max){
-      theModel.value[0] = v
+      return
+      // theModel.value[0] = v
     }else {
       theModel.value.push(v)
     }

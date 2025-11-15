@@ -46,7 +46,7 @@
             </div>
             <p class="user-location">
               <ion-icon :icon="locationOutline"/>
-              {{ user.city || 'Αθήνα' }} • {{ user.age }} χρονών
+              {{ user.area || 'Ελλάδα' }} • {{ user.age }} χρονών
             </p>
           </div>
           <div class="tes-section">

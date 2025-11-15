@@ -101,7 +101,7 @@ const route = useRoute()
 const globalStore = useGlobal()
 const optional = route.query.hasOwnProperty('optional')
 
-const image = ref(JSON.parse(JSON.stringify(globalStore.user.value.image)))
+const image = ref(JSON.parse(JSON.stringify(globalStore.user.value.photo)))
 const loading = ref(false)
 
 const test = useTest()

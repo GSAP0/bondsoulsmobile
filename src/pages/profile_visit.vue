@@ -44,7 +44,7 @@
             </div>
             <p class="user-location">
               <ion-icon :icon="locationOutline"/>
-              {{ match.user_info.city || 'Αθήνα' }} • {{ match.user_info.age }} χρονών
+              {{ match.user_info.area || 'Ελλάδα' }} • {{ match.user_info.age }} χρονών
             </p>
           </div>
           <div class="tes-section">
@@ -104,7 +104,7 @@ const matching = useMatching()
 const { match } = matching
 
 const globalStore = useGlobal()
-const { user } = globalStore
+const { displayBadges } = globalStore
 
 const brand = {
   primary: '#0A84FF',
