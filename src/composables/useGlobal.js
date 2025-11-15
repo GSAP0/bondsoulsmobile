@@ -92,7 +92,7 @@ export function useGlobal() {
             {
                 name: 'Complete Profile',
                 description: 'Απαντήστε σε όλες τις ερωτήσεις και ξεκλειδώστε τα στατιστικά σας. Το πλήρες προφίλ σας, βοηθά να ταιριάξετε με τον πιο συμβατό άνθρωπο.',
-                active: questions_unanswered.value === 0,
+                active: questions_unanswered.value.length === 0,
                 icon: personCircleOutline
             },
             {

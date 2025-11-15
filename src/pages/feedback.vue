@@ -63,7 +63,7 @@
           class="cta"
       >
         <ion-icon :icon="sendOutline" class="mr-3"></ion-icon>
-        Υποβολή αξιλόγησης
+        Υποβολή αξιολόγησης
       </ion-button>
     </ion-footer>
   </ion-page>
