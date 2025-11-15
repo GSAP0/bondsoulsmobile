@@ -173,6 +173,7 @@ import {useGlobal} from '@/composables/useGlobal'
 import UserNotifications from '@/components/dashboard/UserNotifications.vue'
 import {useLocation} from '@/composables/useLocation.js'
 import {usePushNotifications} from '@/composables/usePushNotifications.js'
+import {useDeviceInfo} from '@/composables/useDeviceInfo.js'
 import {Capacitor} from '@capacitor/core'
 import {useMatching} from "@/composables/useMatching";
 
@@ -190,6 +191,7 @@ const {
 
 const {updateLocationToBackend} = useLocation()
 const {initialize: initializePushNotifications} = usePushNotifications()
+const {updateDeviceInfoToBackend} = useDeviceInfo()
 
 const badgeInfoModal = ref(false)
 const activeBadgeInfo = ref(null)
@@ -203,6 +205,10 @@ onIonViewDidEnter(() => {
 async function initPermissions() {
   await updateLocationToBackend().catch(error => {
     console.log('Δεν ήταν δυνατή η ενημέρωση της τοποθεσίας:', error)
+  })
+
+  await updateDeviceInfoToBackend().catch(error => {
+    console.log('Δεν ήταν δυνατή η ενημέρωση των πληροφοριών συσκευής:', error)
   })
 
   if (Capacitor.isNativePlatform()) {

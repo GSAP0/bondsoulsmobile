@@ -98,7 +98,7 @@
 
 <script setup>
 import {ref, computed} from 'vue';
-import {IonPage, IonContent, IonToggle, IonHeader, IonButton, alertController} from '@ionic/vue';
+import {IonPage, IonContent, IonToggle, IonHeader, IonButton, alertController, IonToolbar, IonFooter} from '@ionic/vue';
 import {useGlobal} from "@/composables/useGlobal.js";
 import PageHeader from '@/components/PageHeader.vue';
 
