@@ -173,7 +173,7 @@ import {useMatching} from "@/composables/useMatching";
 const router = useIonRouter()
 const globalStore = useGlobal()
 const matching = useMatching()
-const { match } = matching
+const {match} = matching
 
 const {
   user,
@@ -190,16 +190,20 @@ const activeBadgeInfo = ref(null)
 const unansweredCount = computed(() => questions_unanswered.value.length)
 
 onIonViewDidEnter(() => {
-  updateLocationToBackend().catch(error => {
+  initPermissions()
+})
+
+async function initPermissions() {
+  await updateLocationToBackend().catch(error => {
     console.log('Δεν ήταν δυνατή η ενημέρωση της τοποθεσίας:', error)
   })
 
   if (Capacitor.isNativePlatform()) {
-    initializePushNotifications().catch(error => {
+    await initializePushNotifications().catch(error => {
       console.error('Failed to initialize push notifications:', error)
     })
   }
-})
+}
 
 function showBadgeInfo(badge) {
   activeBadgeInfo.value = JSON.parse(JSON.stringify(badge))
@@ -212,7 +216,7 @@ async function closeBadgeModal() {
   activeBadgeInfo.value = null
 }
 
-async function moveToTips(){
+async function moveToTips() {
   badgeInfoModal.value = false
   await nextTick()
   activeBadgeInfo.value = null
