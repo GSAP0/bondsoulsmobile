@@ -7,7 +7,7 @@
 
       <div class="scroll">
         <div class="profile-header">
-          <div class="header-image" :style="`background-image: url('${user.photo}')`">
+          <div class="header-image" :style="`${user.photo ? '' : 'background-size: contain'};background-image: url('${user.photo ?? logo}')`">
             <ion-icon class="camera-btn" :icon="cameraOutline" @click="$router.push('/picture')"/>
           </div>
         </div>
@@ -177,6 +177,7 @@ const {match} = matching
 
 const {
   user,
+  logo,
   displayBadges,
   questions_unanswered,
 } = globalStore

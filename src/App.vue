@@ -3,7 +3,7 @@
     <div v-if="loaded">
       <ion-router-outlet :class="themeClass"/>
     </div>
-    <div v-else class="flex items-center justify-center h-screen">
+    <div v-else class="flex items-center justify-center h-screen" :class="themeClass">
       <div class="text-center">
         <ion-img :src="logo"></ion-img>
         <ion-spinner></ion-spinner>

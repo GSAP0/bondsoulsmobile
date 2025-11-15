@@ -38,7 +38,7 @@ export function useGlobal() {
     const router = useRouter()
 
     const themeClass = computed(() => (currentTheme.value === 'light' ? 'theme-light' : 'theme-dark'));
-    const logo = computed(() => currentTheme.value === 'dark' ? baseUrl + 'assets/logobondWhite.png' : baseUrl + 'assets/logobond.png')
+    const logo = computed(() => currentTheme.value === 'dark' ? baseUrl.value.toString() + 'logoBondWhite.png' : baseUrl.value.toString() + 'logobond.png')
 
     const total_answered = computed(() => {
         let ret = {}

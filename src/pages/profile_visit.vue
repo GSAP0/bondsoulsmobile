@@ -15,7 +15,7 @@
 
       <div class="">
         <div class="profile-header" :style="`filter:blur(${calcBlur()}px`">
-          <div class="header-image" :style="`background-image: url('${match.user_info.image}')`">
+          <div class="header-image" :style="`background-image: url('${match.user_info.image ?? logo}')`">
           </div>
         </div>
 
@@ -104,7 +104,7 @@ const matching = useMatching()
 const { match } = matching
 
 const globalStore = useGlobal()
-const { displayBadges } = globalStore
+const { displayBadges, logo } = globalStore
 
 const brand = {
   primary: '#0A84FF',

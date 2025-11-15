@@ -21,19 +21,19 @@
               class="notif-item"
           >
             <div slot="header">
-              <div>
-                <div class="notif-icon">{{ getIcon(n.type) }}</div>
+              <div class="flex">
+                <div class="notif-icon me-3">{{ getIcon(n.type) }}</div>
                 <div>
                   <div class="notif-title">{{ getTitle(n.type) }}</div>
                   <div class="notif-meta">{{ formatDateTime(n.created_at) }}</div>
                 </div>
               </div>
             </div>
-              <div slot="content">
-                <div class="card-content pb-3! pt-2! px-3!" slot="content">
-                  <div class="notif-content">{{ getSubtitle(n) }}</div>
-                </div>
+            <div slot="content">
+              <div class="card-content pb-3! pt-2! px-3!" slot="content">
+                <div class="notif-content p-2">{{ getSubtitle(n) }}</div>
               </div>
+            </div>
           </ion-accordion>
         </ion-accordion-group>
 
@@ -192,7 +192,7 @@ ion-modal#example-modal {
 }
 
 .notif-item {
-  padding: 14px 16px;
+  padding: 7px 12px;
   border: 1px solid rgba(255, 255, 255, 0.60);
 }
 
@@ -225,6 +225,16 @@ ion-modal#example-modal {
 
 .wrapper {
   background: linear-gradient(90deg, rgba(10, 132, 255, 0.2), rgba(255, 45, 85, 0.2));
+}
+
+.wrapper .notif-content{
+  border: 1px solid rgba(5, 34, 62, 0.2);
+  border-radius: 6px;
+}
+
+.wrapper-dark .notif-content{
+  border: 1px solid #0A0E1A;
+  border-radius: 6px;
 }
 
 .notif-title {
