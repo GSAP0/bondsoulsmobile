@@ -11,6 +11,7 @@
             :color="theModel.includes(option.value) ? 'primary' : 'light'">
           <ion-checkbox :checked="theModel.includes(option.value)"
                         :value="option.value"
+                        :disabled="isDisabled(option.value)"
                         @ionChange.stop.prevent="handleChange(option.value)"
                         justify="space-between"
                         >
@@ -22,7 +23,15 @@
       </div>
     </div>
     <div v-else class="flex flex-wrap">
-      <div @click="handleChange(option.value)" style="width: calc(50% - 10px); margin-left: 10px;" class="mb-2 drop-shadow-xl" :class="theModel.includes(option.value) ? 'selected' : ''" v-for="option in extra.items" :key="option.value + option.title">
+      <div @click="!isDisabled(option.value) && handleChange(option.value)"
+           style="width: calc(50% - 10px); margin-left: 10px;"
+           class="mb-2 drop-shadow-xl"
+           :class="[
+             theModel.includes(option.value) ? 'selected' : '',
+             isDisabled(option.value) ? 'opacity-50 pointer-events-none' : ''
+           ]"
+           v-for="option in extra.items"
+           :key="option.value + option.title">
         <ion-img class="" v-if="option.image" :src="option.image"></ion-img>
       </div>
     </div>
@@ -57,6 +66,12 @@ const extra = computed(() => {
 })
 
 const hasImage = computed(() => extra.value.items.some(it => !!it.image))
+
+function isDisabled(value) {
+  const max = extra.value?.options?.multiple_max ?? -1
+  // Disable if not already selected AND we've reached the max limit
+  return !theModel.value.includes(value) && max > 0 && theModel.value.length >= max
+}
 
 function handleChange(v) {
   if (theModel.value.includes(v)) theModel.value = theModel.value.filter(item => item !== v)
