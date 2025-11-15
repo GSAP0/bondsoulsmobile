@@ -44,7 +44,7 @@
             </div>
             <p class="user-location">
               <ion-icon :icon="locationOutline"/>
-              {{ match.user_info.city || 'Αθήνα' }} • {{ match.user_info.name }} χρονών
+              {{ match.user_info.city || 'Αθήνα' }} • {{ match.user_info.age }} χρονών
             </p>
           </div>
           <div class="tes-section">
@@ -66,7 +66,7 @@
         </div>
       </div>
     </ion-content>
-    <ion-footer class="px-10 pt-3 pb-5 mb-5 bg-transparent!">
+    <ion-footer class="px-10 pt-3 pb-5" style="background: var(--bg)">
       <EndChatButton></EndChatButton>
     </ion-footer>
   </ion-page>

@@ -37,7 +37,7 @@
         </div>
         <div class="rail">
           <div class="rail-middle"></div>
-          <div class="bar" :style="barStyle(r.score)"></div>
+          <div class="bar" :style="barStyle(r.score, r)"></div>
         </div>
         <div class="label-right" v-if="splitLabel(r.label).right">
           {{ splitLabel(r.label).right }}
@@ -72,28 +72,19 @@ const {
 // Κανονικοποίηση σε [{ label, score }]
 const normalizedRows = computed(() => {
   const src = rawRows.value;
-  if (Array.isArray(src)) {
-    return src.map((it) => ({
-      label: it.label ?? String(it?.[0] ?? ''),
-      score: typeof it.score === 'number' ? it.score : Number(it?.[1] ?? 0),
-    }));
-  }
-  if (src && typeof src === 'object') {
-    return Object.keys(src).map((k) => ({label: k, score: src[k]}));
-  }
-  return [];
-});
+  return Object.keys(src).map((k) => ({label: k, score: src[k]}));
+})
 
 const switchTab = (name) => {
   if (tab.value !== name) tab.value = name;
-};
+}
 
 // Παίρνουμε ωμά τα δεδομένα από το store (αντικείμενο ή array)
 const rawRows = computed(() => {
   return tab.value === 'axes'
-      ? props.user.weights['Άξονες']
-      : props.user.weights['Αξίες'];
-});
+      ? props.user.weightsStatistics['Άξονες']
+      : props.user.weightsStatistics['Αξίες'];
+})
 
 const brand = {
   primary: '#0A84FF',
@@ -102,11 +93,12 @@ const brand = {
   bgDark: '#0A0E1A',
   textLight: '#11181C',
   textDark: '#F5F7FA',
-};
+}
 
 const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-const barStyle = (score) => {
+const barStyle = (score, r) => {
+  console.log(score, r.label)
   const safe = clamp(Number(score) || 0, -0.5, 0.5); // -50%..+50%
   const isPos = safe >= 0;
   const widthPct = `${Math.abs(safe) * 100}%`;

@@ -94,16 +94,13 @@ function getSubtitle(n) {
 
 function handleOpen() {
   open.value = true
-  axios.post("notifications/readAll")
-  if (user.value?.unread_notifications) {
-    user.value.unread_notifications = []
-  }
 }
 
 async function handleAccordionChange(event: CustomEvent) {
+  console.log('click here', event)
   const value = event.detail.value
   if (value) {
-    const notif = user.value.notifications.find(n => n.id === value)
+    const notif = user.value.unread_notifications.find(n => n.id === value)
     if (!notif) return
 
     // Αν το notification είναι ήδη διαβασμένο, δεν χρειάζεται να καλέσουμε το API

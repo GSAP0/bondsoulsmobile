@@ -4,7 +4,7 @@
     <div class="text-center" v-if="loading">
       <ion-spinner></ion-spinner>
     </div>
-    <ion-button v-else expand="block" color="danger" @click="openConfirm = true">
+    <ion-button v-else expand="block" color="danger" @click="openConfirm = true" style="text-transform: unset">
       Τερματισμός συνομιλίας
     </ion-button>
 

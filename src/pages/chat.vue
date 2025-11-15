@@ -50,9 +50,9 @@
 
     <ion-footer class="ion-no-border">
       <div class="message-input-container">
-        <ion-button fill="clear" @click="toggleVoiceRecording" :class="['media-button', { 'recording': isRecording }]">
-          <ion-icon :icon="mic" slot="icon-only"></ion-icon>
-        </ion-button>
+<!--        <ion-button fill="clear" @click="toggleVoiceRecording" :class="['media-button', { 'recording': isRecording }]">-->
+<!--          <ion-icon :icon="mic" slot="icon-only"></ion-icon>-->
+<!--        </ion-button>-->
         <ion-textarea
             v-model="messageText"
             placeholder="Γράψε ένα μήνυμα..."
@@ -141,7 +141,7 @@ const scrollToBottom = async () => {
 
 const loadMessages = async () => {
   try {
-    const response = await axios.get('conversation', {params: {match_id: user.value.match_id}})
+    const response = await axios.get('conversation', {params: {match_id: match.value.id}})
     messages.value = response.data
     scrollToBottom()
 
@@ -155,7 +155,7 @@ const loadMessages = async () => {
 const sendMessage = async (type = 'text', content = null) => {
   if (!canSend.value && !content) return
   sendLoading.value = true
-  const payload = {match_id: user.value.match_id, type, content: content || messageText.value.trim()}
+  const payload = {match_id: match.value.id, type, content: content || messageText.value.trim()}
   messageText.value = ''
   try {
     const res = await axios.post('conversation/messages', payload)
@@ -170,10 +170,10 @@ const sendMessage = async (type = 'text', content = null) => {
 
 const handleTyping = () => {
   if (!echo) return
-  echo.private(`chat.${user.value.match_id}`).whisper('typing', {user_id: user.value.uuid, typing: true})
+  echo.private(`chat.${match.value.id}`).whisper('typing', {user_id: user.value.uuid, typing: true})
   clearTimeout(typingTimer)
   typingTimer = setTimeout(() => {
-    echo.private(`chat.${user.value.match_id}`).whisper('typing', {user_id: user.value.uuid, typing: false})
+    echo.private(`chat.${match.value.id}`).whisper('typing', {user_id: user.value.uuid, typing: false})
   }, 5000)
 }
 
@@ -194,7 +194,7 @@ const startRecording = async () => {
       const audioBlob = new Blob(audioChunks, {type: 'audio/webm'})
       const formData = new FormData()
       formData.append('file', audioBlob, 'voice-message.webm')
-      formData.append('match_id', user.value.match_id)
+      formData.append('match_id', match.value.id)
       formData.append('type', 'voice')
       try {
         const res = await axios.post('conversation/messages', formData, {headers: {'Content-Type': 'multipart/form-data'}})
@@ -227,7 +227,7 @@ const initializeWebSocket = () => {
     return
   }
 
-  echo.private(`chat.${user.value.match_id}`)
+  echo.private(`chat.${match.value.id}`)
       .listen('MessageSent', (e) => {
         if (e.message.sender_id !== user.value.uuid) {
           messages.value.push(e.message)
@@ -240,7 +240,7 @@ const initializeWebSocket = () => {
         }
       })
 
-  echo.join(`chat.${user.value.match_id}`)
+  echo.join(`chat.${match.value.id}`)
       .here((users) => {
         isOnline.value = users.some(u => u.uuid !== user.value.uuid)
       })
@@ -263,7 +263,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (echo) {
-    echo.leave(`chat.${user.value.match_id}`);
+    echo.leave(`chat.${match.value.id}`);
     echo.disconnect()
   }
 

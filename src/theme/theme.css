@@ -661,7 +661,7 @@ ion-accordion[aria-expanded="true"] .card-content {
 }
 
 .message-input {
-    @apply flex-1 text-base;
+    @apply flex-1 text-2xl;
     min-height: 36px;
     --color: var(--text);
     --placeholder-color: var(--muted);
@@ -699,7 +699,7 @@ ion-fab-button ion-icon {
 .cta {
     text-transform: unset;
     min-height: 50px;
-    font-size: 1.25em;
+    font-size: 1.25rem;
     border-radius: 9999px;
     --background: linear-gradient(90deg, #0A84FF, #FF2D55);
     --background-activated: linear-gradient(90deg, #0c6fce, #e03a5f);

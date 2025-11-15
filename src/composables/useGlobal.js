@@ -146,18 +146,13 @@ export function useGlobal() {
             color: 'primary',
             buttons: [
                 {
-                    text: 'Δείτε',
-                    handler: () => {
-                        router.push(`/notification?id=${notification.id}`)
-                    }
-                },
-                {
                     text: 'Κλείσιμο',
                     role: 'cancel'
                 }
             ]
         })
         await toast.present()
+        await loadUser()
     }
 
     async function load() {
